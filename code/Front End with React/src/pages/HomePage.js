@@ -57,6 +57,7 @@ class FirstPage extends Component {
                         </Button>
                     </div>
                     <a onClick={this.onDownload} style={{fontSize : 15, marginTop: 10}}>Download template</a>
+                    <a href={"https://github.com/yaozixuan/QuizHero/blob/master/README.md"} style={{fontSize : 15, marginTop: 10}}>README</a>
 
                 </header>
             </div>
