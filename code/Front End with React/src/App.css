@@ -24,6 +24,7 @@
   background-color: aliceblue;
   color: black;
   text-align: center;
+  width:100%;
   min-height: 100vh;
 }
 
@@ -45,6 +46,33 @@
 .ant-list-item-meta-title {
   margin-left: 30px;
   float: left;
+}
+
+.divleft{
+  width:50%;
+  min-height: 100vh;
+  background:blue;
+  float:left;
+}
+.divright{
+  width:50%;
+  height:100vh;
+  background:red;
+  float:left;
+}
+
+.inputtext{
+  width:100%;
+  height:100vh;
+  background:white;
+  float:left;
+}
+
+.realtimepre{
+  width:100%;
+  height:100vh;
+  background:green;
+  float:left;
 }
 
 @keyframes App-logo-spin {

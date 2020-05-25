@@ -220,6 +220,9 @@ class UploadHistory extends React.Component {
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>
                         </Menu.Item>
+                        <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
+                            <Link to={'/EditPage'}>Edit</Link>
+                        </Menu.Item>
 
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                             Welcome, {username}

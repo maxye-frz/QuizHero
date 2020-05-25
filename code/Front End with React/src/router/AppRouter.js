@@ -17,6 +17,7 @@ import StudentRequestPage from "../pages/StudentRequestPage";
 import UploadHistory from "../pages/UploadHistory"
 import PrivateRoute from "./PrivateRoute"
 import PublicRoute from "./PublicRoute"
+import EditPage from "../pages/EditPage";
 
 const history = createBrowserHistory();
 
@@ -50,6 +51,7 @@ class AppRouter extends Component {
           <PrivateRoute component={MyUpload} path="/HomePage" exact />
           <PrivateRoute component={PresentPage} path="/presenter" exact />
           <PrivateRoute component={UploadHistory} path="/HistoryPage" exact />
+          <PrivateRoute component={EditPage} path="/EditPage" exact />
       </Switch>
       </Router>
      

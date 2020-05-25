@@ -10,7 +10,7 @@ import {Button, message} from "antd";
 import Slides from "../components/SpectaclePresenter";
 import {BASE_URL} from "../config/config"
 
-class PresentPage extends Component {
+class Realtime extends Component {
     constructor(props) {
         super(props);
 
@@ -21,7 +21,7 @@ class PresentPage extends Component {
             question: '',
             answerOptions: [],
             result: '',
-            fileId: JSON.parse(localStorage.getItem("data")).fileId,
+            // fileId: JSON.parse(localStorage.getItem("data")).fileId,
             quizCounter : 0,
             quizList: JSON.parse(localStorage.getItem("data")).quiz,
             quizQuestions:JSON.parse(localStorage.getItem("data")).quiz[0],
@@ -103,32 +103,32 @@ class PresentPage extends Component {
     /**
      * This function sends a post request to backend to set quizpermission to true so that students can do the quiz.
      */
-    startQuiz=()=>{
-        const formData = new FormData();
-        formData.append('fileId', this.state.fileId);
-        formData.append('permission', true);
-        axios.post(BASE_URL + "/quizpermission", formData)
-            .then(()=> message.success(`Students can now start quiz for presentation ${this.state.fileId}`))
-            .catch(()=> message.error('error'));
-    }
+    // startQuiz=()=>{
+    //     const formData = new FormData();
+    //     formData.append('fileId', this.state.fileId);
+    //     formData.append('permission', true);
+    //     axios.post(BASE_URL + "/quizpermission", formData)
+    //         .then(()=> message.success(`Students can now start quiz for presentation ${this.state.fileId}`))
+    //         .catch(()=> message.error('error'));
+    // }
 
     /**
      * This function sends a post request to backend to set quizpermission to false so that students are not allowed to do the quiz.
      */
-    stopQuiz=()=>{
-        const formData = new FormData();
-        formData.append('fileId', this.state.fileId);
-        formData.append('permission', false);
-        axios.post(BASE_URL + "/quizpermission", formData)
-            .then(()=> message.success(`Students stop answering quiz for presentation ${this.state.fileId}`))
-            .catch(()=> message.error('error'));
-    }
+    // stopQuiz=()=>{
+    //     const formData = new FormData();
+    //     formData.append('fileId', this.state.fileId);
+    //     formData.append('permission', false);
+    //     axios.post(BASE_URL + "/quizpermission", formData)
+    //         .then(()=> message.success(`Students stop answering quiz for presentation ${this.state.fileId}`))
+    //         .catch(()=> message.error('error'));
+    // }
 
     /**
      * This function initializes params needed for quiz page berore rendering it.
      */
     toQuizCallback = (quizBlockNumber) => {
-        this.startQuiz();
+        // this.startQuiz();
         console.log(quizBlockNumber)
         const quizQuestions = this.state.quizList[quizBlockNumber];
         const questionId = 1;
@@ -152,7 +152,7 @@ class PresentPage extends Component {
     };
 
     toSlidesCallback=()=>{
-        this.stopQuiz();
+        // this.stopQuiz();
         this.setState({
             quizFlag : 0,
             result : 0
@@ -161,13 +161,13 @@ class PresentPage extends Component {
 
 
     renderResult() {
-        return <ResultPresenter fileId={this.state.fileId} toSlidesCallback={this.toSlidesCallback} />;
+        return <ResultPresenter fileId={"c8358df9-9635-4234-8bd0-33bfea17cc5c"} toSlidesCallback={this.toSlidesCallback} />;
     }
 
     renderQuizPages () {
         return (
-            <div className="Quiz-page">
-                <div className="Quiz-header">
+            <div className={"Quiz-page"}>
+                <div className={"Quiz-header"}>
                 </div>
                 {this.state.result ? this.renderResult() : this.renderQuiz()}
 
@@ -195,4 +195,4 @@ class PresentPage extends Component {
     }
 }
 
-export default PresentPage;
+export default Realtime;
