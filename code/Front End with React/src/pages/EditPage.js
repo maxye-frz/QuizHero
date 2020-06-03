@@ -116,25 +116,27 @@ class EditPage extends React.Component {
                     </form>
                 </div>
 
-                <div className={"divright"} style={{paddingTop:"50px"}}>
-                    this is realtime render
-                    <form
-                        onSubmit={this.handleSubmit}>
+                <Realtime/>
 
-                        <input type="submit" value="Submit" />
+                {/*<div className={"divright"} style={{paddingTop:"50px"}}>*/}
+                {/*    this is realtime render*/}
+                {/*    /!*<form*!/*/}
+                {/*    /!*    onSubmit={this.handleSubmit}>*!/*/}
 
-                        {/*<textarea className={"inputtext"}*/}
-                        {/*          value={this.state.rawString} onChange={this.handleChange} />*/}
-                        <Realtime className={"realtimepre"}/>
+                {/*    /!*    <input type="submit" value="Submit" />*!/*/}
 
-                    </form>
+                {/*    /!*    /!*<textarea className={"inputtext"}*!/*!/*/}
+                {/*    /!*    /!*          value={this.state.rawString} onChange={this.handleChange} />*!/*!/*/}
+                {/*    <Realtime />*/}
+                {/*    */}
+                {/*    /!*</form>*!/*/}
 
-                    {/*<Markdown containsSlides>{this.state.rawString}</Markdown>*/}
-                    {/*<html><body>*/}
-                    {/*<style>${this.state.css}</style>*/}
-                    {/*${this.state.html}*/}
-                    {/*</body></html>*/}
-                </div>
+                {/*    /!*<Markdown containsSlides>{this.state.rawString}</Markdown>*!/*/}
+                {/*    /!*<html><body>*!/*/}
+                {/*    /!*<style>${this.state.css}</style>*!/*/}
+                {/*    /!*${this.state.html}*!/*/}
+                {/*    /!*</body></html>*!/*/}
+                {/*</div>*/}
 
             </div>
         )

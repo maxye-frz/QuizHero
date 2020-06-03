@@ -159,6 +159,12 @@ class Realtime extends Component {
         });
     }
 
+    handleSubmit(event) {
+        alert('Refresh: ' + this.state.rawString);
+        this.componentDidMount();
+        event.preventDefault();
+    }
+
 
     renderResult() {
         return <ResultPresenter fileId={"c8358df9-9635-4234-8bd0-33bfea17cc5c"} toSlidesCallback={this.toSlidesCallback} />;
@@ -186,8 +192,19 @@ class Realtime extends Component {
 
     render() {
         return (
-            <div>
-                {this.state.quizFlag ? this.renderQuizPages() : this.renderSlides()}
+
+            <div className={"divright"} style={{paddingTop:"50px"}}>
+                <form
+                    onSubmit={this.handleRefresh}>
+
+                    <input type="submit" value="Refresh" />
+
+                    {/*<textarea className={"inputtext"}*/}
+                    {/*          value={this.state.rawString} onChange={this.handleChange} />*/}
+                    {this.state.quizFlag ? this.renderQuizPages() : this.renderSlides()}
+
+                </form>
+
             </div>
 
 
