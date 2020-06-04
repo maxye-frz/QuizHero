@@ -19,7 +19,7 @@ const Title = styled.div`
 `;
 
 const TextArea = styled.textarea`
-  width: 100vh;
+  width: 100%;
   height: 100%;
   resize: none;
   border: none;
