@@ -51,6 +51,8 @@
     ]
   },
   "devDependencies": {
-    "reqwest": "^2.0.5"
+    "react-markdown": "^4.3.1",
+    "reqwest": "^2.0.5",
+    "styled-components": "^5.1.1"
   }
 }

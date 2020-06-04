@@ -84,7 +84,8 @@ class EditPage extends React.Component {
             <div className="App">
                 <Header style={{height: 50, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
                     <div className="logo" />
-                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['2']}>
+                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['3']}>
+                        {/*defaultSelectedKeys={['3']}*/}
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
                             <Link to={'/HomePage'}>Upload</Link>
@@ -104,39 +105,7 @@ class EditPage extends React.Component {
                     </Menu>
                 </Header>
 
-                <div className={"divleft"} style={{paddingTop:"50px"}}>
-                    <form
-                          onSubmit={this.handleSubmit}>
-
-                        <input type="submit" value="Submit" />
-
-                        <textarea className={"inputtext"}
-                                  value={this.state.rawString} onChange={this.handleChange} />
-
-                    </form>
-                </div>
-
                 <Realtime/>
-
-                {/*<div className={"divright"} style={{paddingTop:"50px"}}>*/}
-                {/*    this is realtime render*/}
-                {/*    /!*<form*!/*/}
-                {/*    /!*    onSubmit={this.handleSubmit}>*!/*/}
-
-                {/*    /!*    <input type="submit" value="Submit" />*!/*/}
-
-                {/*    /!*    /!*<textarea className={"inputtext"}*!/*!/*/}
-                {/*    /!*    /!*          value={this.state.rawString} onChange={this.handleChange} />*!/*!/*/}
-                {/*    <Realtime />*/}
-                {/*    */}
-                {/*    /!*</form>*!/*/}
-
-                {/*    /!*<Markdown containsSlides>{this.state.rawString}</Markdown>*!/*/}
-                {/*    /!*<html><body>*!/*/}
-                {/*    /!*<style>${this.state.css}</style>*!/*/}
-                {/*    /!*${this.state.html}*!/*/}
-                {/*    /!*</body></html>*!/*/}
-                {/*</div>*/}
 
             </div>
         )

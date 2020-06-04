@@ -1,215 +1,48 @@
-/**
- * PresentPage renders presenter's version of slides and quizzes.
- */
+import React, { useState } from "react";
+import "../styles.css";
+import styled from "styled-components";
+import { MarkedInput } from "../components/markedInput";
+import { Result } from "../components/result";
+import EditorContext from "./editorContext";
 
-import React, { Component } from 'react';
-import Quiz from '../components/Quiz';
-import ResultPresenter from '../components/ResultPresenter';
-import axios from 'axios'
-import {Button, message} from "antd";
-import Slides from "../components/SpectaclePresenter";
-import {BASE_URL} from "../config/config"
+const AppContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
-class Realtime extends Component {
-    constructor(props) {
-        super(props);
+const Title = styled.div`
+  font-size: 25px;
+  font-weight: 700;
+  font-family: "Lato", sans-serif;
+  margin-bottom: 1em;
+`;
 
-        this.state = {
-            counter: 0,
-            questionId: 1,
-            questionCounter : 1,
-            question: '',
-            answerOptions: [],
-            result: '',
-            // fileId: JSON.parse(localStorage.getItem("data")).fileId,
-            quizCounter : 0,
-            quizList: JSON.parse(localStorage.getItem("data")).quiz,
-            quizQuestions:JSON.parse(localStorage.getItem("data")).quiz[0],
-            slides: JSON.parse(localStorage.getItem("data")).slidesString
-        };
-        console.log(this.state.quizList)
-        this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
-    }
+const EditorContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
 
-    componentDidMount() {
-        console.log(this.state.quizQuestions)
-        if (this.state.quizQuestions){
-            this.setState({
-                question: this.state.quizQuestions[0].question,
-                answerOptions: this.state.quizQuestions[0].answers
-            });
-        }
-    }
+export default function App() {
+    const [markdownText, setMarkdownText] = useState("");
 
-    /**
-     * check whether it is the last question after selecting an answer.
-     */
-    handleAnswerSelected(event) {
-        console.log(event.currentTarget.value);
-        if (this.state.questionId < this.state.quizQuestions.length) {
-            setTimeout(() => this.setNextQuestion(), 300);
-        } else {
-            setTimeout(() => this.setResults(), 300);
-        }
-    }
-
-    /**
-     * set parameters to be the next question.
-     */
-    setNextQuestion() {
-        const counter = this.state.counter + 1;
-        const questionId = this.state.questionId + 1;
-        const questionCounter = this.state.questionCounter + 1;
-        this.setState({
-            counter: counter,
-            questionId: questionId,
-            question: this.state.quizQuestions[counter].question,
-            answerOptions: this.state.quizQuestions[counter].answers,
-            answer: '',
-            questionCounter: questionCounter
-        });
-    }
-
-    setResults(result) {
-        this.setState({
-            result : 1
-        });
-    }
-
-    /**
-     * Render the quiz page
-     */
-    renderQuiz() {
-        return (
-            <div>
-                <Quiz
-                    answer={this.state.answer}
-                    answerOptions={this.state.answerOptions}
-                    questionId={this.state.questionId}
-                    question={this.state.question}
-                    questionTotal={this.state.quizQuestions.length}
-                    onAnswerSelected={this.handleAnswerSelected}
-                    questionCounter={this.state.questionCounter}
-                />
-                <h3>Presenter's response will not be recorded.</h3>
-                <Button
-                    onClick={this.handleAnswerSelected}>
-                    Skip
-                </Button>
-            </div>
-        );
-    }
-
-    /**
-     * This function sends a post request to backend to set quizpermission to true so that students can do the quiz.
-     */
-    // startQuiz=()=>{
-    //     const formData = new FormData();
-    //     formData.append('fileId', this.state.fileId);
-    //     formData.append('permission', true);
-    //     axios.post(BASE_URL + "/quizpermission", formData)
-    //         .then(()=> message.success(`Students can now start quiz for presentation ${this.state.fileId}`))
-    //         .catch(()=> message.error('error'));
-    // }
-
-    /**
-     * This function sends a post request to backend to set quizpermission to false so that students are not allowed to do the quiz.
-     */
-    // stopQuiz=()=>{
-    //     const formData = new FormData();
-    //     formData.append('fileId', this.state.fileId);
-    //     formData.append('permission', false);
-    //     axios.post(BASE_URL + "/quizpermission", formData)
-    //         .then(()=> message.success(`Students stop answering quiz for presentation ${this.state.fileId}`))
-    //         .catch(()=> message.error('error'));
-    // }
-
-    /**
-     * This function initializes params needed for quiz page berore rendering it.
-     */
-    toQuizCallback = (quizBlockNumber) => {
-        // this.startQuiz();
-        console.log(quizBlockNumber)
-        const quizQuestions = this.state.quizList[quizBlockNumber];
-        const questionId = 1;
-        const counter = 0;
-
-        var questionCounter = 0;
-        for (var i = 0; i < quizBlockNumber; i++) {
-            questionCounter += this.state.quizList[i].length;
-        }
-        questionCounter ++;
-
-        this.setState({
-            questionId : questionId,
-            counter : counter,
-            quizQuestions : quizQuestions,
-            question: quizQuestions[0].question,
-            answerOptions: quizQuestions[0].answers,
-            quizFlag : 1,
-            questionCounter : questionCounter
-        })
+    const contextValue = {
+        markdownText,
+        setMarkdownText
     };
 
-    toSlidesCallback=()=>{
-        // this.stopQuiz();
-        this.setState({
-            quizFlag : 0,
-            result : 0
-        });
-    }
-
-    handleSubmit(event) {
-        alert('Refresh: ' + this.state.rawString);
-        this.componentDidMount();
-        event.preventDefault();
-    }
-
-
-    renderResult() {
-        return <ResultPresenter fileId={"c8358df9-9635-4234-8bd0-33bfea17cc5c"} toSlidesCallback={this.toSlidesCallback} />;
-    }
-
-    renderQuizPages () {
-        return (
-            <div className={"Quiz-page"}>
-                <div className={"Quiz-header"}>
-                </div>
-                {this.state.result ? this.renderResult() : this.renderQuiz()}
-
-            </div>
-        )
-    }
-
-    renderSlides () {
-        return (
-            <div>
-                <Slides toQuizCallback={this.toQuizCallback}
-                        slides={this.state.slides}/>
-            </div>
-        )
-    }
-
-    render() {
-        return (
-
-            <div className={"divright"} style={{paddingTop:"50px"}}>
-                <form
-                    onSubmit={this.handleRefresh}>
-
-                    <input type="submit" value="Refresh" />
-
-                    {/*<textarea className={"inputtext"}*/}
-                    {/*          value={this.state.rawString} onChange={this.handleChange} />*/}
-                    {this.state.quizFlag ? this.renderQuizPages() : this.renderSlides()}
-
-                </form>
-
-            </div>
-
-
-        );
-    }
+    return (
+        <EditorContext.Provider value={contextValue}>
+            <AppContainer>
+                <Title>Markdown Editor</Title>
+                <EditorContainer>
+                    <MarkedInput />
+                    <Result />
+                </EditorContainer>
+            </AppContainer>
+        </EditorContext.Provider>
+    );
 }
-
-export default Realtime;
