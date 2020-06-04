@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import Marpit from "@marp-team/marpit";
 import defaultTheme from "../components/default_theme/marpit-theme";
 import {Markdown} from "../lib_presenter";
-import Realtime from "./Realtime";
+import Realtime from "../components/Realtime";
 import separateQuestion from "../components/Parse";
 const { Header } = Layout;
 
@@ -85,7 +85,6 @@ class EditPage extends React.Component {
                 <Header style={{height: 50, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
                     <div className="logo" />
                     <Menu theme="white" mode="horizontal" defaultSelectedKeys={['3']}>
-                        {/*defaultSelectedKeys={['3']}*/}
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
                             <Link to={'/HomePage'}>Upload</Link>

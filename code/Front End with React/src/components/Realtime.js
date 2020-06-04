@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "../styles.css";
+// import "../styles.css";
 import styled from "styled-components";
-import { MarkedInput } from "../components/markedInput";
-import { Result } from "../components/result";
-import EditorContext from "./editorContext";
+import { MarkedInput } from "./realtime_components/markedInput";
+import { Result } from "./realtime_components/result";
+import EditorContext from "./realtime_components/editorContext";
 
 const AppContainer = styled.div`
   width: 100%;
