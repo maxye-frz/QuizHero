@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import editorContext from "./editorContext";
+import separateQuestion from "../Parse";
+import {Link} from "react-router-dom";
+import {Button} from "antd";
 
 const Container = styled.div`
   width: 50%;
@@ -28,9 +31,24 @@ const ResultArea = styled.div`
 export function Result(props) {
     const { markdownText } = useContext(editorContext);
 
+    const callSeparateQuestion =(rawString)=>{
+        var data = separateQuestion(rawString);
+        data = JSON.stringify(data);
+        localStorage.setItem("data", data)
+        // this.jump();
+    }
+
     return (
         <Container>
-            <Title>Converted Text</Title>
+            <Title>
+                Converted Text
+                <Link to={{pathname: '/presenter'}} target = '_blank'>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={callSeparateQuestion(markdownText)}>
+                        Preview Presentation
+                    </Button>
+                </Link>
+            </Title>
             <ResultArea>
                 <ReactMarkdown source={markdownText} />
             </ResultArea>
