@@ -10,6 +10,7 @@ import model.File;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -103,6 +104,7 @@ public final class ApiServer {
 
         // upload, fetch file content and modify file status
         uploadFile(fileDao);
+        saveFile(fileDao);
         fetchFile(fileDao);
         changeFilePermission(fileDao);
         checkFilePermission(fileDao);
@@ -296,6 +298,32 @@ public final class ApiServer {
                 throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {
                 throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400);
+            }
+        });
+    }
+
+    /**
+     *  Save (new) file api
+     */
+    private static void saveFile(FileDao fileDao) {
+        app.post("/save", context -> {
+            try {
+                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId"))); //get userId
+                String fileName = context.formParam("fileName"); //get file name
+                String fileContent = context.formParam("rawString"); //get file content as string
+                InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
+                File newFile = new File(userId, fileName, fileStream); //construct a new file
+                fileDao.storeFile(newFile); //store new file
+                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+                fileMap.put("fileId", newFile.getFileId());
+                fileMap.put("fileName", newFile.getFileName());
+                context.json(fileMap);
+                context.contentType("application/json");
+                context.status(201);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when save file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
             }
         });
     }
