@@ -152,6 +152,21 @@ public class ApiServerTest {
     }
 
     @Test
+    public void saveFileReturn201() {
+
+    }
+
+    @Test
+    public void saveFileReturn400() {
+
+    }
+
+    @Test
+    public void saveFileReturn500() {
+
+    }
+
+    @Test
     public void fetchFileReturn200() throws UnirestException {
         //upload test.md
         File upload = new File("src/test/resources/test.md");
