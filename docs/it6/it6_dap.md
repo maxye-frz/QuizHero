@@ -37,10 +37,10 @@ This is the UML design from it5
 # Iteration Backlog
 > List the User Stories that you will implement in this iteration.
 
-needs update
+needs update RSD user story
 
 
 # Tasks
 > A tentative list of the "to do" in order to successfully complete this iteration. This list will change and it is good to keep it updated. It does not need to be exhastive.
 
-needs update
+Implement online editor feature, including real-time preview in markdown format, preview in slides format on a seperate window and save new md file to database.
