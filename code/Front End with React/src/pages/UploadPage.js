@@ -6,6 +6,7 @@ import { Upload, message, Button, Icon, Layout, Menu} from 'antd';
 import React from "react";
 import marpitConvert from '../components/Marpit'
 import separateQuestion from "../components/Parse";
+import Realtime from "../components/Realtime";
 import axios from 'axios';
 import {BASE_URL} from "../config/config"
 import {Link} from "react-router-dom"
@@ -31,7 +32,8 @@ class MyUpload extends React.Component{
         rawString:"",
         data:"",
         marpitResult:"",
-        display_name:'none'
+        newFile:false,
+        functionalButton:'none'
     }
 
     /**
@@ -75,7 +77,8 @@ class MyUpload extends React.Component{
             this.sendFile()
                 .then(this.readFile)
                 .then(this.callSeparateQuestion);
-            this.state.display_name = this.display_name('block');
+            this.setState({functionalButton : 'block'});
+            // this.state.functionalButton = this.showFunctionalButton('block');
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
@@ -88,9 +91,10 @@ class MyUpload extends React.Component{
      */
     onRemove = () => {
         this.setState({
-            file: ""
+            file: "",
+            functionalButton: 'none'
         })
-        this.state.display_name = this.display_name('none');
+        // this.state.functionalButton = this.showFunctionalButton('none');
     }
 
     /**
@@ -228,11 +232,11 @@ class MyUpload extends React.Component{
      * Show or hide the button depending on whether there's a file uploaded or not.
      * @param status
      */
-    display_name (status) {
-        this.setState({
-            display_name:status
-        })
-    };
+    // showFunctionalButton (status) {
+    //     this.setState({
+    //         functionalButton:status
+    //     })
+    // };
 
     /**
      * Clear localStorage in browser when logout.
@@ -269,14 +273,14 @@ class MyUpload extends React.Component{
                     <Menu theme="white" mode="horizontal" defaultSelectedKeys={['1']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
-                            <Link to={'/HomePage'}>Upload</Link>
+                            <Link to={'/HomePage'}>Upload/Edit</Link>
                         </Menu.Item>
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>
                         </Menu.Item>
-                        <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
-                            <Link to={'/EditPage'}>Edit</Link>
-                        </Menu.Item>
+                        {/*<Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>*/}
+                        {/*    <Link to={'/EditPage'}>Edit</Link>*/}
+                        {/*</Menu.Item>*/}
                         
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                              Welcome, {username}
@@ -285,9 +289,10 @@ class MyUpload extends React.Component{
                     </Menu>
                 </Header>
                 
-                <header className="App-header">
+                <div className="App-header" style={{display : this.state.newFile ? 'none' : 'block'}}>
                     
                     <img src={logo} className="App-logo" alt="logo"/>
+
                     <div>
                         {/* Upload button*/}
                         <div>
@@ -306,7 +311,7 @@ class MyUpload extends React.Component{
                             </Upload>
                         </div>
                         {/*Presenter/Student mode button*/}
-                        <div style={{display:this.state.display_name}}>
+                        <div style={{display:this.state.functionalButton}}>
                             <Link to={{pathname: '/presenter', query: this.state.data}} target = '_blank'>
                                 <Button size={"median"} style={{marginRight: 10}}>
                                     Presenter mode
@@ -318,7 +323,7 @@ class MyUpload extends React.Component{
                             </Button>
                         </div>
                         {/*Start/Stop sharing file button*/}
-                        <div style={{display:this.state.display_name}}>
+                        <div style={{display:this.state.functionalButton}}>
                             <CopyToClipboard
                                 onCopy={this.startSharing}
                                 text={this.state.fileId}>
@@ -333,7 +338,19 @@ class MyUpload extends React.Component{
                         </div>
                     </div>
 
-                </header>
+                    <div>
+                        <Button size={"median"}
+                                onClick={() => this.setState({newFile: true})}>
+                            New File
+                        </Button>
+                    </div>
+
+                </div>
+
+
+                <div style={{display:this.state.newFile ? 'block' : 'none'}}>
+                    <Realtime />
+                </div>
             </div>
         )
     }
