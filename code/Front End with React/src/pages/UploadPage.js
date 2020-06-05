@@ -289,7 +289,7 @@ class MyUpload extends React.Component{
                     </Menu>
                 </Header>
                 
-                <div className="App-header" style={{display : this.state.newFile ? 'none' : 'block'}}>
+                <div className="App-header" style={{display : this.state.newFile ? 'none' : 'flex'}}>
                     
                     <img src={logo} className="App-logo" alt="logo"/>
 
