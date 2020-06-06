@@ -6,7 +6,6 @@ import { Upload, message, Button, Icon, Layout, Menu} from 'antd';
 import React from "react";
 import marpitConvert from '../components/Marpit'
 import separateQuestion from "../components/Parse";
-import Realtime from "../components/Realtime";
 import axios from 'axios';
 import {BASE_URL} from "../config/config"
 import {Link} from "react-router-dom"
@@ -32,7 +31,6 @@ class MyUpload extends React.Component{
         rawString:"",
         data:"",
         marpitResult:"",
-        newFile:false,
         functionalButton:'none'
     }
 
@@ -253,7 +251,7 @@ class MyUpload extends React.Component{
      * return rendered UploadPage
      */
     render(){
-        const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
+        const username = localStorage.getItem("username") ? localStorage.getItem("username") : "";
 
         const logOutBtnStyle = {
                 background: "none",
@@ -273,7 +271,7 @@ class MyUpload extends React.Component{
                     <Menu theme="white" mode="horizontal" defaultSelectedKeys={['1']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
-                            <Link to={'/HomePage'}>Upload/Edit</Link>
+                            <Link to={'/HomePage'}>Home</Link>
                         </Menu.Item>
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>
@@ -283,9 +281,10 @@ class MyUpload extends React.Component{
                         {/*</Menu.Item>*/}
                         
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
-                             Welcome, {username}
-                             <button onClick={this.handleLogOut} style={logOutBtnStyle}>Log Out</button>
+                            Welcome, {username}
+                            <button onClick={this.handleLogOut} style={logOutBtnStyle}>Log Out</button>
                         </div>
+
                     </Menu>
                 </Header>
                 
@@ -339,18 +338,15 @@ class MyUpload extends React.Component{
                     </div>
 
                     <div>
-                        <Button size={"median"}
-                                onClick={() => this.setState({newFile: true})}>
-                            New File
-                        </Button>
+                        <Link to={{pathname: '/EditPage', query: this.state.data}}>
+                            <Button size={"median"}>
+                                New File
+                            </Button>
+                        </Link>
                     </div>
 
                 </div>
 
-
-                <div style={{display:this.state.newFile ? 'block' : 'none'}}>
-                    <Realtime />
-                </div>
             </div>
         )
     }

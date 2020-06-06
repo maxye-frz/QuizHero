@@ -6,7 +6,7 @@
 import React, { Component } from "react";
 import { createBrowserHistory } from "history";
 import { Switch, Router } from "react-router-dom";
-import FirstPage from "../pages/HomePage";
+import IndexPage from "../pages/IndexPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import { connect } from "react-redux";
@@ -43,7 +43,7 @@ class AppRouter extends Component {
     return (
       <Router history={history}>
       <Switch>
-          <PublicRoute restricted={false} component={FirstPage} path="/" exact />
+          <PublicRoute restricted={false} component={IndexPage} path="/" exact />
           <PublicRoute restricted={false} component={LoginPage} path="/login" exact />
           <PublicRoute restricted={false} component={RegisterPage} path="/register" exact />
           <PublicRoute restricted={false} component={StudentRequestPage} path="/StudentRequestPage" exact />

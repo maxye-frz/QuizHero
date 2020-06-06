@@ -50,24 +50,26 @@ const TitleArea = styled.textarea`
 `;
 
 export function Input(props) {
-    const { setTitleText } = useContext(titleContext);
+    // const { setTitleText } = useContext(titleContext);
 
     const onTitleChange = e => {
         const newValue = e.currentTarget.value;
-        setTitleText(newValue);
+        localStorage.setItem("newFileTitle", newValue);
+        // setTitleText(newValue);
     };
 
-    const { setMarkdownText } = useContext(editorContext);
+    // const { setMarkdownText } = useContext(editorContext);
 
     const onInputChange = e => {
         const newValue = e.currentTarget.value;
-        setMarkdownText(newValue);
+        localStorage.setItem("newFileString", newValue);
+        // setMarkdownText(newValue);
     };
 
     const saveFile =(fileName, rawString)=>{
         const formData = new FormData();
-        formData.append('fileName', fileName);
-        formData.append('rawString', rawString);
+        formData.append('fileName', localStorage.getItem("newFileName"));
+        formData.append('rawString', localStorage.getItem("newFileString"));
         formData.append('userId', localStorage.getItem("instructorId"));
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
@@ -87,13 +89,15 @@ export function Input(props) {
         <Container>
             {/*<Title>Markdown Text</Title>*/}
             <TitleDiv>
-                <TitleArea onChange={{onTitleChange}}/>
+                <TitleArea value={localStorage.getItem("newFileName")}
+                           onChange={onTitleChange} />
                 <Button size={"small"} style={{marginLeft: 10}}
                         onClick={saveFile(titleContext, editorContext)}>
                     Save
                 </Button>
             </TitleDiv>
-            <TextArea onChange={onInputChange} />
+            <TextArea value={localStorage.getItem("newFileString")}
+                      onChange={onInputChange} />
         </Container>
     );
 }

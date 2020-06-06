@@ -33,8 +33,9 @@ const ResultArea = styled.div`
 `;
 
 export function Render(props) {
-    const { markdownText } = useContext(editorContext);
-    const { titleText } = useContext(titleContext);
+    // const { markdownText } = useContext(editorContext);
+
+    const markdownText = localStorage.getItem("newFileString");
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);

@@ -210,12 +210,12 @@ class UploadHistory extends React.Component {
 
         return (
             <div className="App">
-                <Header style={{height: 50, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
+                <Header style={{height: 0, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
                     <div className="logo" />
                     <Menu theme="white" mode="horizontal" defaultSelectedKeys={['2']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
-                            <Link to={'/HomePage'}>Upload/Edit</Link>
+                            <Link to={'/HomePage'}>Home</Link>
                         </Menu.Item>
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>

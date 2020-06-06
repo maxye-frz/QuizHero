@@ -7,7 +7,7 @@ import {Button, Icon} from 'antd';
 import logo from '../fig/logo.png';
 import template from "../components/template";
 
-class FirstPage extends Component {
+class IndexPage extends Component {
 
     constructor(props) {
         super(props);
@@ -66,4 +66,4 @@ class FirstPage extends Component {
 
 }
 
-export default FirstPage;
+export default IndexPage;
