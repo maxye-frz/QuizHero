@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
+import marpitConvert from "../Marpit";
 import editorContext from "./editorContext";
+import titleContext from "./titleContext";
 import separateQuestion from "../Parse";
 import {Link} from "react-router-dom";
 import {Button} from "antd";
@@ -10,7 +12,7 @@ const Container = styled.div`
   width: 50%;
   height: 100%;
   padding: 13px;
-  font-family: "Lato", sans-serif;
+  // font-family: "Lato", sans-serif;
 `;
 
 const Title = styled.div`
@@ -25,11 +27,12 @@ const ResultArea = styled.div`
   width: 100%;
   height: 100%;
   border: none;
-  font-size: 17px;
+  // font-size: 17px;
 `;
 
 export function Result(props) {
     const { markdownText } = useContext(editorContext);
+    const { titleText } = useContext(titleContext);
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
@@ -50,7 +53,8 @@ export function Result(props) {
                 </Link>
             </Title>
             <ResultArea>
-                <ReactMarkdown source={markdownText} />
+                {/*<ReactMarkdown source={markdownText} />*/}
+                <div dangerouslySetInnerHTML={{__html: marpitConvert(markdownText)}}></div>
             </ResultArea>
         </Container>
     );

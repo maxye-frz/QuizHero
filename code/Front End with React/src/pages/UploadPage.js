@@ -71,7 +71,7 @@ class MyUpload extends React.Component{
             console.log(info.file.name);
             this.setState({
                 fileName :info.file.name
-            })
+            });
             message.success(`${info.file.name} file uploaded successfully`);
             // Send uploaded
             this.sendFile()
@@ -206,7 +206,7 @@ class MyUpload extends React.Component{
      * startSharing(fileId) is a function for presenter to open the sharing permission.
      * @param fileId
      */
-    startSharing=()=>{
+    startSharing = () => {
         const formData = new FormData();
         formData.append('fileId', this.state.fileId);
         formData.append('permission', true);
