@@ -49,7 +49,7 @@ const TitleArea = styled.textarea`
   font-size: 17px;
 `;
 
-export function MarkedInput(props) {
+export function Input(props) {
     const { setTitleText } = useContext(titleContext);
 
     const onTitleChange = e => {

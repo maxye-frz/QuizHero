@@ -4,7 +4,6 @@ export default
 
     section {
       background-color: #FFFAFA;
-      // width: calc(50vw);
       color: #000;
       font-size: 30px;
       padding: 40px;

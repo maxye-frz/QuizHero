@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import markdownConvert from "../Markdown";
+// import markdownConvert from "../Markdown";
+import marpitConvert from "../Marpit";
+import realtimeTheme from "../default_theme/realtime-theme";
 import editorContext from "./editorContext";
 import titleContext from "./titleContext";
 import separateQuestion from "../Parse";
@@ -30,7 +32,7 @@ const ResultArea = styled.div`
     text-align: left;
 `;
 
-export function Result(props) {
+export function Render(props) {
     const { markdownText } = useContext(editorContext);
     const { titleText } = useContext(titleContext);
 
@@ -54,7 +56,7 @@ export function Result(props) {
             </Title>
             <ResultArea>
                 {/*<ReactMarkdown source={markdownText} />*/}
-                <div dangerouslySetInnerHTML = {{__html: markdownConvert(markdownText)}}></div>
+                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}></div>
             </ResultArea>
         </Container>
     );

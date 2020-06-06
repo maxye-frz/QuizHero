@@ -7,11 +7,11 @@ import defaultTheme from "./default_theme/marpit-theme";
 /**
  * marpitConvert create new marpit variable, get data and add theme to it.
  */
-const marpitConvert = (rawString) => {
+const marpitConvert = (rawString, customTheme) => {
     // 1. Marpit
     const marpit = new Marpit();
     // 2. Add Marpit theme CSS
-    const theme = defaultTheme;
+    const theme = customTheme ? customTheme : defaultTheme;
 
     marpit.themeSet.default = marpit.themeSet.add(theme);
 

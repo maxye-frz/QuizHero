@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 // import "../styles.css";
 import styled from "styled-components";
-import { MarkedInput } from "./realtime_components/markedInput";
-import { Result } from "./realtime_components/result";
+import { Input } from "./realtime_components/Input";
+import { Render } from "./realtime_components/Render";
 import EditorContext from "./realtime_components/editorContext";
 
 const AppContainer = styled.div`
@@ -39,8 +39,8 @@ export default function App() {
             <AppContainer>
                 <Title>Markdown Editor</Title>
                 <EditorContainer>
-                    <MarkedInput />
-                    <Result />
+                    <Input />
+                    <Render />
                 </EditorContainer>
             </AppContainer>
         </EditorContext.Provider>
