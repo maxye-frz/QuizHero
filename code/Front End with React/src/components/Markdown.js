@@ -1,17 +1,11 @@
-/**
- * Using Marpit component to render static HTML slides for download
- */
-
 import Marpit from "@marp-team/marpit";
-import defaultTheme from "./default_theme/marpit-theme";
-/**
- * marpitConvert create new marpit variable, get data and add theme to it.
- */
-const marpitConvert = (rawString) => {
+import markdownTheme from "./default_theme/markdown-theme";
+
+const markdownConvert = (rawString) => {
     // 1. Marpit
     const marpit = new Marpit();
-    // 2. Add Marpit theme CSS
-    const theme = defaultTheme;
+    // 2. Add Markdown theme CSS
+    const theme = markdownTheme;
 
     marpit.themeSet.default = marpit.themeSet.add(theme);
 
@@ -57,4 +51,4 @@ const stringConverter = (rawString) => {
     return sections.join("---\n\n");
 }
 
-export default marpitConvert;
+export default markdownConvert;

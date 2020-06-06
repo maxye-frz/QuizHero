@@ -1,69 +1,18 @@
 import React, { Component } from 'react';
 import {Button, Layout, List, Menu, message} from "antd";
-import Slides from "../components/SpectaclePresenter";
 import {BASE_URL} from "../config/config"
 import {Link} from "react-router-dom";
-import Marpit from "@marp-team/marpit";
-import defaultTheme from "../components/default_theme/marpit-theme";
-import {Markdown} from "../lib_presenter";
 import Realtime from "../components/Realtime";
-import separateQuestion from "../components/Parse";
 const { Header } = Layout;
 
 class EditPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            rawSting: 'Please write an essay about your favorite DOM element.'
-        };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({rawString: event.target.value});
-        var data = separateQuestion(event.target.value);
-        data = JSON.stringify(data);
-        localStorage.setItem("data", data)
-        console.log(this.state.rawString);
     }
 
     handleSubmit(event) {
         alert('A name was submitted: ' + this.state.rawString);
         event.preventDefault();
-    }
-
-    marpitConvert =()=>{
-        // 1. Marpit
-        const marpit = new Marpit();
-        // 2. Add Marpit theme CSS
-        const theme = defaultTheme;
-
-        marpit.themeSet.default = marpit.themeSet.add(theme);
-
-        /**
-         * render markdown using marpit
-         */
-        const {html, css} = marpit.render(this.state.rawString);
-        console.log("marpit", html, css);
-
-        this.setState({
-            html : html,
-            css : css,
-        });
-        /**
-         * create filestring to store HTML string
-         * @type {string}
-         */
-        // let filestring = `
-        // <!DOCTYPE html>
-        // <html><body>
-        //   <style>${css}</style>
-        //   ${html}
-        // </body></html>
-        // `
-        // ;
     }
 
     render() {

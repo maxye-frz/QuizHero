@@ -1,35 +1,38 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import ReactMarkdown from "react-markdown";
+import markdownConvert from "../Markdown";
 import editorContext from "./editorContext";
+import titleContext from "./titleContext";
 import separateQuestion from "../Parse";
 import {Link} from "react-router-dom";
 import {Button} from "antd";
 
 const Container = styled.div`
-  width: 50%;
-  height: 100%;
-  padding: 13px;
-  font-family: "Lato", sans-serif;
+    width: calc(50vw);
+    height: 100%;
+    padding: 13px;
+    // font-family: "Lato", sans-serif;
 `;
 
 const Title = styled.div`
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 1em;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(15, 15, 15, 0.3);
+    width: 100%; 
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 1em;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(15, 15, 15, 0.3);
 `;
 
 const ResultArea = styled.div`
-  width: 100%;
-  height: 100%;
-  border: none;
-  font-size: 17px;
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: left;
 `;
 
 export function Result(props) {
     const { markdownText } = useContext(editorContext);
+    const { titleText } = useContext(titleContext);
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
@@ -50,7 +53,8 @@ export function Result(props) {
                 </Link>
             </Title>
             <ResultArea>
-                <ReactMarkdown source={markdownText} />
+                {/*<ReactMarkdown source={markdownText} />*/}
+                <div dangerouslySetInnerHTML = {{__html: markdownConvert(markdownText)}}></div>
             </ResultArea>
         </Container>
     );
