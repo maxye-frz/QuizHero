@@ -4,10 +4,11 @@ export default
 
     section {
       background-color: #FFFAFA;
-      // width: calc(50vw);
+      height: 300px;
+      width: calc(50vw);
       color: #000;
-      font-size: 30px;
-      padding: 40px;
+      font-size: 12px;
+      padding: 13px;
     }
 
     h1 {
