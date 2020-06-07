@@ -66,7 +66,9 @@ export function Input(props) {
         formData.append('userId', localStorage.getItem("instructorId"));
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
-            .then(()=> message.success(`File saved`))
+            .then(()=> {message.success(`File saved`);
+                localStorage.setItem("newFileName", "");
+                localStorage.setItem("newFileString", "");})
             .catch(()=> message.error('error'));
         // .then(res => {
         //     console.log("CCC",res.data);

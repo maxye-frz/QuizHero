@@ -167,20 +167,25 @@ class UploadHistory extends React.Component {
             fakeClick(save_link);
         }
 
-        let params = {
-            fileId: fileId
-        }
-        console.log(fileId)
-        axios.get(BASE_URL + "/fetch", {params})
-            .then(res => {
-                console.log("AAA", res.data);
-                if (fileType === "raw") exportRaw(fileName, res.data);
-                else if (fileType === "HTML") exportRaw(`${fileName}.html`, marpitConvert(res.data));
-                message.success(`File ${fileName} downloaded successfully.`)
-            })
-            .catch((error) => {
-                console.log(error);
-                alert(`Fail to fetch File ${fileId}. ${error}`)
+        // let params = {
+        //     fileId: fileId
+        // }
+        // console.log(fileId)
+        // axios.get(BASE_URL + "/fetch", {params})
+        //     .then(res => {
+        //         console.log("AAA", res.data);
+        //         if (fileType === "raw") exportRaw(fileName, res.data);
+        //         else if (fileType === "HTML") exportRaw(`${fileName}.html`, marpitConvert(res.data));
+        //         message.success(`File ${fileName} downloaded successfully.`)
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         alert(`Fail to fetch File ${fileId}. ${error}`)
+        //     })
+        this.fetchFile(fileId)
+            .then(rawString => {
+                if (fileType === "raw") exportRaw(fileName, rawString);
+                else if (fileType === "HTML") exportRaw(`${fileName}.html`, marpitConvert(rawString));
             })
     }
 
