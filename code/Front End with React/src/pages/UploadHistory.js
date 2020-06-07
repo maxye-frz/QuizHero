@@ -48,25 +48,55 @@ class UploadHistory extends React.Component {
             });
     }
 
+    fetchFile =(fileId)=> {
+        return new Promise(((resolve, reject) => {
+            let params = {
+                fileId: fileId
+            }
+            console.log(fileId)
+            axios.get(BASE_URL + "/fetch",  {params})
+                .then(res => {
+                    console.log("AAA", res.data);
+                    message.success(`File ${fileId} fetched successfully.`);
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    alert(`Fail to fetch File ${fileId}. ${error}`);
+                    reject(error);
+                })
+        }))
+    }
+
+    editFile =(fileId, fileName)=> {
+        localStorage.setItem("newFileName", fileName);
+        this.fetchFile(fileId)
+            .then(rawString => {
+                localStorage.setItem("newFileString", rawString);
+                window.open("/EditPage", "_self");
+            });
+    }
+
     /**
      * presenterMode(fileId) is the function used to open the presenter mode from the history page.
      * @param fileId
      * presenterMode(fileId) fetch the file with fileId and pass the rawSting to callSeparateQuestion(rawString, fileId).
      */
     presenterMode =(fileId)=> {
-        let params = {
-            fileId: fileId
-        }
-        console.log(fileId)
-        axios.get(BASE_URL + "/fetch",  {params})
-            .then(res => {
-                console.log("AAA", res.data);
-                this.callSeparateQuestion(res.data, fileId);
-                message.success(`File ${fileId} fetched successfully.`);
-            })
-            .catch((error) => {
-                alert(`Fail to fetch File ${fileId}. ${error}`)
-            })
+        // let params = {
+        //     fileId: fileId
+        // }
+        // console.log(fileId)
+        // axios.get(BASE_URL + "/fetch",  {params})
+        //     .then(res => {
+        //         console.log("AAA", res.data);
+        //         this.callSeparateQuestion(res.data, fileId);
+        //         message.success(`File ${fileId} fetched successfully.`);
+        //     })
+        //     .catch((error) => {
+        //         alert(`Fail to fetch File ${fileId}. ${error}`)
+        //     })
+        this.fetchFile(fileId)
+            .then(rawString => {this.callSeparateQuestion(rawString, fileId)});
     }
 
     /**
@@ -86,14 +116,6 @@ class UploadHistory extends React.Component {
         data.fileId = fileId;
         data = JSON.stringify(data);
         localStorage.setItem("data", data)
-        this.jump();
-    }
-
-    /**
-     * jump() is a function to help jump to a new tab '/presenter'
-     */
-    jump =()=> {
-        console.log('jump')
         window.open('/presenter');
     }
 
@@ -244,6 +266,12 @@ class UploadHistory extends React.Component {
                                               onClick={() => this.deleteFile(item.fileId)}>
                                           Delete
                                       </Button>,
+                                      // <Link to={{pathname: '/EditPage'}}>
+                                          <Button size={'small'}
+                                                  onClick={() => this.editFile(item.fileId, item.fileName)}>
+                                              Edit
+                                          </Button>,
+                                      // </Link>,
                                       <Button size={"small"}
                                               onClick={() => this.presenterMode(item.fileId)}>
                                           Presenter Mode
@@ -254,7 +282,7 @@ class UploadHistory extends React.Component {
                                       // <Link to={{pathname: '/presenter'}} target = '_blank'>
                                       //     <Button size={"small"} style={{marginLeft: 10}}
                                       //             onClick={() => this.presenterMode(item.fileId)}>
-                                      //         <Icon/>Presenter Mode
+                                      //         Presenter Mode
                                       //     </Button>
                                       // </Link>,
                                       // Start/Stop sharing file button
