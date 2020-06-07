@@ -21,7 +21,7 @@ const Title = styled.div`
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 1em;
-    padding: 15.5px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(15, 15, 15, 0.3);
 `;
 
@@ -35,9 +35,8 @@ const ResultArea = styled.div`
 export function Render(props) {
     // const { markdownText } = useContext(editorContext);
 
-    const markdownText = localStorage.getItem("newFileString");
-
-    // const marpitString = marpitConvert(markdownText, realtimeTheme);
+    // pre-set newFileString to "", because Marpit cannot take null input
+    const markdownText = localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : ""
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);

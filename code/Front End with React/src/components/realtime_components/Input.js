@@ -18,8 +18,20 @@ const Title = styled.div`
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1em;
-  padding: 8px 0;
+  padding: 2.5px 0;
   border-bottom: 1px solid rgba(15, 15, 15, 0.3);
+`;
+
+const TitleArea = styled.textarea`
+  width: 30%;
+  height: 100%;
+  font-size: 22px;
+  font-weight: 600;
+  // align-items: center;
+  // justify-content: center;
+  resize: none;
+  border: none;
+  // outline: none;
 `;
 
 const TextArea = styled.textarea`
@@ -27,24 +39,6 @@ const TextArea = styled.textarea`
   height: 100%;
   resize: none;
   border: none;
-  outline: none;
-  font-size: 17px;
-`;
-
-const TitleDiv = styled.div`
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 1em;
-  border-bottom: 1px solid rgba(15, 15, 15, 0.3);
-`;
-
-const TitleArea = styled.textarea`
-  width: 25%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  resize: none;
-  // border: none;
   outline: none;
   font-size: 17px;
 `;
@@ -90,16 +84,21 @@ export function Input(props) {
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
-            <TitleDiv>
-                <TitleArea
-                           onChange={onTitleChange} />
+            <Title>
+                <TitleArea placeholder="Please type a file name"
+                           rows="1"
+                           onChange={onTitleChange}>
+                    {localStorage.getItem("newFileName")}
+                </TitleArea>
                 <Button size={"small"} style={{marginLeft: 10}}
                         onClick={saveFile}>
-                    Save
+                    Save File
                 </Button>
-            </TitleDiv>
-            <TextArea
-                      onChange={onInputChange} />
+            </Title>
+            <TextArea placeholder="Please type in MarkDown"
+                      onChange={onInputChange}>
+                {localStorage.getItem("newFileString")}
+            </TextArea>
         </Container>
     );
 }

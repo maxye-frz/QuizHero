@@ -340,6 +340,8 @@ class MyUpload extends React.Component{
                     <div>
                         <Link to={{pathname: '/EditPage', query: this.state.data}}>
                             <Button size={"median"}>
+                                    {/*onClick={() => localStorage.setItem("newFileString", "")}>*/}
+                                    {/*pre-set newFileString to "", because Marpit cannot take null input*/}
                                 New File
                             </Button>
                         </Link>
