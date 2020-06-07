@@ -15,6 +15,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div`
+  height: 60px;
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1em;
@@ -23,7 +24,7 @@ const Title = styled.div`
 `;
 
 const TitleArea = styled.textarea`
-  width: 30%;
+  width: 60%;
   height: 100%;
   font-size: 22px;
   font-weight: 600;
@@ -33,7 +34,7 @@ const TitleArea = styled.textarea`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 90%;
+  height: 88%;
   resize: none;
   border: none;
   outline: none;
@@ -79,13 +80,20 @@ export function Input(props) {
         <Container>
             {/*<Title>Markdown Text</Title>*/}
             <Title>
-                <TitleArea onChange={{onTitleChange}}/>
-                <Button size={"small"} style={{marginLeft: 10}}
+               <TitleArea placeholder="Please type a file name"
+                         rows="1"
+                         onChange={onTitleChange}>
+                {localStorage.getItem("newFileName")}
+                </TitleArea>
+                <Button size={"small"} style={{marginLeft: 10, alignSelf: "center"}}
                         onClick={saveFile(titleContext, editorContext)}>
-                    Save
+                    Save File
                 </Button>
             </Title>
-            <TextArea onChange={onInputChange} />
+          <TextArea placeholder="Please type in MarkDown"
+                    onChange={onInputChange}>
+            {localStorage.getItem("newFileString")}
+          </TextArea>
         </Container>
     );
 }

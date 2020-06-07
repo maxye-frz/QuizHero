@@ -29,7 +29,7 @@ const Title = styled.div`
 
 const ResultArea = styled.div`
     width: 100%;
-    height: 90%;
+    height: 88%;
     border: none;
     overflow-y: scroll;
     text-align: left;
