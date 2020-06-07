@@ -46,7 +46,7 @@ public final class DaoFactory {
                 // Not on heroku, use local PostgreSQL
                 URI = "jdbc:postgresql://localhost:5432/postgres";
                 USERNAME = "postgres";
-                PASSWORD = "1009";
+                PASSWORD = "postgres";
             } else {
                 // use postgreSQL
                 URI dbUri = new URI(databaseUrl);

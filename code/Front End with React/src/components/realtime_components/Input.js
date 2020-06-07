@@ -91,14 +91,14 @@ export function Input(props) {
         <Container>
             {/*<Title>Markdown Text</Title>*/}
             <TitleDiv>
-                <TitleArea value={localStorage.getItem("newFileName")}
+                <TitleArea
                            onChange={onTitleChange} />
                 <Button size={"small"} style={{marginLeft: 10}}
                         onClick={saveFile}>
                     Save
                 </Button>
             </TitleDiv>
-            <TextArea value={localStorage.getItem("newFileString")}
+            <TextArea
                       onChange={onInputChange} />
         </Container>
     );

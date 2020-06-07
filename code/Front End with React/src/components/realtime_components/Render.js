@@ -58,8 +58,8 @@ export function Render(props) {
                 </Link>
             </Title>
             <ResultArea>
-                <ReactMarkdown source={markdownText} />
-                {/*<div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}/>*/}
+                {/*<ReactMarkdown source={markdownText} />*/}
+                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}/>
             </ResultArea>
         </Container>
     );
