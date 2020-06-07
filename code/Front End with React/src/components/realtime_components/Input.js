@@ -43,10 +43,12 @@ const TextArea = styled.textarea`
 `;
 
 export function Input(props) {
+    // const { setTitleText } = useContext(titleContext);
 
     const onTitleChange = e => {
-      const newValue = e.currentTarget.value;
-      localStorage.setItem("newFileName", newValue);
+        const newValue = e.currentTarget.value;
+        localStorage.setItem("newFileName", newValue);
+        // setTitleText(newValue);
     };
 
     const { setMarkdownText } = useContext(editorContext);
@@ -57,43 +59,45 @@ export function Input(props) {
         setMarkdownText(newValue);
     };
 
-    const saveFile =(fileName, rawString)=>{
+    const saveFile =()=>{
         const formData = new FormData();
-        formData.append('fileName', fileName);
-        formData.append('rawString', rawString);
+        formData.append('fileName', localStorage.getItem("newFileName"));
+        formData.append('rawString', localStorage.getItem("newFileString"));
         formData.append('userId', localStorage.getItem("instructorId"));
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
-            .then(res => {
-                console.log("CCC",res.data);
-                // this.setState({fileId : res.data.fileId})
-                // resolve(res.data.fileId);
-                alert("File uploaded successfully.");
-            })
-            .catch((error) => {
-                // reject(error);
-                // alert("File uploaded failed.");
-            });
+            .then(()=> message.success(`File saved`))
+            .catch(()=> message.error('error'));
+        // .then(res => {
+        //     console.log("CCC",res.data);
+        //     // this.setState({fileId : res.data.fileId})
+        //     // resolve(res.data.fileId);
+        //     alert("File uploaded successfully.");
+        // })
+        // .catch((error) => {
+        //     // reject(error);
+        //     // alert("File uploaded failed.");
+        // });
     }
 
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
             <Title>
-               <TitleArea placeholder="Please type a file name"
-                         rows="1"
-                         onChange={onTitleChange}>
-                {localStorage.getItem("newFileName")}
+                <TitleArea placeholder="Please type a file name"
+                           rows="1"
+                           onChange={onTitleChange}>
+                    {localStorage.getItem("newFileName")}
                 </TitleArea>
-                <Button size={"small"} style={{marginLeft: 10, alignSelf: "center"}}
-                        onClick={saveFile(titleContext, editorContext)}>
+                <Button size={"small"} style={{marginLeft: 10}}
+                        onClick={saveFile}>
                     Save File
                 </Button>
             </Title>
-          <TextArea placeholder="Please type in MarkDown"
-                    onChange={onInputChange}>
-            {localStorage.getItem("newFileString")}
-          </TextArea>
+            <TextArea placeholder="Please type in MarkDown"
+                      onChange={onInputChange}>
+                {localStorage.getItem("newFileString")}
+            </TextArea>
         </Container>
     );
 }
