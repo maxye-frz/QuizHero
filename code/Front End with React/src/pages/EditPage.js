@@ -10,9 +10,15 @@ class EditPage extends React.Component {
         super(props);
     }
 
-    handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.rawString);
-        event.preventDefault();
+    /**
+     * Clear localStorage in browser when logout.
+     */
+    handleLogOut(){
+        localStorage.setItem("username",null)
+        localStorage.setItem("instructorId",0)
+        localStorage.setItem("isLogin",0)
+        localStorage.setItem("data", null)
+        window.location = "/login"
     }
 
     render() {
@@ -31,19 +37,19 @@ class EditPage extends React.Component {
          */
         return (
             <div className="App">
-                <Header style={{height: 50, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
+                <Header style={{height: 0, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
                     <div className="logo" />
-                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['3']}>
+                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['1']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
-                            <Link to={'/HomePage'}>Upload</Link>
+                            <Link to={'/HomePage'}>Home</Link>
                         </Menu.Item>
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>
                         </Menu.Item>
-                        <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
-                            <Link to={'/EditPage'}>Edit</Link>
-                        </Menu.Item>
+                        {/*<Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>*/}
+                        {/*    <Link to={'/EditPage'}>Edit</Link>*/}
+                        {/*</Menu.Item>*/}
 
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                             Welcome, {username}

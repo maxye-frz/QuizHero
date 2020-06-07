@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-// import markdownConvert from "../Markdown";
+import ReactMarkdown from "react-markdown";
 import marpitConvert from "../Marpit";
 import realtimeTheme from "../default_theme/realtime-theme";
 import editorContext from "./editorContext";
@@ -37,8 +37,10 @@ const ResultArea = styled.div`
 
 
 export function Render(props) {
-    const { markdownText } = useContext(editorContext);
-    const { titleText } = useContext(titleContext);
+    // const { markdownText } = useContext(editorContext);
+
+    // pre-set newFileString to "", because Marpit cannot take null input
+    const markdownText = localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : ""
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
@@ -53,14 +55,14 @@ export function Render(props) {
                 Converted Text
                 <Link to={{pathname: '/presenter'}} target = '_blank'>
                     <Button size={"small"} style={{marginLeft: 10}}
-                            onClick={callSeparateQuestion(markdownText)}>
+                            onClick={() => callSeparateQuestion(markdownText)}>
                         Preview Presentation
                     </Button>
                 </Link>
             </Title>
             <ResultArea>
                 {/*<ReactMarkdown source={markdownText} />*/}
-                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}></div>
+                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}/>
             </ResultArea>
         </Container>
     );

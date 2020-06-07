@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import editorContext from "./editorContext";
-import {Button} from "antd";
+import {Button, message} from "antd";
 import titleContext from "./titleContext";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
@@ -10,7 +10,6 @@ const Container = styled.div`
   width: 50%;
   height: 100vh;
   padding: 13px;
-  // overflow: scroll;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
   font-family: "Lato", sans-serif;
 `;
@@ -19,8 +18,17 @@ const Title = styled.div`
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1em;
-  padding: 8px 0;
+  padding: 2.5px 0;
   border-bottom: 1px solid rgba(15, 15, 15, 0.3);
+`;
+
+const TitleArea = styled.textarea`
+  width: 30%;
+  height: 100%;
+  font-size: 22px;
+  font-weight: 600;
+  resize: none;
+  border: none;
 `;
 
 const TextArea = styled.textarea`
@@ -33,36 +41,18 @@ const TextArea = styled.textarea`
   font-size: 17px;
 `;
 
-const TitleDiv = styled.div`
-  height: 60px;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 1em;
-  border-bottom: 1px solid rgba(15, 15, 15, 0.3);
-`;
-
-const TitleArea = styled.textarea`
-  width: 25%;
-  height: 80%;
-  align-items: center;
-  justify-content: center;
-  resize: none;
-  outline: none;
-  font-size: 17px;
-`;
-
 export function Input(props) {
-    const { setTitleText } = useContext(titleContext);
 
     const onTitleChange = e => {
-        const newValue = e.currentTarget.value;
-        setTitleText(newValue);
+      const newValue = e.currentTarget.value;
+      localStorage.setItem("newFileName", newValue);
     };
 
     const { setMarkdownText } = useContext(editorContext);
 
     const onInputChange = e => {
         const newValue = e.currentTarget.value;
+        localStorage.setItem("newFileString", newValue);
         setMarkdownText(newValue);
     };
 
@@ -88,13 +78,13 @@ export function Input(props) {
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
-            <TitleDiv>
+            <Title>
                 <TitleArea onChange={{onTitleChange}}/>
-                <Button size={"tiny"} style={{marginLeft: 10}}
+                <Button size={"small"} style={{marginLeft: 10}}
                         onClick={saveFile(titleContext, editorContext)}>
                     Save
                 </Button>
-            </TitleDiv>
+            </Title>
             <TextArea onChange={onInputChange} />
         </Container>
     );
