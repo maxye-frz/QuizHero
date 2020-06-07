@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-// import markdownConvert from "../Markdown";
+import ReactMarkdown from "react-markdown";
 import marpitConvert from "../Marpit";
 import realtimeTheme from "../default_theme/realtime-theme";
 import editorContext from "./editorContext";
@@ -21,7 +21,7 @@ const Title = styled.div`
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 1em;
-    padding: 8px 0;
+    padding: 15.5px 0;
     border-bottom: 1px solid rgba(15, 15, 15, 0.3);
 `;
 
@@ -37,6 +37,8 @@ export function Render(props) {
 
     const markdownText = localStorage.getItem("newFileString");
 
+    // const marpitString = marpitConvert(markdownText, realtimeTheme);
+
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
         data = JSON.stringify(data);
@@ -50,14 +52,14 @@ export function Render(props) {
                 Converted Text
                 <Link to={{pathname: '/presenter'}} target = '_blank'>
                     <Button size={"small"} style={{marginLeft: 10}}
-                            onClick={callSeparateQuestion(markdownText)}>
+                            onClick={() => callSeparateQuestion(markdownText)}>
                         Preview Presentation
                     </Button>
                 </Link>
             </Title>
             <ResultArea>
-                {/*<ReactMarkdown source={markdownText} />*/}
-                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}></div>
+                <ReactMarkdown source={markdownText} />
+                {/*<div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}/>*/}
             </ResultArea>
         </Container>
     );
