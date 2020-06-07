@@ -10,6 +10,7 @@ const Container = styled.div`
   width: 50%;
   height: 100vh;
   padding: 13px;
+  // overflow: scroll;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
   font-family: "Lato", sans-serif;
 `;
@@ -24,14 +25,16 @@ const Title = styled.div`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 100%;
+  height: 90%;
   resize: none;
   border: none;
   outline: none;
+  overflow-y: scroll;
   font-size: 17px;
 `;
 
 const TitleDiv = styled.div`
+  height: 60px;
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1em;
@@ -40,11 +43,10 @@ const TitleDiv = styled.div`
 
 const TitleArea = styled.textarea`
   width: 25%;
-  height: 100%;
+  height: 80%;
   align-items: center;
   justify-content: center;
   resize: none;
-  // border: none;
   outline: none;
   font-size: 17px;
 `;
@@ -88,7 +90,7 @@ export function Input(props) {
             {/*<Title>Markdown Text</Title>*/}
             <TitleDiv>
                 <TitleArea onChange={{onTitleChange}}/>
-                <Button size={"small"} style={{marginLeft: 10}}
+                <Button size={"tiny"} style={{marginLeft: 10}}
                         onClick={saveFile(titleContext, editorContext)}>
                     Save
                 </Button>

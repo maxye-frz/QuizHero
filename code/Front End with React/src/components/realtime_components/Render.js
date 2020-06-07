@@ -11,13 +11,15 @@ import {Button} from "antd";
 
 const Container = styled.div`
     width: calc(50vw);
-    height: 100%;
+    height: 100vh;
     padding: 13px;
+    // overflow-y: scroll;
     // font-family: "Lato", sans-serif;
 `;
 
 const Title = styled.div`
     width: 100%; 
+    height: 60px;
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 1em;
@@ -27,10 +29,12 @@ const Title = styled.div`
 
 const ResultArea = styled.div`
     width: 100%;
-    height: 100%;
+    height: 90%;
     border: none;
+    overflow-y: scroll;
     text-align: left;
 `;
+
 
 export function Render(props) {
     const { markdownText } = useContext(editorContext);

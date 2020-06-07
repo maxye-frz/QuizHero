@@ -9,7 +9,8 @@ export default
       color: #000;
       font-size: 15px;
       padding: 40px;
-      border: 1px solid rgba(15, 15, 15, 0.3);
+      border-bottom: 1px solid rgba(15, 15, 15, 0.3);
+      border-top: 1px solid rgba(15, 15, 15, 0.3);
     }
 
     h1 {
@@ -23,7 +24,7 @@ export default
       font-size: 20px;
       color: #FF1493;
       text-align: center;
-      margin: 30px;
+      margin-: 30px;
     }
     
     p {
