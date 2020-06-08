@@ -78,6 +78,7 @@ class UploadHistory extends React.Component {
                 });
         } else {
             alert("There are unsaved changes, please save them first!");
+            window.open("/EditPage", "_self");
         }
 
     }
