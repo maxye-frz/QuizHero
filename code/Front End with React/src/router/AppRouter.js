@@ -14,7 +14,7 @@ import MyUpload from "../pages/UploadPage";
 import PresentPage from '../pages/PresentPage'
 import StudentPage from "../pages/StudentPage";
 import StudentRequestPage from "../pages/StudentRequestPage";
-import UploadHistory from "../pages/UploadHistory"
+import HomePage from "../pages/HomePage"
 import PrivateRoute from "./PrivateRoute"
 import PublicRoute from "./PublicRoute"
 import EditPage from "../pages/EditPage";
@@ -48,9 +48,10 @@ class AppRouter extends Component {
           <PublicRoute restricted={false} component={RegisterPage} path="/register" exact />
           <PublicRoute restricted={false} component={StudentRequestPage} path="/StudentRequestPage" exact />
           <PublicRoute restricted={false} component={StudentPage} path="/student" exact />
-          <PrivateRoute component={MyUpload} path="/HomePage" exact />
+          {/*<PrivateRoute component={MyUpload} path="/HomePage" exact />*/}
           <PrivateRoute component={PresentPage} path="/presenter" exact />
-          <PrivateRoute component={UploadHistory} path="/HistoryPage" exact />
+          {/*<PrivateRoute component={HomePage} path="/HistoryPage" exact />*/}
+          <PrivateRoute component={HomePage} path="/HomePage" exact />
           <PrivateRoute component={EditPage} path="/EditPage" exact />
       </Switch>
       </Router>

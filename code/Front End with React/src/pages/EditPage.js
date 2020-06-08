@@ -44,9 +44,9 @@ class EditPage extends React.Component {
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
                             <Link to={'/HomePage'}>Home</Link>
                         </Menu.Item>
-                        <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
-                            <Link to={'/HistoryPage'}>History</Link>
-                        </Menu.Item>
+                        {/*<Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>*/}
+                        {/*    <Link to={'/HistoryPage'}>History</Link>*/}
+                        {/*</Menu.Item>*/}
                         <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/EditPage'}>Edit</Link>
                         </Menu.Item>

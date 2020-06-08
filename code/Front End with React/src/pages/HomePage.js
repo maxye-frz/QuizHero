@@ -1,5 +1,5 @@
 /**
- * The UploadHistory is the history page for the login user (presenter), where the user can open the previous presentation,
+ * The HomePage is the history page for the login user (presenter), where the user can open the previous presentation,
  * download raw Markdown file and static HTML file, delete the presentation from the database and control the sharing permission.
  */
 
@@ -15,10 +15,25 @@ import {CopyToClipboard} from "react-copy-to-clipboard";
 import marpitConvert from "../components/Marpit";
 import UploadButton from "../components/Upload";
 import logo from "../fig/logo.png"
+import styled from "styled-components";
+
 const { Header } = Layout;
 
+const ContainerLeft = styled.div`
+  width: 20%;
+  height: 100vh;
+  padding: 13px;
+  border-right: 1.5px solid rgba(15, 15, 15, 0.4);
+  // font-family: "Lato", sans-serif;
+`;
+const ContainerRight = styled.div`
+  width: 80%;
+  height: 100vh;
+  padding: 13px;
+  // font-family: "Lato", sans-serif;
+`;
 
-class UploadHistory extends React.Component {
+class HomePage extends React.Component {
     state = {
         fileList: [],
         data : "",
@@ -228,7 +243,7 @@ class UploadHistory extends React.Component {
     }
 
     /**
-     * return rendered UploadHistory page. Use <List.Item/> to show the list of uploaded files.
+     * return rendered HomePage page. Use <List.Item/> to show the list of uploaded files.
      */
     render() {
         const { fileList } = this.state;
@@ -248,14 +263,14 @@ class UploadHistory extends React.Component {
             <div className="App">
                 <Header style={{height: 0, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
                     {/*<img src={logo} className="logo" alt="logo"/>*/}
-                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['2']}>
+                    <Menu theme="white" mode="horizontal" defaultSelectedKeys={['1']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
                             <Link to={'/HomePage'}>Home</Link>
                         </Menu.Item>
-                        <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
-                            <Link to={'/HistoryPage'}>History</Link>
-                        </Menu.Item>
+                        {/*<Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>*/}
+                        {/*    <Link to={'/HistoryPage'}>History</Link>*/}
+                        {/*</Menu.Item>*/}
                         <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/EditPage'}>Edit</Link>
                         </Menu.Item>
@@ -268,59 +283,64 @@ class UploadHistory extends React.Component {
                     </Menu>
                 </Header>
 
-                <div style={{padding: 45, paddingTop: 60}}>
-                    <UploadButton />
+                <div style={{padding: 45, paddingTop: 60, display: "flex"}}>
+                    <ContainerLeft>
+                        <UploadButton />
+                    </ContainerLeft>
 
-                    <List margin-top={"50px"}
-                          className="demo-loadmore-list"
-                          itemLayout="horizontal"
-                          dataSource={fileList}
-                          renderItem={item => (
-                              <List.Item
-                                  actions={[
-                                      <Button size={'small'}
-                                              onClick={() => this.deleteFile(item.fileId)}>
-                                          Delete
-                                      </Button>,
-                                      <Link to={{pathname: '/EditPage'}}>
+                    <ContainerRight>
+                        <List margin-top={"50px"}
+                              className="demo-loadmore-list"
+                              itemLayout="horizontal"
+                              dataSource={fileList}
+                              renderItem={item => (
+                                  <List.Item
+                                      actions={[
                                           <Button size={'small'}
-                                                  onClick={() => this.editFile(item.fileId, item.fileName)}>
-                                              Edit
-                                          </Button>
-                                      </Link>,
-                                      // <Link to={{pathname: '/presenter'}} target = '_blank'>
+                                                  onClick={() => this.deleteFile(item.fileId)}>
+                                              Delete
+                                          </Button>,
+                                          <Link to={{pathname: '/EditPage'}}>
+                                              <Button size={'small'}
+                                                      onClick={() => this.editFile(item.fileId, item.fileName)}>
+                                                  Edit
+                                              </Button>
+                                          </Link>,
+                                          // <Link to={{pathname: '/presenter'}} target = '_blank'>
                                           <Button size={"small"}
                                                   onClick={() => this.presenterMode(item.fileId)}>
                                               Presenter Mode
                                           </Button>,
-                                      // </Link>,
-                                      /**
-                                       *  Do not delete comment, This is another way to write the function of jump to a new tab {pathname: '/presenter'}
-                                       */
+                                          // </Link>,
+                                          /**
+                                           *  Do not delete comment, This is another way to write the function of jump to a new tab {pathname: '/presenter'}
+                                           */
 
-                                      // Start/Stop sharing file button
-                                      <Button size={"small"}
-                                              onClick={() => this.onDownload(item.fileId, item.fileName, "HTML")}>
-                                          Download HTML
-                                      </Button>,
-                                      <CopyToClipboard text={item.fileId}
-                                                       onCopy={() => this.startSharing(item.fileId)}>
-                                          <Button size={"small"}>
-                                              Start sharing
+                                          // Start/Stop sharing file button
+                                          <Button size={"small"}
+                                                  onClick={() => this.onDownload(item.fileId, item.fileName, "HTML")}>
+                                              Download HTML
+                                          </Button>,
+                                          <CopyToClipboard text={item.fileId}
+                                                           onCopy={() => this.startSharing(item.fileId)}>
+                                              <Button size={"small"}>
+                                                  Start sharing
+                                              </Button>
+                                          </CopyToClipboard>,
+                                          <Button size={"small"}
+                                                  onClick={() => this.stopSharing(item.fileId)}>
+                                              Stop sharing
                                           </Button>
-                                      </CopyToClipboard>,
-                                      <Button size={"small"}
-                                              onClick={() => this.stopSharing(item.fileId)}>
-                                          Stop sharing
-                                      </Button>
-                                  ]}
-                              >
-                                  <List.Item.Meta style={{float:"left", marginLeft:"0px", width: "0px"}}
-                                      title={<a onClick={() => this.onDownload(item.fileId, item.fileName, "raw")}>{item.fileName}</a>}
-                                  />
-                              </List.Item>
-                          )}
-                    />
+                                      ]}
+                                  >
+                                      <List.Item.Meta style={{float:"left", marginLeft:"0px", width: "0px"}}
+                                                      title={<a onClick={() => this.onDownload(item.fileId, item.fileName, "raw")}>{item.fileName}</a>}
+                                      />
+                                  </List.Item>
+                              )}
+                        />
+                    </ContainerRight>
+
                 </div>
 
             </div>
@@ -329,4 +349,4 @@ class UploadHistory extends React.Component {
     }
 }
 
-export default UploadHistory;
+export default HomePage;
