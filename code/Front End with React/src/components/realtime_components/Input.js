@@ -61,23 +61,41 @@ export function Input(props) {
 
     const saveFile =()=>{
         const formData = new FormData();
-        if (localStorage.getItem("fileId") === null || localStorage.getItem("fileId") === ""){
-            formData.append('fileName', localStorage.getItem("newFileName"));
-            formData.append('rawString', localStorage.getItem("newFileString"));
-            formData.append('userId', localStorage.getItem("instructorId"));
-        } else{
-            formData.append('fileId', localStorage.getItem("fileId"));
-            formData.append('fileName', localStorage.getItem("newFileName"));
-            formData.append('rawString', localStorage.getItem("newFileString"));
-        }
+        formData.append('fileId', localStorage.getItem("fileId"));
+        formData.append('fileName', localStorage.getItem("newFileName"));
+        formData.append('rawString', localStorage.getItem("newFileString"));
+        formData.append('userId', localStorage.getItem("instructorId"));
 
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
-            .then(()=> {message.success(`File saved`);
-                localStorage.setItem("fileId", "");
+            .then(res => {message.success(`File saved`);
+                localStorage.setItem("fileId", res.data.fileId);
                 localStorage.setItem("newFileName", "");
                 localStorage.setItem("newFileString", "");})
-            .catch(()=> message.error('error'));
+            .catch(() => message.error('error'));
+
+        // onInputChange;
+        // onTitleChange;
+        return (
+            <Container>
+                {/*<Title>Markdown Text</Title>*/}
+                <Title>
+                    <TitleArea placeholder="Please type a file name"
+                               rows="1"
+                               onChange={onTitleChange}>
+                        {localStorage.getItem("newFileName")}
+                    </TitleArea>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={saveFile}>
+                        Save File
+                    </Button>
+                </Title>
+                <TextArea placeholder="Please type in MarkDown"
+                          onChange={onInputChange}>
+                    {localStorage.getItem("newFileString")}
+                </TextArea>
+            </Container>
+        );
     }
 
     return (
