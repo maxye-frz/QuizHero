@@ -12,7 +12,7 @@ import {FilePptOutlined} from "@ant-design/icons";
 
 const Container = styled.div`
     width: calc(50vw);
-    height: 100vh;
+    height: calc(100vh - 60px);
     padding: 13px;
     // overflow-y: scroll;
     // font-family: "Lato", sans-serif;
@@ -20,7 +20,7 @@ const Container = styled.div`
 
 const Title = styled.div`
     width: 100%; 
-    height: 60px;
+    // height: 60px;
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 1em;

@@ -9,19 +9,20 @@ import {BASE_URL} from "../../config/config";
 
 const Container = styled.div`
   width: 50%;
-  height: 100vh;
+  height: calc(100vh - 60px);
   padding: 13px;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
   font-family: "Lato", sans-serif;
 `;
 
 const Title = styled.div`
-  height: 60px;
+  // height: 60px;
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1em;
-  padding: 2.5px 0;
+  padding: 6px 0;
   border-bottom: 1px solid rgba(15, 15, 15, 0.3);
+  display: flex;
 `;
 
 const TitleArea = styled.textarea`
@@ -80,26 +81,6 @@ export function Input(props) {
 
         // onInputChange;
         // onTitleChange;
-        return (
-            <Container>
-                {/*<Title>Markdown Text</Title>*/}
-                <Title>
-                    <TitleArea placeholder="Please type a file name"
-                               rows="1"
-                               onChange={onTitleChange}>
-                        {localStorage.getItem("newFileName")}
-                    </TitleArea>
-                    <Button size={"small"} style={{marginLeft: 10}}
-                            onClick={saveFile}>
-                        Save File
-                    </Button>
-                </Title>
-                <TextArea placeholder="Please type in MarkDown"
-                          onChange={onInputChange}>
-                    {localStorage.getItem("newFileString")}
-                </TextArea>
-            </Container>
-        );
     }
 
     const discard = () => {
@@ -125,14 +106,16 @@ export function Input(props) {
                            onChange={onTitleChange}>
                     {localStorage.getItem("newFileName")}
                 </TitleArea>
-                <Button size={"small"} style={{marginLeft: 10}}
-                        onClick={saveFile}>
-                    <SaveOutlined /> Save File
-                </Button>
-                <Button size={"small"} style={{marginLeft: 10}}
-                        onClick={discard}>
-                    <DeleteOutlined /> Discard
-                </Button>
+                <div style={{paddingTop: 1}}>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={saveFile}>
+                        <SaveOutlined /> Save File
+                    </Button>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={discard}>
+                        <DeleteOutlined /> Discard
+                    </Button>
+                </div>
             </Title>
             <TextArea placeholder="Please type in MarkDown"
                       onChange={onInputChange}>
