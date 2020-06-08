@@ -68,13 +68,19 @@ class UploadHistory extends React.Component {
     }
 
     editFile =(fileId, fileName)=> {
-        localStorage.setItem("newFileName", fileName);
-        localStorage.setItem("fileId", fileId);
-        this.fetchFile(fileId)
-            .then(rawString => {
-                localStorage.setItem("newFileString", rawString);
-                window.open("/EditPage", "_self");
-            });
+        if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+            localStorage.setItem("fileId", fileId);
+            localStorage.setItem("newFileName", fileName);
+            this.fetchFile(fileId)
+                .then(rawString => {
+                    localStorage.setItem("newFileString", rawString);
+                    window.open("/EditPage", "_self");
+                });
+        } else {
+            alert("There are unsaved changes, please save them first!");
+            window.open("/EditPage", "_self");
+        }
+
     }
 
     /**
@@ -248,9 +254,9 @@ class UploadHistory extends React.Component {
                         <Menu.Item key="2" style={{display:"inline-block",float:"left", width: "150px"}}>
                             <Link to={'/HistoryPage'}>History</Link>
                         </Menu.Item>
-                        {/*<Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>*/}
-                        {/*    <Link to={'/EditPage'}>Edit</Link>*/}
-                        {/*</Menu.Item>*/}
+                        <Menu.Item key="3" style={{display:"inline-block",float:"left", width: "150px"}}>
+                            <Link to={'/EditPage'}>Edit</Link>
+                        </Menu.Item>
 
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                             Welcome, {username}
@@ -272,25 +278,22 @@ class UploadHistory extends React.Component {
                                               onClick={() => this.deleteFile(item.fileId)}>
                                           Delete
                                       </Button>,
-                                      // <Link to={{pathname: '/EditPage'}}>
+                                      <Link to={{pathname: '/EditPage'}}>
                                           <Button size={'small'}
                                                   onClick={() => this.editFile(item.fileId, item.fileName)}>
                                               Edit
+                                          </Button>
+                                      </Link>,
+                                      // <Link to={{pathname: '/presenter'}} target = '_blank'>
+                                          <Button size={"small"}
+                                                  onClick={() => this.presenterMode(item.fileId)}>
+                                              Presenter Mode
                                           </Button>,
                                       // </Link>,
-                                      <Button size={"small"}
-                                              onClick={() => this.presenterMode(item.fileId)}>
-                                          Presenter Mode
-                                      </Button>,
                                       /**
-                                       * This is another way to write the function of jump to a new tab {pathname: '/presenter'}
+                                       *  Do not delete comment, This is another way to write the function of jump to a new tab {pathname: '/presenter'}
                                        */
-                                      // <Link to={{pathname: '/presenter'}} target = '_blank'>
-                                      //     <Button size={"small"} style={{marginLeft: 10}}
-                                      //             onClick={() => this.presenterMode(item.fileId)}>
-                                      //         Presenter Mode
-                                      //     </Button>
-                                      // </Link>,
+
                                       // Start/Stop sharing file button
                                       <Button size={"small"}
                                               onClick={() => this.onDownload(item.fileId, item.fileName, "HTML")}>

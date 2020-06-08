@@ -7,7 +7,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sql2o.Sql2oException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,7 +53,7 @@ public class FileDaoTest {
         fileDao.storeFile(file);
         inputStream.close();
         String fileId = file.getFileId();
-        InputStream resultStream = fileDao.getFile(fileId);
+        InputStream resultStream = fileDao.getFileContent(fileId);
         String resultFile = IOUtils.toString(resultStream, StandardCharsets.UTF_8.name());
         resultStream.close();
         assertEquals(originFile, resultFile);
@@ -68,7 +67,7 @@ public class FileDaoTest {
         inputStream.close();
         String fileId = file.getFileId();
         String wrongFileId = fileId + "wrong";
-        InputStream resultStream = fileDao.getFile(wrongFileId);
+        InputStream resultStream = fileDao.getFileContent(wrongFileId);
         resultStream.close();
     }
 
