@@ -48,6 +48,7 @@ export function Input(props) {
     const onTitleChange = e => {
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileName", newValue);
+        localStorage.setItem("saved", "false");
         // setTitleText(newValue);
     };
 
@@ -56,6 +57,7 @@ export function Input(props) {
     const onInputChange = e => {
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileString", newValue);
+        localStorage.setItem("saved", "false");
         setMarkdownText(newValue);
     };
 
@@ -69,9 +71,9 @@ export function Input(props) {
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
             .then(res => {message.success(`File saved`);
+                localStorage.setItem("saved", "true");
                 localStorage.setItem("fileId", res.data.fileId);
-                localStorage.setItem("newFileName", "");
-                localStorage.setItem("newFileString", "");})
+                })
             .catch(() => message.error('error'));
 
         // onInputChange;

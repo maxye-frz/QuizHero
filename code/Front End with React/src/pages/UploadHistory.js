@@ -68,13 +68,18 @@ class UploadHistory extends React.Component {
     }
 
     editFile =(fileId, fileName)=> {
-        localStorage.setItem("newFileName", fileName);
-        localStorage.setItem("fileId", fileId);
-        this.fetchFile(fileId)
-            .then(rawString => {
-                localStorage.setItem("newFileString", rawString);
-                window.open("/EditPage", "_self");
-            });
+        if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+            localStorage.setItem("fileId", fileId);
+            localStorage.setItem("newFileName", fileName);
+            this.fetchFile(fileId)
+                .then(rawString => {
+                    localStorage.setItem("newFileString", rawString);
+                    window.open("/EditPage", "_self");
+                });
+        } else {
+            alert("There are unsaved changes, please save them first!");
+        }
+
     }
 
     /**

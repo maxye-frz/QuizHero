@@ -339,8 +339,15 @@ class MyUpload extends React.Component{
 
                     <div>
                         <Link to={{pathname: '/EditPage', query: this.state.data}}>
-                            <Button size={"median"}>
-                                    {/*onClick={() => localStorage.setItem("newFileString", "")}>*/}
+                            <Button size={"median"}
+                                    onClick={() => {
+                                        if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+                                            localStorage.setItem("fileId", "null");
+                                            localStorage.setItem("newFileName", "");
+                                            localStorage.setItem("newFileString", "");
+                                        } else {
+                                            alert("There are unsaved changes, please save them first!");
+                                        }}}>
                                     {/*pre-set newFileString to "", because Marpit cannot take null input*/}
                                 New File
                             </Button>
