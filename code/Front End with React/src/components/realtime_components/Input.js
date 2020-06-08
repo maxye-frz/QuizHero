@@ -61,25 +61,23 @@ export function Input(props) {
 
     const saveFile =()=>{
         const formData = new FormData();
-        formData.append('fileName', localStorage.getItem("newFileName"));
-        formData.append('rawString', localStorage.getItem("newFileString"));
-        formData.append('userId', localStorage.getItem("instructorId"));
+        if (localStorage.getItem("fileId") === null || localStorage.getItem("fileId") === ""){
+            formData.append('fileName', localStorage.getItem("newFileName"));
+            formData.append('rawString', localStorage.getItem("newFileString"));
+            formData.append('userId', localStorage.getItem("instructorId"));
+        } else{
+            formData.append('fileId', localStorage.getItem("fileId"));
+            formData.append('fileName', localStorage.getItem("newFileName"));
+            formData.append('rawString', localStorage.getItem("newFileString"));
+        }
+
         console.log("Save file to backend", formData);
         axios.post(BASE_URL + "/save", formData)
             .then(()=> {message.success(`File saved`);
+                localStorage.setItem("fileId", "");
                 localStorage.setItem("newFileName", "");
                 localStorage.setItem("newFileString", "");})
             .catch(()=> message.error('error'));
-        // .then(res => {
-        //     console.log("CCC",res.data);
-        //     // this.setState({fileId : res.data.fileId})
-        //     // resolve(res.data.fileId);
-        //     alert("File uploaded successfully.");
-        // })
-        // .catch((error) => {
-        //     // reject(error);
-        //     // alert("File uploaded failed.");
-        // });
     }
 
     return (
