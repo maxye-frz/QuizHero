@@ -21,9 +21,9 @@ const props = {
 };
 
 class MyUpload extends React.Component{
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     state = {
         file:"",
         fileId:"",
@@ -288,7 +288,7 @@ class MyUpload extends React.Component{
                     </Menu>
                 </Header>
                 
-                <div className="App-header" style={{display : this.state.newFile ? 'none' : 'flex'}}>
+                <div className="App-header">
                     
                     <img src={logo} className="App-logo" alt="logo"/>
 

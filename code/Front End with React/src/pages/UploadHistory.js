@@ -13,6 +13,8 @@ import {BASE_URL} from "../config/config";
 import separateQuestion from "../components/Parse";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import marpitConvert from "../components/Marpit";
+import UploadButton from "../components/Upload";
+import logo from "../fig/logo.png"
 const { Header } = Layout;
 
 
@@ -245,7 +247,7 @@ class UploadHistory extends React.Component {
         return (
             <div className="App">
                 <Header style={{height: 0, padding: 0, position: 'fixed', zIndex: 1, width: '100%' }}>
-                    <div className="logo" />
+                    {/*<img src={logo} className="logo" alt="logo"/>*/}
                     <Menu theme="white" mode="horizontal" defaultSelectedKeys={['2']}>
 
                         <Menu.Item key="1" style={{display:"inline-block",float:"left", marginLeft:"30px", width: "150px"}}>
@@ -267,6 +269,8 @@ class UploadHistory extends React.Component {
                 </Header>
 
                 <div style={{padding: 45, paddingTop: 60}}>
+                    <UploadButton />
+
                     <List margin-top={"50px"}
                           className="demo-loadmore-list"
                           itemLayout="horizontal"
