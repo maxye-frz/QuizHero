@@ -8,6 +8,7 @@ import titleContext from "./titleContext";
 import separateQuestion from "../Parse";
 import {Link} from "react-router-dom";
 import {Button} from "antd";
+import {FilePptOutlined} from "@ant-design/icons";
 
 const Container = styled.div`
     width: calc(50vw);
@@ -56,7 +57,7 @@ export function Render(props) {
                 <Link to={{pathname: '/presenter'}} target = '_blank'>
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={() => callSeparateQuestion(markdownText)}>
-                        Preview Presentation
+                        <FilePptOutlined /> Preview Presentation
                     </Button>
                 </Link>
             </Title>

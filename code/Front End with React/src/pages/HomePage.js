@@ -7,11 +7,12 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import '../App.css'
 import {Link} from "react-router-dom";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 import {List, Button, Menu, Layout, message} from 'antd';
+import {DeleteOutlined, EditOutlined, FilePptOutlined, DownloadOutlined, ShareAltOutlined, StopOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../config/config";
 import separateQuestion from "../components/Parse";
-import {CopyToClipboard} from "react-copy-to-clipboard";
 import marpitConvert from "../components/Marpit";
 import UploadButton from "../components/Upload";
 import logo from "../fig/logo.png"
@@ -283,7 +284,7 @@ class HomePage extends React.Component {
                     </Menu>
                 </Header>
 
-                <div style={{padding: 45, paddingTop: 60, display: "flex"}}>
+                <div style={{paddingRight: 20, paddingTop: 60, display: "flex"}}>
                     <ContainerLeft>
                         <UploadButton />
                     </ContainerLeft>
@@ -298,18 +299,18 @@ class HomePage extends React.Component {
                                       actions={[
                                           <Button size={'small'}
                                                   onClick={() => this.deleteFile(item.fileId)}>
-                                              Delete
+                                              <DeleteOutlined /> Delete
                                           </Button>,
                                           <Link to={{pathname: '/EditPage'}}>
                                               <Button size={'small'}
                                                       onClick={() => this.editFile(item.fileId, item.fileName)}>
-                                                  Edit
+                                                  <EditOutlined /> Edit
                                               </Button>
                                           </Link>,
                                           // <Link to={{pathname: '/presenter'}} target = '_blank'>
                                           <Button size={"small"}
                                                   onClick={() => this.presenterMode(item.fileId)}>
-                                              Presenter Mode
+                                              <FilePptOutlined /> Presentation
                                           </Button>,
                                           // </Link>,
                                           /**
@@ -319,17 +320,17 @@ class HomePage extends React.Component {
                                           // Start/Stop sharing file button
                                           <Button size={"small"}
                                                   onClick={() => this.onDownload(item.fileId, item.fileName, "HTML")}>
-                                              Download HTML
+                                              <DownloadOutlined /> Download HTML
                                           </Button>,
                                           <CopyToClipboard text={item.fileId}
                                                            onCopy={() => this.startSharing(item.fileId)}>
                                               <Button size={"small"}>
-                                                  Start sharing
+                                                  <ShareAltOutlined /> Start sharing
                                               </Button>
                                           </CopyToClipboard>,
                                           <Button size={"small"}
                                                   onClick={() => this.stopSharing(item.fileId)}>
-                                              Stop sharing
+                                              <StopOutlined /> Stop sharing
                                           </Button>
                                       ]}
                                   >

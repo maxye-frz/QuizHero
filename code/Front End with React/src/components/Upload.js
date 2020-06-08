@@ -2,12 +2,13 @@
  * UploadPage renders the page where the presenter can upload his/her markdown file.
  */
 
-import { Upload, message, Button, Icon } from 'antd';
 import React from "react";
-import styled from "styled-components";
+import {Link} from "react-router-dom"
+import {Upload, message, Button, Icon} from 'antd';
+import {PlusOutlined, PlusCircleOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import axios from 'axios';
 import {BASE_URL} from "../config/config"
-import {Link} from "react-router-dom"
+import styled from "styled-components";
 
 const Header = styled.div`
   background-color: #ffffff !important;
@@ -178,7 +179,7 @@ export default function UploadButton (){
                     {...props}>
 
                     <Button>
-                        <Icon type = 'upload' /> Click to Upload
+                        <Icon type = 'upload' /> Upload form local
                     </Button>
 
                 </Upload>
@@ -192,9 +193,9 @@ export default function UploadButton (){
                                 localStorage.setItem("newFileName", "");
                                 localStorage.setItem("newFileString", "");
                             } else {
-                                alert("There are unsaved changes, please save them first!");
+                                alert("There are unsaved changes, please save or discard them first!");
                             }}}>
-                    New File
+                    <PlusCircleOutlined /> New File
                 </Button>
             </Link>
 

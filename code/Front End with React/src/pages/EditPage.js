@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Button, Layout, List, Menu, message} from "antd";
-import {BASE_URL} from "../config/config"
 import {Link} from "react-router-dom";
+import {Button, Layout, Menu, message} from "antd";
 import Realtime from "../components/Realtime";
 const { Header } = Layout;
 

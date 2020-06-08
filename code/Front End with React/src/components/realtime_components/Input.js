@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import editorContext from "./editorContext";
 import {Button, message} from "antd";
+import {DeleteOutlined, SaveOutlined} from "@ant-design/icons";
 import titleContext from "./titleContext";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
@@ -30,6 +31,7 @@ const TitleArea = styled.textarea`
   font-weight: 600;
   resize: none;
   border: none;
+  text-align: center;
 `;
 
 const TextArea = styled.textarea`
@@ -100,6 +102,20 @@ export function Input(props) {
         );
     }
 
+    const discard = () => {
+        if (localStorage.getItem("saved") === "true") {
+            window.alert("You have not make any changes.")
+        } else {
+            var confirm1 = window.confirm("Are you sure to discard all the changes?");
+            if (confirm1 === true) {
+                localStorage.setItem("fileId", "null");
+                localStorage.setItem("newFileName", "");
+                localStorage.setItem("newFileString", "");
+                localStorage.setItem("saved", "true");
+            }
+        }
+    }
+
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
@@ -111,7 +127,11 @@ export function Input(props) {
                 </TitleArea>
                 <Button size={"small"} style={{marginLeft: 10}}
                         onClick={saveFile}>
-                    Save File
+                    <SaveOutlined /> Save File
+                </Button>
+                <Button size={"small"} style={{marginLeft: 10}}
+                        onClick={discard}>
+                    <DeleteOutlined /> Discard
                 </Button>
             </Title>
             <TextArea placeholder="Please type in MarkDown"
