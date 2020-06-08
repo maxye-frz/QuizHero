@@ -289,7 +289,7 @@ public final class ApiServer {
             try {
                 String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
-                InputStream in = fileDao.getFile(fileId);
+                InputStream in = fileDao.getFileContent(fileId);
                 InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
                 context.result(inputStream);
                 System.out.println("Send file successfully.");
@@ -308,12 +308,19 @@ public final class ApiServer {
     private static void saveFile(FileDao fileDao) {
         app.post("/save", context -> {
             try {
+                File newFile;
                 int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId"))); //get userId
+                String fileId = context.formParam("fileId"); //get fileId
                 String fileName = context.formParam("fileName"); //get file name
                 String fileContent = context.formParam("rawString"); //get file content as string
                 InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
-                File newFile = new File(userId, fileName, fileStream); //construct a new file
-                fileDao.storeFile(newFile); //store new file
+                if (fileId != null) {
+                    fileDao.deleteFile(fileId);
+                    newFile = new File(userId, fileId, fileName, fileStream);
+                } else {
+                    newFile = new File(userId, fileName, fileStream);
+                }
+                fileDao.storeFile(newFile);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
                 fileMap.put("fileId", newFile.getFileId());
                 fileMap.put("fileName", newFile.getFileName());

@@ -42,6 +42,23 @@ public class File {
      * This method is the constructor of the class
      *
      * @param instructorId id for instructor
+     * @param fileId string for fileId
+     * @param fileName name of the file
+     * @param fileContent contents of the file
+     */
+    public File(int instructorId, String fileId, String fileName, InputStream fileContent) {
+        this.instructorId = instructorId;
+        this.fileId = fileId;
+        this.fileName = fileName;
+        this.fileContent = fileContent;
+        this.filePermission = false; // default false;
+        this.quizPermission = false; // default false;
+    }
+
+    /**
+     * This method is the constructor of the class
+     *
+     * @param instructorId id for instructor
      * @param fileId id of the file
      * @param fileName name of the file
      * @param fileContent contents of the file

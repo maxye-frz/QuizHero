@@ -2,34 +2,21 @@ package dao;
 
 import exception.DaoException;
 import model.File;
+import org.apache.commons.io.IOUtils;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
 
 public class Sql2oFileDao implements FileDao{
     private Sql2o sql2o;
 
     public Sql2oFileDao(Sql2o sql2o) {
         this.sql2o = sql2o;
-    }
-
-    @Override
-    public InputStream getFile(String fileId) {
-        checkFileExist(fileId);
-        ByteArrayInputStream byteStream;
-        try (Connection conn = sql2o.open()) {
-            String sql = "SELECT fileContent FROM file WHERE fileId = :fileId";
-            byteStream = conn.createQuery(sql)
-                    .addParameter("fileId", fileId)
-                    .executeAndFetchFirst(ByteArrayInputStream.class);
-
-            return byteStream;
-        } catch (Sql2oException ex) {
-            throw new DaoException("Unable to fetch file.", ex);
-        }
     }
 
     @Override
@@ -63,6 +50,39 @@ public class Sql2oFileDao implements FileDao{
             throw new DaoException("Unable to store user-file information.", ex1);
         }
     }
+
+    @Override
+    public InputStream getFileContent(String fileId) {
+        checkFileExist(fileId);
+        ByteArrayInputStream byteStream;
+        try (Connection conn = sql2o.open()) {
+            String sql = "SELECT fileContent FROM file WHERE fileId = :fileId";
+            byteStream = conn.createQuery(sql)
+                    .addParameter("fileId", fileId)
+                    .executeAndFetchFirst(ByteArrayInputStream.class);
+
+            return byteStream;
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to fetch file.", ex);
+        }
+    }
+
+//    @Override
+//    public void updateFile(String fileId, String fileName, InputStream fileContent) {
+//        checkFileExist(fileId);
+//        byte[] byteStream = fileContent.readAllBytes();
+//        try (Connection conn = sql2o.open()) {
+//            String sql = "Update file SET fileContent = '" + fileName + "'" + "," +
+//                    " fileContent = " + byteStream +
+//                    " WHERE fileId = :fileId";
+//
+//            System.out.println(sql); //console msg
+//            conn.createQuery(sql).addParameter("fileId", fileId)
+//                    .executeUpdate();
+//        } catch (Sql2oException ex) {
+//            throw new DaoException("Unable to update file", ex);
+//        }
+//    }
 
     @Override
     public void changeFilePermission(String fileId, boolean filePermission) {
