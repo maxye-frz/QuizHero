@@ -1,6 +1,8 @@
 package dao;
 
 import model.File;
+
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -10,12 +12,6 @@ import java.io.InputStream;
  * @version 1.0
  */
 public interface FileDao {
-    /**
-     * This method is used to get the file stream from the database
-     * @param fileId unique id of a file
-     * @return InputStream of the file content
-     */
-    InputStream getFile(String fileId);
 
     /**
      * This method is used to store the file stream in the database
@@ -28,6 +24,21 @@ public interface FileDao {
      * @param file an instance of File class
      */
     void storeInsFile(File file);
+
+    /**
+     * This method is used to update the file
+     * @param fileId a string of fileId
+     * @param fileName a string of fileName
+     * @param fileContent an inputStream of fileContent
+     */
+    void updateFile(String fileId, String fileName, InputStream fileContent);
+
+    /**
+     * This method is used to get the file stream from the database
+     * @param fileId unique id of a file
+     * @return InputStream of the file content
+     */
+    InputStream getFileContent(String fileId);
 
     /**
      * This method is used to modify the file permission status in the database
