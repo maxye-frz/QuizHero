@@ -26,6 +26,14 @@ public interface FileDao {
     void storeInsFile(File file);
 
     /**
+     * This method is used to update the file
+     * @param fileId a string of fileId
+     * @param fileName a string of fileName
+     * @param fileContent an inputStream of fileContent
+     */
+    void updateFile(String fileId, String fileName, InputStream fileContent);
+
+    /**
      * This method is used to get the file stream from the database
      * @param fileId unique id of a file
      * @return InputStream of the file content

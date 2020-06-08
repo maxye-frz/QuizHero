@@ -67,28 +67,30 @@ public class Sql2oFileDao implements FileDao{
         }
     }
 
-//    @Override
-//    public void updateFile(String fileId, String fileName, InputStream fileContent) {
-//        checkFileExist(fileId);
-//        byte[] byteStream = fileContent.readAllBytes();
-//        try (Connection conn = sql2o.open()) {
-//            String sql = "Update file SET fileContent = '" + fileName + "'" + "," +
-//                    " fileContent = " + byteStream +
-//                    " WHERE fileId = :fileId";
-//
-//            System.out.println(sql); //console msg
-//            conn.createQuery(sql).addParameter("fileId", fileId)
-//                    .executeUpdate();
-//        } catch (Sql2oException ex) {
-//            throw new DaoException("Unable to update file", ex);
-//        }
-//    }
+    @Override
+    public void updateFile(String fileId, String fileName, InputStream fileContent) {
+        checkFileExist(fileId);
+        try (Connection conn = sql2o.open()) {
+            String sql = "UPDATE file SET fileName = :valFileName," +
+                    " fileContent = :valFileContent" +
+                    " WHERE fileId = :valFileId";
+
+            System.out.println(sql); //console msg
+            conn.createQuery(sql)
+                    .addParameter("valFileId", fileId)
+                    .addParameter("valFileName", fileName)
+                    .addParameter("valFileContent", fileContent)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to update file", ex);
+        }
+    }
 
     @Override
     public void changeFilePermission(String fileId, boolean filePermission) {
         checkFileExist(fileId);
         try (Connection conn = sql2o.open()) {
-            String sql = "Update file set filePermission = " + filePermission +
+            String sql = "UPDATE file SET filePermission = " + filePermission +
                     " WHERE fileId = :fileId";
             System.out.println(sql);
             conn.createQuery(sql).addParameter("fileId", fileId)

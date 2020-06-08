@@ -302,6 +302,39 @@ public final class ApiServer {
         });
     }
 
+//    /**
+//     *  Save (new) file api
+//     */
+//    private static void saveFile(FileDao fileDao) {
+//        app.post("/save", context -> {
+//            try {
+//                File newFile;
+//                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId"))); //get userId
+//                String fileId = context.formParam("fileId"); //get fileId
+//                String fileName = context.formParam("fileName"); //get file name
+//                String fileContent = context.formParam("rawString"); //get file content as string
+//                InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
+//                if (fileId != null) {
+//                    fileDao.deleteFile(fileId);
+//                    newFile = new File(userId, fileId, fileName, fileStream);
+//                } else {
+//                    newFile = new File(userId, fileName, fileStream);
+//                }
+//                fileDao.storeFile(newFile);
+//                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+//                fileMap.put("fileId", newFile.getFileId());
+//                fileMap.put("fileName", newFile.getFileName());
+//                context.json(fileMap);
+//                context.contentType("application/json");
+//                context.status(201);
+//            } catch (DaoException ex) {
+//                throw new ApiError("server error when save file: " + ex.getMessage(), 500);
+//            } catch (NullPointerException ex) {
+//                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+//            }
+//        });
+//    }
+
     /**
      *  Save (new) file api
      */
@@ -315,15 +348,17 @@ public final class ApiServer {
                 String fileContent = context.formParam("rawString"); //get file content as string
                 InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
                 if (fileId != null) {
-                    fileDao.deleteFile(fileId);
-                    newFile = new File(userId, fileId, fileName, fileStream);
+                    fileDao.updateFile(fileId, fileName, fileStream);
                 } else {
                     newFile = new File(userId, fileName, fileStream);
+                    fileDao.storeFile(newFile);
+                    fileId = newFile.getFileId();
+                    fileName = newFile.getFileName();
                 }
-                fileDao.storeFile(newFile);
+
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", newFile.getFileId());
-                fileMap.put("fileName", newFile.getFileName());
+                fileMap.put("fileId", fileId);
+                fileMap.put("fileName", fileName);
                 context.json(fileMap);
                 context.contentType("application/json");
                 context.status(201);
