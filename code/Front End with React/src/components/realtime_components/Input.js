@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
+import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
 import {Button, message} from "antd";
@@ -48,6 +49,23 @@ const TextArea = styled.textarea`
 export function Input(props) {
     // const { setTitleText } = useContext(titleContext);
 
+    var confirmDiscard = false;
+
+    const discard = () => {
+
+        if (localStorage.getItem("saved") === "true") {
+            window.alert("You have not make any changes.")
+        } else {
+            confirmDiscard = window.confirm("Are you sure to discard all the changes?");
+            if (confirmDiscard === true) {
+                localStorage.setItem("fileId", "null");
+                localStorage.setItem("newFileName", "");
+                localStorage.setItem("newFileString", "");
+                localStorage.setItem("saved", "true");
+            }
+        }
+    }
+
     const onTitleChange = e => {
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileName", newValue);
@@ -56,13 +74,18 @@ export function Input(props) {
     };
 
     const { setMarkdownText } = useContext(editorContext);
-
     const onInputChange = e => {
+        if (confirmDiscard === true) {
+            e.currentTarget.value = "";
+            confirmDiscard = false;
+        }
+
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
         setMarkdownText(newValue);
-    };
+
+    }
 
     const saveFile =()=>{
         const formData = new FormData();
@@ -81,20 +104,6 @@ export function Input(props) {
 
         // onInputChange;
         // onTitleChange;
-    }
-
-    const discard = () => {
-        if (localStorage.getItem("saved") === "true") {
-            window.alert("You have not make any changes.")
-        } else {
-            var confirm1 = window.confirm("Are you sure to discard all the changes?");
-            if (confirm1 === true) {
-                localStorage.setItem("fileId", "null");
-                localStorage.setItem("newFileName", "");
-                localStorage.setItem("newFileString", "");
-                localStorage.setItem("saved", "true");
-            }
-        }
     }
 
     return (
