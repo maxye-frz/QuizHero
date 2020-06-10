@@ -88,22 +88,23 @@ export function Input(props) {
     }
 
     const saveFile =()=>{
-        const formData = new FormData();
-        formData.append('fileId', localStorage.getItem("fileId"));
-        formData.append('fileName', localStorage.getItem("newFileName"));
-        formData.append('rawString', localStorage.getItem("newFileString"));
-        formData.append('userId', localStorage.getItem("instructorId"));
+        if (localStorage.getItem("newFileName").match(/^[ ]*$/)) {
+            alert("Please input a non-empty title");
+        } else {
+            const formData = new FormData();
+            formData.append('fileId', localStorage.getItem("fileId"));
+            formData.append('fileName', localStorage.getItem("newFileName"));
+            formData.append('rawString', localStorage.getItem("newFileString"));
+            formData.append('userId', localStorage.getItem("instructorId"));
 
-        console.log("Save file to backend", formData);
-        axios.post(BASE_URL + "/save", formData)
-            .then(res => {message.success(`File saved`);
-                localStorage.setItem("saved", "true");
-                localStorage.setItem("fileId", res.data.fileId);
+            console.log("Save file to backend", formData);
+            axios.post(BASE_URL + "/save", formData)
+                .then(res => {message.success(`File saved`);
+                    localStorage.setItem("saved", "true");
+                    localStorage.setItem("fileId", res.data.fileId);
                 })
-            .catch(() => message.error('error'));
-
-        // onInputChange;
-        // onTitleChange;
+                .catch(() => message.error('error'));
+        }
     }
 
     return (
