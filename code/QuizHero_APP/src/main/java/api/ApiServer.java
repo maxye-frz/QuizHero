@@ -347,7 +347,8 @@ public final class ApiServer {
                 String fileName = context.formParam("fileName"); //get file name
                 String fileContent = context.formParam("rawString"); //get file content as string
                 InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
-                if (!fileId.equals("null") || !fileId.equals("")) {
+                assert fileId != null;
+                if (!fileId.equals("null") && !fileId.equals("")) {
                     fileDao.updateFile(fileId, fileName, fileStream);
                 } else {
                     newFile = new File(userId, fileName, fileStream);
