@@ -46,6 +46,10 @@ class HomePage extends React.Component {
      * componentDidMount() request all the history files by sending the instructorId to back end.
      */
     componentDidMount() {
+        this.refreshCallback();
+    }
+
+    refreshCallback = () => {
         let params = {
             instructorId : localStorage.getItem("instructorId")
         }
@@ -54,19 +58,20 @@ class HomePage extends React.Component {
             .get(BASE_URL + "/history", {params})
             .then((res) => {
                 if(res.status === 200){
-                    this.setState({
-                        fileList : res.data
-                    });
                     console.log("res",res);
+                    console.log(this.state.fileList);
+                    this.setState({fileList : res.data});
                     console.log(this.state.fileList);
                 }
             })
             .catch((error) => {
                 console.log(error)
             });
+        // console.log(fileList);
+        // this.setState({fileList : fileList});
     }
 
-    fetchFile =(fileId)=> {
+    fetchFile = (fileId) => {
         return new Promise(((resolve, reject) => {
             let params = {
                 fileId: fileId
@@ -85,7 +90,7 @@ class HomePage extends React.Component {
         }))
     }
 
-    editFile =(fileId, fileName)=> {
+    editFile = (fileId, fileName) => {
         if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
             localStorage.setItem("fileId", fileId);
             localStorage.setItem("newFileName", fileName);
@@ -106,7 +111,7 @@ class HomePage extends React.Component {
      * @param fileId
      * presenterMode(fileId) fetch the file with fileId and pass the rawSting to callSeparateQuestion(rawString, fileId).
      */
-    presenterMode =(fileId)=> {
+    presenterMode = (fileId) => {
         // let params = {
         //     fileId: fileId
         // }
@@ -136,7 +141,7 @@ class HomePage extends React.Component {
      * @param rawString
      * @param fileId
      */
-    callSeparateQuestion =(rawString, fileId)=>{
+    callSeparateQuestion = (rawString, fileId) =>{
         var data = separateQuestion(rawString);
         data.fileId = fileId;
         data = JSON.stringify(data);
@@ -148,7 +153,7 @@ class HomePage extends React.Component {
      * startSharing(fileId) is a function for presenter to open the sharing permission.
      * @param fileId
      */
-    startSharing=(fileId)=>{
+    startSharing = (fileId) => {
         const formData = new FormData();
         formData.append('fileId', fileId);
         formData.append('permission', true);
@@ -161,7 +166,7 @@ class HomePage extends React.Component {
      * stopSharing(fileId) is a function for presenter to stop sharing.
      * @param fileId
      */
-    stopSharing=(fileId)=>{
+    stopSharing = (fileId) => {
         const formData = new FormData();
         formData.append('fileId', fileId);
         formData.append('permission', false);
@@ -219,7 +224,7 @@ class HomePage extends React.Component {
      * Note: componentDidMount() is called to refresh the page.
      * @param fileId
      */
-    deleteFile =(fileId)=> {
+    deleteFile = (fileId) => {
         const formData = new FormData();
         formData.append('fileId', fileId);
         axios.post(BASE_URL + "/deletefile", formData)
@@ -286,7 +291,7 @@ class HomePage extends React.Component {
 
                 <div style={{paddingRight: 20, paddingTop: 60, display: "flex"}}>
                     <ContainerLeft>
-                        <UploadButton />
+                        <UploadButton refreshCallback = {this.refreshCallback} />
                     </ContainerLeft>
 
                     <ContainerRight>

@@ -21,9 +21,9 @@ const Header = styled.div`
   color: black;
 `
 
-export default function UploadButton (){
+export default function UploadButton (props){
 
-    const props = {
+    const uploadprops = {
         name: 'file',
         action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
         headers: {
@@ -73,13 +73,18 @@ export default function UploadButton (){
             message.success(`${info.file.name} file uploaded successfully`);
             // Send uploaded
             sendFile()
-                .then(readFile);
+                .then(readFile)
+                .then(refresh);
                 // .then(callSeparateQuestion);
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
             message.error(`${info.file.name} file upload failed.`);
         }
+    }
+
+    const refresh = () => {
+        props.refreshCallback();
     }
 
     /**
@@ -176,7 +181,7 @@ export default function UploadButton (){
                     onDownload={() => onDownload("raw")}
                     onPreview={() => onDownload("raw")}
                     onRemove={onRemove}
-                    {...props}>
+                    {...uploadprops}>
 
                     <Button>
                         <Icon type = 'upload' /> Upload form local

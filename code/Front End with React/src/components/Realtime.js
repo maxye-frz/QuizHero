@@ -28,8 +28,12 @@ const EditorContainer = styled.div`
 
 export default function App() {
     const [markdownText, setMarkdownText] = useState("");
+    // need to be initialize separately
+    const [titleText, setTitleText] = useState("");
 
     const contextValue = {
+        titleText,
+        setTitleText,
         markdownText,
         setMarkdownText
     };

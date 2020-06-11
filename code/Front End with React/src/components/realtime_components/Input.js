@@ -1,10 +1,9 @@
-import React, { useContext, useRef } from "react";
+import React, {useContext, useRef, useState} from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
 import {Button, message} from "antd";
 import {DeleteOutlined, SaveOutlined} from "@ant-design/icons";
-import titleContext from "./titleContext";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
 
@@ -47,9 +46,20 @@ const TextArea = styled.textarea`
 `;
 
 export function Input(props) {
-    // const { setTitleText } = useContext(titleContext);
 
     var confirmDiscard = false;
+
+    // Please do not delete this. get initial value from localStorage
+    // these is for use inside of this component only, like state and setState in class
+    // const [ fileName, setFileName ] = useState(localStorage.getItem("newFileName"));
+    // const [ fileValue, setFileValue ] = useState(localStorage.getItem("newFileString"));
+
+    // set them to context to share with render.js
+    const { titleText, setTitleText, markdownText, setMarkdownText } = useContext(editorContext);
+    setTitleText(localStorage.getItem("newFileName"));
+    setMarkdownText(localStorage.getItem("newFileString"));
+    console.log(localStorage.getItem("newFileName"));
+    console.log(titleText);
 
     const discard = () => {
 
@@ -62,6 +72,10 @@ export function Input(props) {
                 localStorage.setItem("newFileName", "");
                 localStorage.setItem("newFileString", "");
                 localStorage.setItem("saved", "true");
+                // setFileName("");
+                // setFileValue("");
+                setTitleText("");
+                setMarkdownText("");
             }
         }
     }
@@ -70,10 +84,10 @@ export function Input(props) {
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileName", newValue);
         localStorage.setItem("saved", "false");
-        // setTitleText(newValue);
+        // setFileName(newValue);
+        setTitleText(newValue);
     };
 
-    const { setMarkdownText } = useContext(editorContext);
     const onInputChange = e => {
         if (confirmDiscard === true) {
             e.currentTarget.value = "";
@@ -83,6 +97,7 @@ export function Input(props) {
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
+        // setFileValue(newValue);
         setMarkdownText(newValue);
 
     }
@@ -113,9 +128,8 @@ export function Input(props) {
             <Title>
                 <TitleArea placeholder="Please type a file name"
                            rows="1"
-                           onChange={onTitleChange}>
-                    {localStorage.getItem("newFileName")}
-                </TitleArea>
+                           onChange={onTitleChange}
+                           value={titleText} />
                 <div style={{paddingTop: 1}}>
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={saveFile}>
@@ -128,9 +142,8 @@ export function Input(props) {
                 </div>
             </Title>
             <TextArea placeholder="Please type in MarkDown"
-                      onChange={onInputChange}>
-                {localStorage.getItem("newFileString")}
-            </TextArea>
+                      onChange={onInputChange}
+                      value={markdownText}/>
         </Container>
     );
 }

@@ -2,7 +2,9 @@ import React from "react";
 
 const defaultContext = {
     markdownText: "",
-    setMarkdownText: () => {}
+    setMarkdownText: () => {},
+    titleText: "",
+    setTitleText: () => {}
 };
 
 export default React.createContext(defaultContext);
