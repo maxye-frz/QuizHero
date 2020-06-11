@@ -9,6 +9,7 @@ import {PlusOutlined, PlusCircleOutlined, PlusSquareOutlined} from "@ant-design/
 import axios from 'axios';
 import {BASE_URL} from "../config/config"
 import styled from "styled-components";
+import separateQuestion from "./Parse";
 
 const Header = styled.div`
   background-color: #ffffff !important;
@@ -74,8 +75,8 @@ export default function UploadButton (props){
             // Send uploaded
             sendFile()
                 .then(readFile)
-                .then(refresh);
-                // .then(callSeparateQuestion);
+                .then(refresh)
+                .then(callSeparateQuestion);
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
@@ -168,6 +169,27 @@ export default function UploadButton (props){
         return p;
     }
 
+    /**
+     * callSeparateQuestion(rawString, fileId) is a helper function to call separateQuestion from Parse.js
+     * separateQuestion(rawString) will parse the raw string to a JSON parameter which contains quizzes and slides.
+     * data = {
+     *     fileId : fileId,
+     *     quiz : [],
+     *     slidesString : []
+     * }
+     * which will be set to localStorage in browser, which will be used in PresenterPage.js
+     * @param rawString
+     * @param fileId
+     */
+    const callSeparateQuestion = () => {
+        var data = separateQuestion(this.state.rawString, this.state.fileId);
+        console.log(data);
+        data.fileId = this.state.fileId;
+        data = JSON.stringify(data);
+        localStorage.setItem("data",data);
+        this.setState({data : data});
+    }
+
     return(
         <Header>
 
@@ -194,6 +216,7 @@ export default function UploadButton (props){
                 <Button size={"median"}
                         onClick={() => {
                             if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+                                localStorage.setItem("saved", "true");
                                 localStorage.setItem("fileId", "null");
                                 localStorage.setItem("newFileName", "");
                                 localStorage.setItem("newFileString", "");

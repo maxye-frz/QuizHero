@@ -92,6 +92,7 @@ class HomePage extends React.Component {
 
     editFile = (fileId, fileName) => {
         if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+            localStorage.setItem("saved", "true");
             localStorage.setItem("fileId", fileId);
             localStorage.setItem("newFileName", fileName);
             this.fetchFile(fileId)
