@@ -75,7 +75,7 @@ const parseQuiz = (quizString, fileId) => {
         console.log(index);
         console.log(quizString[index]);
         var quizzes = data.split("\n\n");
-        if (quizzes[quizzes.length - 1] == "") {
+        if (quizzes[quizzes.length - 1] === "") {
             quizzes.splice(quizzes.length - 1, 1);
         }
         console.log(quizzes);

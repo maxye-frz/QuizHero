@@ -2,10 +2,10 @@
  * UploadPage renders the page where the presenter can upload his/her markdown file.
  */
 
-import React from "react";
+import React, {useState} from "react";
 import {Link} from "react-router-dom"
-import {Upload, message, Button, Icon} from 'antd';
-import {PlusOutlined, PlusCircleOutlined, PlusSquareOutlined} from "@ant-design/icons";
+import {Button, Icon, message, Upload} from 'antd';
+import {PlusCircleOutlined} from "@ant-design/icons";
 import axios from 'axios';
 import {BASE_URL} from "../config/config"
 import styled from "styled-components";
@@ -39,6 +39,8 @@ export default function UploadButton (props){
         rawString:"",
     }
 
+    const [fileId, setFileId] = useState("");
+
     /**
      * Catch the uploaded file and handle multiple uploads error.
      * @param file
@@ -71,12 +73,15 @@ export default function UploadButton (props){
         if (info.file.status === 'done') {
             console.log(info.file.name);
             state.fileName = info.file.name;
+            // console.log(state.fileName);
             message.success(`${info.file.name} file uploaded successfully`);
             // Send uploaded
             sendFile()
                 .then(readFile)
                 .then(refresh)
                 .then(callSeparateQuestion);
+            console.log("AAAAAAAAAAAAAAAAAAAA");
+            print();
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
@@ -88,19 +93,23 @@ export default function UploadButton (props){
         props.refreshCallback();
     }
 
+    const print = () => {
+        console.log(state.rawString);
+    }
+
     /**
      * Remove the previously uploaded file to upload a new file.
      */
     const onRemove = () => {
+        console.log(state.fileName);
         state.file = "";
+        console.log(state.fileName);
         state.functionalButton = 'none';
     }
 
     /**
      * onDownload(fileType) is used to handle download request, both raw Markdown file and static HTML file.
      * It is decided by fileType.
-     * @param fileId
-     * @param fileName
      * @param fileType
      */
     const onDownload = (fileType) => {
@@ -119,6 +128,7 @@ export default function UploadButton (props){
             fakeClick(save_link);
         }
 
+        console.log(state.fileName);
         if (fileType === "raw") exportRaw(state.fileName, state.rawString);
         else if (fileType === "HTML") exportRaw(`${state.fileName}.html`, state.marpitResult);
         else console.log("Wrong fileType provided")
@@ -129,14 +139,14 @@ export default function UploadButton (props){
      */
     const sendFile =() => {
         var file = state.file;
-        var p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('userId', localStorage.getItem("instructorId"));
             console.log("Send data to backend", formData);
             axios.post(BASE_URL + "/upload", formData)
                 .then(res => {
-                    console.log("CCC",res.data);
+                    console.log("CCC", res.data);
                     state.fileId = res.data.fileId;
                     resolve(res.data.fileId);
                     // alert("File uploaded successfully.");
@@ -145,7 +155,6 @@ export default function UploadButton (props){
                     reject(error);
                 });
         });
-        return p;
     }
 
     /**
@@ -154,7 +163,7 @@ export default function UploadButton (props){
      */
     const readFile=()=>{
         var file = state.file;
-        var p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsText(file);
             reader.onload = (e) => {
@@ -166,7 +175,6 @@ export default function UploadButton (props){
                 reject(e);
             };
         });
-        return p;
     }
 
     /**
@@ -178,16 +186,14 @@ export default function UploadButton (props){
      *     slidesString : []
      * }
      * which will be set to localStorage in browser, which will be used in PresenterPage.js
-     * @param rawString
-     * @param fileId
      */
     const callSeparateQuestion = () => {
-        var data = separateQuestion(this.state.rawString, this.state.fileId);
-        console.log(data);
-        data.fileId = this.state.fileId;
-        data = JSON.stringify(data);
-        localStorage.setItem("data",data);
-        this.setState({data : data});
+        var data = separateQuestion(state.rawString, state.fileId);
+        // console.log(data);
+        // data.fileId = state.fileId;
+        // data = JSON.stringify(data);
+        // localStorage.setItem("data",data);
+        // this.setState({data : data});
     }
 
     return(

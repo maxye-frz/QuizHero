@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from "react";
+import React, { useContext, useEffect, useLayoutEffect } from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
@@ -54,10 +54,17 @@ export function Input(props) {
 
     // set them to context to share with render.js
     const { titleText, setTitleText, markdownText, setMarkdownText } = useContext(editorContext);
-    setTitleText(localStorage.getItem("newFileName"));
-    setMarkdownText(localStorage.getItem("newFileString"));
-    console.log(localStorage.getItem("newFileName"));
-    console.log(titleText);
+
+    // Initialization (only once)
+    // 土办法
+    // if (titleText === "") setTitleText(localStorage.getItem("newFileName"));
+    // if (markdownText === "") setMarkdownText(localStorage.getItem("newFileString"));
+
+    // Similar to componentDidMount and componentDidUpdate:
+    useLayoutEffect(() => {
+        setTitleText(localStorage.getItem("newFileName"));
+        setMarkdownText(localStorage.getItem("newFileString"));
+    }, []);
 
     const discard = () => {
 

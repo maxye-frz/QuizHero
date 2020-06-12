@@ -2,9 +2,10 @@
  * The ResultStudent component is to show student the end page of quiz.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
-import BackButton from './quiz_components/Button'
+// import BackButton from './quiz_components/Button'
+import {Button} from "antd";
 
 /**
  * The ResultStudent function is to inform students that the quiz has been finished
@@ -28,13 +29,16 @@ function ResultStudent(props) {
                     Thank you for finishing the quiz, please go back to the slides.
                 </div>
             </CSSTransitionGroup>
-            <BackButton toSlidesCallback={props.toSlidesCallback}/>
+            {/*<BackButton toSlidesCallback={props.toSlidesCallback}/>*/}
+            <Button onClick={props.toSlidesCallback}>
+                Back to Slides
+            </Button>
         </div>
     );
 }
 
-ResultStudent.propTypes = {
-    quizResult: PropTypes.string.isRequired
-};
+// ResultStudent.propTypes = {
+//     quizResult: PropTypes.string.isRequired
+// };
 
 export default ResultStudent;

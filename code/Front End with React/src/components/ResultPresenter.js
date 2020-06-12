@@ -2,10 +2,9 @@
  * The ResultPresenter component is to show instructor the result chart of quiz
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
 import QuizStatictic from './quiz_components/QuizStatistic'
-import BackButton from './quiz_components/Button'
+import { Button } from 'antd';
 
 /**
  * The function ResultPresenter is to render statistic data and back button
@@ -30,13 +29,11 @@ function ResultPresenter(props) {
             </div>
             </CSSTransitionGroup>
             <QuizStatictic fileId = {props.fileId}/>
-            <BackButton toSlidesCallback={props.toSlidesCallback}/>
+            <Button onClick={props.toSlidesCallback}>
+                Back to Slides
+            </Button>
         </div>
     );
 }
-
-ResultPresenter.propTypes = {
-    // quizResult: PropTypes.string.isRequired
-};
 
 export default ResultPresenter;

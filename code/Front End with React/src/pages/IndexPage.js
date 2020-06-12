@@ -3,16 +3,15 @@
  */
 
 import React , { Component } from  'react';
-import {Button, Icon} from 'antd';
+import {Button} from 'antd';
 import logo from '../fig/logo.png';
-import template from "../components/template";
+import template from "../template";
 
 class IndexPage extends Component {
 
-    constructor(props) {
-        super(props);
-
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     toLogin = () => {
         window.location = "/login";
