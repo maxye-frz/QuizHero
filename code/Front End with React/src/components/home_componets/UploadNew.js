@@ -2,14 +2,14 @@
  * UploadPage renders the page where the presenter can upload his/her markdown file.
  */
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {Link} from "react-router-dom"
 import {Button, Icon, message, Upload} from 'antd';
 import {PlusCircleOutlined} from "@ant-design/icons";
 import axios from 'axios';
-import {BASE_URL} from "../config/config"
+import {BASE_URL} from "../../config/config"
 import styled from "styled-components";
-import separateQuestion from "./Parse";
+import separateQuestion from "../Parse";
 
 const Header = styled.div`
   background-color: #ffffff !important;
@@ -22,7 +22,7 @@ const Header = styled.div`
   color: black;
 `
 
-export default function UploadButton (props){
+export default function UploadNew (props){
 
     const uploadprops = {
         name: 'file',
@@ -32,14 +32,8 @@ export default function UploadButton (props){
         },
     };
 
-    const state = {
-        file:"",
-        fileId:"",
-        fileName:"",
-        rawString:"",
-    }
-
-    const [fileId, setFileId] = useState("");
+    const [ fileName, setFileName ] = useState("fileName");
+    const [ rawString, setRawString ] = useState("rawString");
 
     /**
      * Catch the uploaded file and handle multiple uploads error.
@@ -47,13 +41,13 @@ export default function UploadButton (props){
      * @returns {boolean}
      */
     const beforeUpload = (file) => {
-        if (state.file === ""){
-            console.log("FILEEE",file);
-            state.file = file;
-        }else{
-            alert("You can only upload one file at a time. Please delete the previous uploaded file.");
-            return false;
-        }
+        // if (state.file === ""){
+        //     console.log("FILEEE",file);
+        //     state.file = file;
+        // }else{
+        //     alert("You can only upload one file at a time. Please delete the previous uploaded file.");
+        //     return false;
+        // }
     }
 
     /**
@@ -65,23 +59,33 @@ export default function UploadButton (props){
         if (info.file.status !== 'uploading') {
             console.log(info.file, info.fileList);
             // Delete redundant file in fileList when user tries to upload a second file without deleting the first one
-            if (info.fileList.length > 1){
-                info.fileList.pop();
-            }
-            console.log(info.file, info.fileList);
+            // if (info.fileList.length > 1){
+            //     info.fileList.pop();
+            // }
+            // console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
             console.log(info.file.name);
-            state.fileName = info.file.name;
-            // console.log(state.fileName);
+            setFileName(info.file.name);
+            console.log(fileName);
+            console.log(info.file.originFileObj);
+            // readFile(info.file.originFileObj).then((r) => {
+            //     setRawString(r);
+            //     console.log(rawString);
+            // });
+            // console.log(rawString);
             message.success(`${info.file.name} file uploaded successfully`);
             // Send uploaded
-            sendFile()
-                .then(readFile)
-                .then(refresh)
-                .then(callSeparateQuestion);
+            sendFile(info.file.originFileObj)
+                .then(fileId => {
+                    readFile(info.file.originFileObj)
+                        .then(r => {
+                            setRawString(r);
+                            separateQuestion(r, fileId)
+                        })
+                })
+                .then(props.refreshCallback);
             console.log("AAAAAAAAAAAAAAAAAAAA");
-            print();
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
@@ -89,22 +93,11 @@ export default function UploadButton (props){
         }
     }
 
-    const refresh = () => {
-        props.refreshCallback();
-    }
-
-    const print = () => {
-        console.log(state.rawString);
-    }
-
     /**
      * Remove the previously uploaded file to upload a new file.
      */
     const onRemove = () => {
-        console.log(state.fileName);
-        state.file = "";
-        console.log(state.fileName);
-        state.functionalButton = 'none';
+
     }
 
     /**
@@ -128,17 +121,17 @@ export default function UploadButton (props){
             fakeClick(save_link);
         }
 
-        console.log(state.fileName);
-        if (fileType === "raw") exportRaw(state.fileName, state.rawString);
-        else if (fileType === "HTML") exportRaw(`${state.fileName}.html`, state.marpitResult);
+        console.log(fileName);
+        console.log(rawString);
+        if (fileType === "raw") exportRaw(fileName, rawString);
+        // else if (fileType === "HTML") exportRaw(`${fileName}.html`, marpitResult);
         else console.log("Wrong fileType provided")
     }
 
     /**
      * send markdown file to backend and set the database returned fileId to state
      */
-    const sendFile =() => {
-        var file = state.file;
+    const sendFile = (file) => {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('file', file);
@@ -147,7 +140,6 @@ export default function UploadButton (props){
             axios.post(BASE_URL + "/upload", formData)
                 .then(res => {
                     console.log("CCC", res.data);
-                    state.fileId = res.data.fileId;
                     resolve(res.data.fileId);
                     // alert("File uploaded successfully.");
                 })
@@ -161,40 +153,23 @@ export default function UploadButton (props){
      * This is a function that read the uploaded file into a string.
      * @returns {Promise<unknown>}
      */
-    const readFile=()=>{
-        var file = state.file;
+    const readFile = (file) => {
+        const reader = new FileReader();
         return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsText(file);
             reader.onload = (e) => {
-                // let content = e.target.result;
-                state.rawString = reader.result;
+                // console.log(e.target.result);
+                // console.log(typeof reader.result);
+                setRawString(reader.result);
+                console.log(rawString);
                 resolve(reader.result);
             };
             reader.onerror = function (e) {
                 reject(e);
             };
+            reader.readAsText(file);
         });
     }
 
-    /**
-     * callSeparateQuestion(rawString, fileId) is a helper function to call separateQuestion from Parse.js
-     * separateQuestion(rawString) will parse the raw string to a JSON parameter which contains quizzes and slides.
-     * data = {
-     *     fileId : fileId,
-     *     quiz : [],
-     *     slidesString : []
-     * }
-     * which will be set to localStorage in browser, which will be used in PresenterPage.js
-     */
-    const callSeparateQuestion = () => {
-        var data = separateQuestion(state.rawString, state.fileId);
-        // console.log(data);
-        // data.fileId = state.fileId;
-        // data = JSON.stringify(data);
-        // localStorage.setItem("data",data);
-        // this.setState({data : data});
-    }
 
     return(
         <Header>
@@ -218,7 +193,7 @@ export default function UploadButton (props){
                 </Upload>
             </div>
 
-            <Link to={{pathname: '/EditPage', query: state.data}}>
+            <Link to={{pathname: '/EditPage'}}>
                 <Button size={"median"}
                         onClick={() => {
                             if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {

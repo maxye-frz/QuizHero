@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect } from "react";
+import React, { useContext, useState, useLayoutEffect } from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
@@ -9,7 +9,7 @@ import {BASE_URL} from "../../config/config";
 
 const Container = styled.div`
   width: 50%;
-  height: calc(100vh - 60px);
+  height: 100%;
   padding: 13px;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
   font-family: "Lato", sans-serif;
@@ -90,6 +90,7 @@ export function Input(props) {
         localStorage.setItem("newFileName", newValue);
         localStorage.setItem("saved", "false");
         // setFileName(newValue);
+        // console.log(fileName);
         setTitleText(newValue);
     };
 
@@ -98,6 +99,7 @@ export function Input(props) {
         localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
         // setFileValue(newValue);
+        // console.log(fileValue);
         setMarkdownText(newValue);
 
     }

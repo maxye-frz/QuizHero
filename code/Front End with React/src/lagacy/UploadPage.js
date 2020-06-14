@@ -159,6 +159,7 @@ class MyUpload extends React.Component{
             reader.onload = (e) => {
                 // let content = e.target.result;
                 this.setState({rawString: reader.result});
+                console.log(this.state.rawString);
                 resolve(reader.result);
             };
             reader.onerror = function (e) {

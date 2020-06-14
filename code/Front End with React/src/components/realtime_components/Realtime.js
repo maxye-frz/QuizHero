@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 // import "../styles.css";
 import styled from "styled-components";
-import { Input } from "./realtime_components/Input";
-import { Render } from "./realtime_components/Render";
-import EditorContext from "./realtime_components/editorContext";
+import { Input } from "./Input";
+import { Render } from "./Render";
+import EditorContext from "./editorContext";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -22,11 +22,11 @@ const Title = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 60px);
   display: flex;
 `;
 
-export default function App() {
+export default function Editor() {
     const [markdownText, setMarkdownText] = useState("");
     // need to be initialize separately
     const [titleText, setTitleText] = useState("");

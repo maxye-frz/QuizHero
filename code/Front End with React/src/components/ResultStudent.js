@@ -25,9 +25,9 @@ function ResultStudent(props) {
                 transitionAppear
                 transitionAppearTimeout={500}
             >
-                <div>
-                    Thank you for finishing the quiz, please go back to the slides.
-                </div>
+            <div>
+                Thank you for finishing the quiz, please go back to the slides.
+            </div>
             </CSSTransitionGroup>
             {/*<BackButton toSlidesCallback={props.toSlidesCallback}/>*/}
             <Button onClick={props.toSlidesCallback}>

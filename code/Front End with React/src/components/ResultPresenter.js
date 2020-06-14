@@ -25,7 +25,7 @@ function ResultPresenter(props) {
                 transitionAppearTimeout={500}
             >
             <div>
-                Thank you for finishing the quiz, here are the statistics:
+                Here are the quiz statistics:
             </div>
             </CSSTransitionGroup>
             <QuizStatictic fileId = {props.fileId}/>

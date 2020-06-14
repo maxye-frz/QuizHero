@@ -10,7 +10,7 @@ import IndexPage from "../pages/IndexPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import { connect } from "react-redux";
-import MyUpload from "../pages/UploadPage";
+import MyUpload from "../lagacy/UploadPage";
 import PresentPage from '../pages/PresentPage'
 import StudentPage from "../pages/StudentPage";
 import StudentRequestPage from "../pages/StudentRequestPage";
