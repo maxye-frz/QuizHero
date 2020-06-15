@@ -78,6 +78,13 @@ public final class DaoFactory {
                 "UNIQUE (email)" +
                 ");";
 
+
+        //userId serial: 1 2 3 ... primary key
+        //client type: getType
+        //client id: getId
+        //userName : profile.getName
+        //email: getEmail
+
 //        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();

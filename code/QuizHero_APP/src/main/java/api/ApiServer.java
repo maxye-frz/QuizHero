@@ -2,16 +2,31 @@ package api;
 import com.google.gson.Gson;
 import dao.*;
 import exception.*;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import model.*;
 import io.javalin.Javalin;
 import io.javalin.plugin.json.JavalinJson;
 import io.javalin.http.UploadedFile;
 import model.File;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.config.Config;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.javalin.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pac4j.SignInConfigFactory;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.plugin.rendering.template.TemplateUtil.model;
 
 /**
  * ApiServer class is used for implementing the RESTful API
@@ -26,6 +41,10 @@ public final class ApiServer {
     public static boolean INITIALIZE_WITH_SAMPLE_DATA = true;
     public static int PORT = getHerokuAssignedPort();
     private static Javalin app;
+    private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);  // initialize logger
+    private static Config pac4jConfig = new SignInConfigFactory().build(); //pc4j sign in config, used to initialize handlers and clients
+    private static CallbackHandler callback = new CallbackHandler(pac4jConfig, null, false);
+    private static SecurityHandler githubSecurityHandler = new SecurityHandler(pac4jConfig, "GitHubClient");
 
     /* This class is not meant to be instantiated! */
     private ApiServer() {}
@@ -43,6 +62,30 @@ public final class ApiServer {
         }
         return 7000;
     }
+
+    //log out on github
+    private static LogoutHandler centralLogoutHandler(Config config) {
+        LogoutHandler centralLogout = new LogoutHandler(config);
+        centralLogout.defaultUrl = "http://localhost:7000/?defaulturlafterlogoutafteridp";
+        centralLogout.logoutUrlPattern = "http://localhost:7000/.*";
+        centralLogout.localLogout = false;
+        centralLogout.centralLogout = true;
+        centralLogout.destroySession = true;
+        return centralLogout;
+    }
+
+    //log out local cache
+    private static LogoutHandler localLogoutHandler(Config config) {
+        LogoutHandler localLogout = new LogoutHandler(config, "/?defaulturlafterlogout");
+        localLogout.destroySession = true;
+        return localLogout;
+    }
+
+    //get profile method
+    private static List<CommonProfile> getProfiles(Context ctx) {
+        return new ProfileManager<CommonProfile>(new JavalinWebContext(ctx)).getAll(true);
+    }
+
 
     /**
      * This method is used to start application server
@@ -91,6 +134,15 @@ public final class ApiServer {
      * @param quizDao       DAO for quiz table
      */
     private static void routing(FileDao fileDao, InstructorDao instructorDao, QuizDao quizDao) {
+        //sign in service
+        getCallBack();
+        postCallBack();
+        getGithub();
+        getLoginPage();
+        getLocalLogout();
+        getCentralLogout();
+        postProfile();
+
         // fetch quiz statistics
         getQuizStatByFileId(quizDao);
 
@@ -99,7 +151,7 @@ public final class ApiServer {
         postRecords(quizDao);
 
         // login and register
-        login(instructorDao);
+//        login(instructorDao);
         register(instructorDao);
 
         // upload, fetch file content and modify file status
@@ -125,6 +177,51 @@ public final class ApiServer {
             config.addSinglePageRoot("/", "/public/index.html");
         });
     }
+
+    //new index page, see ui design
+    private static void getIndexPage() {
+        app = Javalin.create(config -> {
+            config.addStaticFiles("/public");
+            config.enableCorsForAllOrigins();
+            config.addSinglePageRoot("/", "/public/index.html");
+        });
+    }
+
+    //sign in api
+    private static void getLoginPage() {
+        app.get("/signin", ctx -> ctx.render("/templates/index.vm", model("profiles", getProfiles(ctx))));
+    }
+
+    //callback api
+    private static void getCallBack() {
+        app.get("/callback", callback);
+    }
+    private static void postCallBack() {
+        app.post("/callback", callback);
+    }
+
+    //github api
+    private static void getGithub() {
+        app.before("/github", githubSecurityHandler);
+        app.get("/github", ctx -> ctx.render("/templates/protectedPage.vm", model("profiles", getProfiles(ctx))));
+    }
+
+    private static void getLocalLogout() {
+        app.get("/logout", localLogoutHandler(pac4jConfig));
+    }
+
+    private static void getCentralLogout() {
+        app.get("/central-logout", centralLogoutHandler(pac4jConfig));
+    }
+
+    private static void postProfile() {
+        app.before("/body", new SecurityHandler(pac4jConfig, "HeaderClient"));
+        app.post("/body", ctx -> {
+            logger.debug("Body: " + ctx.body());
+            ctx.result("done: " + getProfiles(ctx));
+        });
+    }
+
 
     /**
      * This method is used to open the route for front-end to get the quiz statistics of
@@ -193,31 +290,31 @@ public final class ApiServer {
         });
     }
 
-    /**
-     * This method is used to open the route for instructor to login
-     * call instructorDao to check user identity
-     * if login successful, send status code 201
-     * if wrong user information, send status code 403, request forbidden
-     * @param instructorDao dao for instructor table
-     */
-    private static void login(InstructorDao instructorDao) {
-        // instructor login action, return user including his/her id
-        app.post("/login", ctx -> {
-            String email = ctx.formParam("email");
-            String pswd = ctx.formParam("pswd");
-            try {
-                Instructor instructor = instructorDao.userLogin(email, pswd);
-                ctx.json(instructor);
-                ctx.contentType("application/json");
-                ctx.status(201); // created successfully
-            } catch (DaoException ex) {
-                throw new ApiError(ex.getMessage(), 500); // server internal error
-            } catch (LoginException ex) {
-                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
-            }
-
-        });
-    }
+//    /**
+//     * This method is used to open the route for instructor to login
+//     * call instructorDao to check user identity
+//     * if login successful, send status code 201
+//     * if wrong user information, send status code 403, request forbidden
+//     * @param instructorDao dao for instructor table
+//     */
+//    private static void login(InstructorDao instructorDao) {
+//        // instructor login action, return user including his/her id
+//        app.post("/login", ctx -> {
+//            String email = ctx.formParam("email");
+//            String pswd = ctx.formParam("pswd");
+//            try {
+//                Instructor instructor = instructorDao.userLogin(email, pswd);
+//                ctx.json(instructor);
+//                ctx.contentType("application/json");
+//                ctx.status(201); // created successfully
+//            } catch (DaoException ex) {
+//                throw new ApiError(ex.getMessage(), 500); // server internal error
+//            } catch (LoginException ex) {
+//                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+//            }
+//
+//        });
+//    }
 
     /**
      * This method is used to open the route for front-end to register a new instructor
