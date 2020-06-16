@@ -39,9 +39,9 @@ public class Sql2oFileDao implements FileDao{
     @Override
     public void storeInsFile(File file) {
         try (Connection conn = sql2o.open()) {
-            String sql = "INSERT INTO ins_file(instructorId, fileId) VALUES (:userId, :fileId);";
+            String sql = "INSERT INTO account_file(userId, fileId) VALUES (:userId, :fileId);";
             conn.createQuery(sql, true)
-                    .addParameter("userId", file.getInstructorId())
+                    .addParameter("userId", file.getUserId())
                     .addParameter("fileId", file.getFileId())
                     .executeUpdate();
 
@@ -145,7 +145,7 @@ public class Sql2oFileDao implements FileDao{
         checkFileExist(fileId);
         try (Connection conn = sql2o.open()) {
             // Delete row from ins_file table
-            String sql = "DELETE FROM ins_file WHERE fileId = :fileId";
+            String sql = "DELETE FROM account_file WHERE fileId = :fileId";
             System.out.println(sql);
             conn.createQuery(sql).addParameter("fileId", fileId)
                     .executeUpdate();
