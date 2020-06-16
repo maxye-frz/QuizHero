@@ -28,6 +28,9 @@ import java.util.*;
 import static io.javalin.apibuilder.ApiBuilder.get;
 import static io.javalin.plugin.rendering.template.TemplateUtil.model;
 
+
+//NOTE: ApiServer is currently not used. it is refactored to Main, util and api
+
 /**
  * ApiServer class is used for implementing the RESTful API
  * This class opens various routes, handles requests from front-end, and passes data to the Model
