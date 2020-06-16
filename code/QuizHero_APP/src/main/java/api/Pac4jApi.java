@@ -18,12 +18,12 @@ public class Pac4jApi {
     }
     public static void postCallBack() { app.post("/callback", callback); }
     //github api
-    public static void getGithub() {
-        app.before("/github", githubSecurityHandler);
-        app.get("/github", context -> {
-            //get profile id and name
-        });
-    }
+//    public static void getGithub() {
+//        app.before("/github", githubSecurityHandler);
+//        app.get("/github", context -> {
+//            //get profile id and name
+//        });
+//    }
     public static void getLocalLogout() {
         app.get("/logout", localLogoutHandler(pac4jConfig));
     }

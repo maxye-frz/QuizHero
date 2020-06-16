@@ -15,8 +15,6 @@ public class SignInConfigFactory implements ConfigFactory {
         //github sign in:
         GitHubClient gitHubClient = new GitHubClient("2ee2dcaf4624183da206",
                 "4591ff823f08bad9c51e8a44ef9bf8621aa74a35");
-//        GitHubProfile gitHubProfile = new GitHubProfile();
-
 
         Clients clients = new Clients("http://localhost:7000/callback", gitHubClient);
 

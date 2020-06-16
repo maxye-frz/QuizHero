@@ -26,9 +26,9 @@ public final class DaoFactory {
      * Drop all the tables in the database.
      */
     public static void clearDatabase(){
-        dropInsFileTableIfExists(sql2o);
+        dropUserFileTableIfExists(sql2o);
         dropQuizTableIfExists(sql2o);
-        dropInstructorTableIfExists(sql2o);
+        dropAccountTableIfExists(sql2o);
         dropFileTableIfExists(sql2o);
     }
 
@@ -65,31 +65,22 @@ public final class DaoFactory {
     }
 
     /**
-     * create instructor table
+     * create account table
      * @param sql2o instance of Sql2o class
      */
-    private static void createInstructorTable(Sql2o sql2o) {
-        String sql = "CREATE TABLE IF NOT EXISTS instructor(" +
-                "instructorId SERIAL," +
+    private static void createAccountTable(Sql2o sql2o) {
+        String sql = "CREATE TABLE IF NOT EXISTS account(" +
+                "userId SERIAL," +
                 "name VARCHAR(30)," +
-                "email VARCHAR(30) NOT NULL," +
-                "pswd VARCHAR(30) NOT NULL," +
-                "PRIMARY KEY (instructorId)," +
-                "UNIQUE (email)" +
+                "email VARCHAR(30)," +
+                "pswd VARCHAR(30)," +
+                "githubId VARCHAR(30)," +
+                "PRIMARY KEY (userId)" +
                 ");";
-
-
-        //userId serial: 1 2 3 ... primary key
-        //client type: getType
-        //client id: getId
-        //userName : profile.getName
-        //email: getEmail
-
-//        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {
-            throw new DaoException("Unable to create Instructor table", ex);
+            throw new DaoException("Unable to create account table", ex);
         }
     }
 
@@ -144,12 +135,12 @@ public final class DaoFactory {
      * create ins_file table
      * @param sql2o instance of Sql2o class
      */
-    private static void createInsFileTable(Sql2o sql2o) {
-        String sql = "CREATE TABLE IF NOT EXISTS ins_file(" +
-                "instructorId Integer," +
+    private static void createAccountFileTable(Sql2o sql2o) {
+        String sql = "CREATE TABLE IF NOT EXISTS account_file(" +
+                "userId Integer," +
                 "fileId VARCHAR(50)," +
-                "PRIMARY KEY (instructorId, fileId)," +
-                "FOREIGN KEY (instructorId) REFERENCES instructor(instructorId)," +
+                "PRIMARY KEY (userId, fileId)," +
+                "FOREIGN KEY (userId) REFERENCES account(userId)," +
                 "FOREIGN KEY (fileId) REFERENCES file(fileId)" +
                 ");";
 
@@ -157,7 +148,7 @@ public final class DaoFactory {
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {
-            throw new DaoException("Unable to create ins_file table", ex);
+            throw new DaoException("Unable to create account_file table", ex);
         }
     }
 
@@ -180,14 +171,14 @@ public final class DaoFactory {
      * drop instructor table
      * @param sql2o instance of Sql2o class
      */
-    private static void dropInstructorTableIfExists(Sql2o sql2o) {
-        String sql = "DROP TABLE IF EXISTS instructor;";
+    private static void dropAccountTableIfExists(Sql2o sql2o) {
+        String sql = "DROP TABLE IF EXISTS account;";
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop instructor table successfully.");
+            System.out.println("drop account table successfully.");
         } catch (Sql2oException ex) {
-            throw new DaoException("Fail dropping instructor table.", ex);
+            throw new DaoException("Fail dropping account table.", ex);
         }
     }
 
@@ -195,14 +186,14 @@ public final class DaoFactory {
      * drop ins_file table
      * @param sql2o instance of Sql2o class
      */
-    private static void dropInsFileTableIfExists(Sql2o sql2o) {
-        String sql = "DROP TABLE IF EXISTS ins_file;";
+    private static void dropUserFileTableIfExists(Sql2o sql2o) {
+        String sql = "DROP TABLE IF EXISTS account_file;";
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop ins_file table successfully.");
+            System.out.println("drop account_file table successfully.");
         } catch (Sql2oException ex) {
-            throw new DaoException("Fail dropping ins_file table.", ex);
+            throw new DaoException("Fail dropping account_file table.", ex);
         }
     }
 
@@ -235,10 +226,10 @@ public final class DaoFactory {
      * and an instance of Sql2oInstructorDao and returns it
      * @return dao for instructor table and ins_file table
      */
-    public static InstructorDao getInstructorDao() {
-        createInstructorTable(sql2o);
-        createInsFileTable(sql2o);
-        return new Sql2oInstructorDao(sql2o);
+    public static UserDao getUserDao() {
+        createAccountTable(sql2o);
+        createAccountFileTable(sql2o);
+        return new Sql2oUserDao(sql2o);
     }
 
     /**

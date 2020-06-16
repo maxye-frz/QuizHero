@@ -15,7 +15,7 @@ import java.util.UUID;
  * @version 1.0
  */
 public class File {
-    private int instructorId; // id of the instructor who uploads the file
+    private int userId; // id of the instructor who uploads the file
     private String fileId; // unique file id of the file
     private String fileName; // name of the file
     private Boolean filePermission; // permission control of access to viewing the file
@@ -30,7 +30,7 @@ public class File {
      * @param fileContent contents of the file
      */
     public File(int instructorId, String fileName, InputStream fileContent) {
-        this.instructorId = instructorId;
+        this.userId = instructorId;
         this.fileId = generateUniqueFileId();
         this.fileName = fileName;
         this.fileContent = fileContent;
@@ -47,7 +47,7 @@ public class File {
      * @param fileContent contents of the file
      */
     public File(int instructorId, String fileId, String fileName, InputStream fileContent) {
-        this.instructorId = instructorId;
+        this.userId = instructorId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.fileContent = fileContent;
@@ -66,7 +66,7 @@ public class File {
      * @param quizAccess access permission of the quiz
      */
     public File(int instructorId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream fileContent) {
-        this.instructorId = instructorId;
+        this.userId = instructorId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePermission = fileAccess;
@@ -86,8 +86,8 @@ public class File {
      * This method is used to get the private variable value
      * @return named instructorId
      */
-    public Integer getInstructorId() {
-        return instructorId;
+    public Integer getUserId() {
+        return userId;
     }
 
     /**

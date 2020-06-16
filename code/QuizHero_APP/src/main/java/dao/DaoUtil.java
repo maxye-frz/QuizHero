@@ -1,7 +1,5 @@
 package dao;
-import model.Instructor;
-import model.Quiz;
-import java.io.FileInputStream;
+import model.User;
 
 /**
  * DaoUtil class contains methods that add some initial sample data to the database
@@ -16,12 +14,12 @@ public final class DaoUtil {
 
     /**
      * Add some sample instructors to the instructor table
-     * @param instructorDao dao for instructor table
+     * @param userDao dao for instructor table
      */
-    public static void addSampleUsers(InstructorDao instructorDao) {
-        instructorDao.registerUser(new Instructor("Allen", "zchen85@jhu.edu", "9999"));
-        instructorDao.registerUser(new Instructor("Bob Wang", "bob@jhu.edu", "8888"));
-        instructorDao.registerUser(new Instructor("Richard", "richard@jhu.edu", "7777"));
+    public static void addSampleUsers(UserDao userDao) {
+        userDao.registerUser(new User("Allen", "zchen85@jhu.edu", "9999"));
+        userDao.registerUser(new User("Bob Wang", "bob@jhu.edu", "8888"));
+        userDao.registerUser(new User("Richard", "richard@jhu.edu", "7777"));
     }
 
 }

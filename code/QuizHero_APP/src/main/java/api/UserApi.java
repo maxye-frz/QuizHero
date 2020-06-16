@@ -1,15 +1,22 @@
 package api;
 
-import dao.InstructorDao;
+import dao.UserDao;
 import exception.ApiError;
 import exception.DaoException;
+import exception.LoginException;
 import exception.RegisterException;
 import model.File;
-import model.Instructor;
+import model.User;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.javalin.JavalinWebContext;
+import org.pac4j.oauth.client.GitHubClient;
+import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import java.util.List;
 import java.util.Objects;
 
+import static util.Pac4jUtil.githubSecurityHandler;
 import static util.JavalinUtil.app;
 
 public class UserApi {
@@ -18,15 +25,15 @@ public class UserApi {
      * pass data to the Instructor class
      * if register successful, send status code 201
      * if user already exists, send status code 403, request forbidden
-     * @param instructorDao call instructorDao to update instructor table
+     * @param userDao call instructorDao to update instructor table
      */
-    public static void register(InstructorDao instructorDao) {
+    public static void register(UserDao userDao) {
         // instructor login action, return user including his/her id
         app.post("/register", ctx -> {
-            Instructor instructor = ctx.bodyAsClass(Instructor.class);
+            User user = ctx.bodyAsClass(User.class);
             try {
-                instructorDao.registerUser(instructor);
-                ctx.json(instructor);
+                userDao.registerUser(user);
+                ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
             } catch (DaoException ex) {
@@ -37,16 +44,65 @@ public class UserApi {
         });
     }
 
+
+    /**
+     * This method is used to open the route for instructor to login
+     * call instructorDao to check user identity
+     * if login successful, send status code 201
+     * if wrong user information, send status code 403, request forbidden
+     * @param userDao dao for instructor table
+     */
+    public static void login(UserDao userDao) {
+        // instructor login action, return user including his/her id
+        app.post("/login", ctx -> {
+            String email = ctx.formParam("email");
+            String pswd = ctx.formParam("pswd");
+            try {
+                User user = userDao.userLogin(email, pswd);
+                ctx.json(user);
+                ctx.contentType("application/json");
+                ctx.status(201); // created successfully
+            } catch (DaoException ex) {
+                throw new ApiError(ex.getMessage(), 500); // server internal error
+            } catch (LoginException ex) {
+                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+            }
+        });
+    }
+
+    public static void githubLogin(UserDao userDao) {
+        app.before("/github", githubSecurityHandler);
+        app.get("/github", ctx -> {
+            //get profile id and name
+            List<CommonProfile> profile = new ProfileManager<CommonProfile>(new JavalinWebContext(ctx)).getAll(true);
+            CommonProfile userProfile = profile.get(0);
+            String name = userProfile.getUsername();
+            String githubId = userProfile.getId();
+            System.out.println(name);
+            System.out.println(githubId);
+            try {
+                User user = userDao.githubLogin(name, githubId);
+                ctx.json(user);
+                ctx.contentType("application/json");
+                ctx.status(201); // created successfully
+            } catch (DaoException ex) {
+                throw new ApiError(ex.getMessage(), 500); // server internal error
+            } catch (LoginException ex) {
+                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+            }
+        });
+    }
+
     /**
      * This method is used to open the route for front-end to get the file history
      * get the list of files of uploaded by the instructor, and send to the front-end
-     * @param instructorDao call instructorDao to fetch data
+     * @param userDao call instructorDao to fetch data
      */
-    public static void getFileListFromInstructor(InstructorDao instructorDao) {
+    public static void getFileListFromInstructor(UserDao userDao) {
         app.get("/history", ctx -> {
             try {
-                int userId = Integer.parseInt(Objects.requireNonNull(ctx.queryParam("instructorId")));
-                List<File> fileHistory = instructorDao.getUserFileList(userId);
+                int userId = Integer.parseInt(Objects.requireNonNull(ctx.queryParam("userId")));
+                List<File> fileHistory = userDao.getUserFileList(userId);
                 System.out.println(fileHistory.size());
                 ctx.json(fileHistory);
                 ctx.status(200);

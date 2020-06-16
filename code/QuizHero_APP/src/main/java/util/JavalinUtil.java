@@ -26,17 +26,17 @@ public class JavalinUtil {
         // instantiate Sql2o and get DAOs
         DaoFactory.connectDatabase();
         FileDao fileDao = DaoFactory.getFileDao();
-        InstructorDao instructorDao = DaoFactory.getInstructorDao();
+        UserDao userDao = DaoFactory.getUserDao();
         QuizDao quizDao = DaoFactory.getQuizDao();
 
         // add some sample data
         if (INITIALIZE_WITH_SAMPLE_DATA) {
-            DaoUtil.addSampleUsers(instructorDao);
+            DaoUtil.addSampleUsers(userDao);
         }
 
         // Routing
         getHomepage();
-        routing(fileDao, instructorDao, quizDao);
+        routing(fileDao, userDao, quizDao);
 
         // start application server
         startJavalin();
@@ -71,20 +71,22 @@ public class JavalinUtil {
     /**
      * This method is used to open various routes
      * @param fileDao       DAO for file table
-     * @param instructorDao DAO for instructor table
+     * @param userDao       DAO for user table
      * @param quizDao       DAO for quiz table
      */
-    private static void routing(FileDao fileDao, InstructorDao instructorDao, QuizDao quizDao) {
+    private static void routing(FileDao fileDao, UserDao userDao, QuizDao quizDao) {
         //sign in service
         api.Pac4jApi.getCallBack();
         api.Pac4jApi.postCallBack();
-        api.Pac4jApi.getGithub();
         api.Pac4jApi.getLocalLogout();
 
         // login and register
-        api.UserApi.register(instructorDao);
+        api.UserApi.register(userDao);
+        api.UserApi.login(userDao);
+        // login from github
+        api.UserApi.githubLogin(userDao);
         // get file list from user
-        api.UserApi.getFileListFromInstructor(instructorDao);
+        api.UserApi.getFileListFromInstructor(userDao);
         // fetch quiz statistics
         api.QuizApi.getQuizStatByFileId(quizDao);
         // update quiz statistics
