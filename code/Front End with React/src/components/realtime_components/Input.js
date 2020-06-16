@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from "react";
+import React, { useContext, useState, useLayoutEffect } from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
@@ -9,7 +9,7 @@ import {BASE_URL} from "../../config/config";
 
 const Container = styled.div`
   width: 50%;
-  height: calc(100vh - 60px);
+  height: 100%;
   padding: 13px;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
   font-family: "Lato", sans-serif;
@@ -47,8 +47,6 @@ const TextArea = styled.textarea`
 
 export function Input(props) {
 
-    var confirmDiscard = false;
-
     // Please do not delete this. get initial value from localStorage
     // these is for use inside of this component only, like state and setState in class
     // const [ fileName, setFileName ] = useState(localStorage.getItem("newFileName"));
@@ -56,17 +54,24 @@ export function Input(props) {
 
     // set them to context to share with render.js
     const { titleText, setTitleText, markdownText, setMarkdownText } = useContext(editorContext);
-    setTitleText(localStorage.getItem("newFileName"));
-    setMarkdownText(localStorage.getItem("newFileString"));
-    console.log(localStorage.getItem("newFileName"));
-    console.log(titleText);
+
+    // Initialization (only once)
+    // 土办法
+    // if (titleText === "") setTitleText(localStorage.getItem("newFileName"));
+    // if (markdownText === "") setMarkdownText(localStorage.getItem("newFileString"));
+
+    // Similar to componentDidMount and componentDidUpdate:
+    useLayoutEffect(() => {
+        setTitleText(localStorage.getItem("newFileName"));
+        setMarkdownText(localStorage.getItem("newFileString"));
+    }, []);
 
     const discard = () => {
 
         if (localStorage.getItem("saved") === "true") {
             window.alert("You have not make any changes.")
         } else {
-            confirmDiscard = window.confirm("Are you sure to discard all the changes?");
+            const confirmDiscard = window.confirm("Are you sure to discard all the changes?");
             if (confirmDiscard === true) {
                 localStorage.setItem("fileId", "null");
                 localStorage.setItem("newFileName", "");
@@ -85,19 +90,16 @@ export function Input(props) {
         localStorage.setItem("newFileName", newValue);
         localStorage.setItem("saved", "false");
         // setFileName(newValue);
+        // console.log(fileName);
         setTitleText(newValue);
     };
 
     const onInputChange = e => {
-        if (confirmDiscard === true) {
-            e.currentTarget.value = "";
-            confirmDiscard = false;
-        }
-
         const newValue = e.currentTarget.value;
         localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
         // setFileValue(newValue);
+        // console.log(fileValue);
         setMarkdownText(newValue);
 
     }

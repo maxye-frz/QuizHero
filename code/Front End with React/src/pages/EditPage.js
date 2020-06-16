@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import {Button, Layout, Menu, message} from "antd";
-import Realtime from "../components/Realtime";
+import Realtime from "../components/realtime_components/Realtime";
 const { Header } = Layout;
 
 class EditPage extends React.Component {
@@ -58,7 +58,7 @@ class EditPage extends React.Component {
                     </Menu>
                 </Header>
 
-                <Realtime/>
+                <Realtime />
 
             </div>
         )

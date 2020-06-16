@@ -16,8 +16,6 @@ class StudentRequestPage extends Component{
         super(props);
 
         this.state = {
-            fileId : "",
-            permission : false,
             display_name:'none'
         }
     }
@@ -27,25 +25,24 @@ class StudentRequestPage extends Component{
      * @param value
      */
     onSearch = (value) => {
-        this.setState({
-            display_name : 'none'
-        })
-
         let params = {
             fileId: value
-        }
+        };
 
         axios.get(BASE_URL + "/filepermission",  {params})
             .then(res => {
                 console.log("AAA", res.data);
-                this.setState({
-                    fileId : value,
-                    permission : res.data,
-                    MarkDownFile : ""
-                }, this.fetchFile);
+                if (res.data) {
+                    this.setState({display_name: 'block'});
+                    this.fetchFile(value);
+                } else {
+                    this.setState({display_name : 'none'});
+                    alert(`Sorry, you don't have the permission to access file ${value}. Please contact the presenter.`)
+                }
+
             })
             .catch((error) => {
-                alert("File doesn't exist!")
+                alert(`File doesn't exist! ${error}`)
             })
 
     }
@@ -53,24 +50,20 @@ class StudentRequestPage extends Component{
     /**
      * fetchFile from the back end and callSeparateQuestion(rawString) to prepare for the presentation.
      */
-    fetchFile =()=> {
+    fetchFile = (fileId) => {
         let params = {
-            fileId: this.state.fileId
+            fileId: fileId
         }
 
-        if (this.state.permission === true){
-            axios.get(BASE_URL + "/fetch",  {params})
-                .then(res => {
-                    console.log("AAA", res.data);
-                    this.callSeparateQuestion(res.data);
-                    message.success(`File ${this.state.fileId} fetched successfully.`)
-                })
-                .catch((error) => {
-                    alert(`Fail to fetch File ${this.state.fileId}.`)
-                })
-        }else{
-            alert(`Sorry, you don't have the permission to access file ${this.state.fileId}. Please contact the presenter.`)
-        }
+        axios.get(BASE_URL + "/fetch",  {params})
+            .then(res => {
+                console.log("AAA", res.data);
+                this.callSeparateQuestion(res.data);
+                message.success(`File ${this.state.fileId} fetched successfully.`)
+            })
+            .catch((error) => {
+                alert(`Fail to fetch File ${this.state.fileId}. ${error}`)
+            })
     }
 
     /**
@@ -83,31 +76,14 @@ class StudentRequestPage extends Component{
      * }
      * which will be set to localStorage in browser, which will be used in PresenterPage.js
      * @param rawString
-     * @param fileId
      */
-    callSeparateQuestion =(rawString)=>{
+    callSeparateQuestion = (rawString) =>{
         var data = separateQuestion(rawString);
         data.fileId = this.state.fileId;
         data = JSON.stringify(data);
         localStorage.setItem("data", data);
-        this.state.display_name = this.display_name();
+        // this.setState({display_name: 'block'});
     }
-
-    /**
-     * Show or hide the button depending on whether student has the permission of opening the presentation.
-     * @param status
-     */
-    display_name () {
-        if (this.state.display_name === 'none') {
-            this.setState({
-                display_name:'block'
-            })
-        }else if (this.state.display_name === 'block'){
-            this.setState({
-                display_name:'none'
-            })
-        }
-    };
 
     /**
      * return rendered StudentRequestPage. Use <Search/> from "antd" as the search bar.
@@ -125,7 +101,7 @@ class StudentRequestPage extends Component{
                             size="large"
                             onSearch={this.onSearch}
                         />
-                    <div style={{display:this.state.display_name}}>
+                    <div style={{display: this.state.display_name}}>
                         <Link to={{pathname: '/student', query: this.state.data}} target = '_blank'>
                             <Button size={"large"} style={{marginLeft: 10}}>
                                 Go to Presentation

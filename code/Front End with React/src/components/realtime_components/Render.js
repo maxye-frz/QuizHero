@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import ReactMarkdown from "react-markdown";
+// import ReactMarkdown from "react-markdown";
 import marpitConvert from "../Marpit";
 import realtimeTheme from "../default_theme/realtime-theme";
 import editorContext from "./editorContext";
@@ -11,7 +11,7 @@ import {FilePptOutlined} from "@ant-design/icons";
 
 const Container = styled.div`
     width: calc(50vw);
-    height: calc(100vh - 60px);
+    height: 100%;
     padding: 13px;
     // font-family: "Lato", sans-serif;
 `;

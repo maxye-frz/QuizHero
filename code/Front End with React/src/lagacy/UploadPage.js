@@ -2,7 +2,7 @@
  * UploadPage renders the page where the presenter can upload his/her markdown file.
  */
 
-import { Upload, message, Button, Icon, Layout, Menu} from 'antd';
+import {Button, Icon, Layout, Menu, message, Upload} from 'antd';
 import React from "react";
 import marpitConvert from '../components/Marpit'
 import separateQuestion from "../components/Parse";
@@ -11,6 +11,7 @@ import {BASE_URL} from "../config/config"
 import {Link} from "react-router-dom"
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import logo from "../fig/logo.png"
+
 const { Header } = Layout;
 const props = {
     name: 'file',
@@ -88,18 +89,18 @@ class MyUpload extends React.Component{
      * Remove the previously uploaded file to upload a new file.
      */
     onRemove = () => {
+        console.log(this.state.file);
         this.setState({
             file: "",
             functionalButton: 'none'
-        })
+        }, () => console.log(this.state.file) );
+
         // this.state.functionalButton = this.showFunctionalButton('none');
     }
 
     /**
      * onDownload(fileType) is used to handle download request, both raw Markdown file and static HTML file.
      * It is decided by fileType.
-     * @param fileId
-     * @param fileName
      * @param fileType
      */
     onDownload = (fileType) => {
@@ -126,17 +127,17 @@ class MyUpload extends React.Component{
     /**
      * send markdown file to backend and set the database returned fileId to state
      */
-    sendFile =() => {
+    sendFile = () => {
         var file = this.state.file;
-        var p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('userId', localStorage.getItem("instructorId"));
             console.log("Send data to backend", formData);
             axios.post(BASE_URL + "/upload", formData)
                 .then(res => {
-                    console.log("CCC",res.data);
-                    this.setState({fileId : res.data.fileId})
+                    console.log("CCC", res.data);
+                    this.setState({fileId: res.data.fileId})
                     resolve(res.data.fileId);
                     // alert("File uploaded successfully.");
                 })
@@ -144,28 +145,27 @@ class MyUpload extends React.Component{
                     reject(error);
                 });
         });
-        return p;
     }
 
     /**
      * This is a function that read the uploaded file into a string.
      * @returns {Promise<unknown>}
      */
-    readFile=()=>{
+    readFile = () => {
         var file = this.state.file;
-        var p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsText(file);
             reader.onload = (e) => {
                 // let content = e.target.result;
-                this.setState({rawString : reader.result});
+                this.setState({rawString: reader.result});
+                console.log(this.state.rawString);
                 resolve(reader.result);
             };
             reader.onerror = function (e) {
                 reject(e);
             };
         });
-        return p;
     }
 
     /**
@@ -177,10 +177,8 @@ class MyUpload extends React.Component{
      *     slidesString : []
      * }
      * which will be set to localStorage in browser, which will be used in PresenterPage.js
-     * @param rawString
-     * @param fileId
      */
-    callSeparateQuestion =()=>{
+    callSeparateQuestion = () => {
         var data = separateQuestion(this.state.rawString, this.state.fileId);
         console.log(data);
         data.fileId = this.state.fileId;
@@ -193,7 +191,7 @@ class MyUpload extends React.Component{
     /**
      *  call marpitConvert in Marpit.js for downloading static HTML
       */
-    getMarpit=()=>{
+    getMarpit = () => {
         const marpitResult = marpitConvert(this.state.rawString)
         this.setState({
             marpitResult : marpitResult
@@ -202,7 +200,6 @@ class MyUpload extends React.Component{
 
     /**
      * startSharing(fileId) is a function for presenter to open the sharing permission.
-     * @param fileId
      */
     startSharing = () => {
         const formData = new FormData();
@@ -215,9 +212,8 @@ class MyUpload extends React.Component{
 
     /**
      * stopSharing(fileId) is a function for presenter to stop sharing.
-     * @param fileId
      */
-    stopSharing=()=>{
+    stopSharing = () => {
         const formData = new FormData();
         formData.append('fileId', this.state.fileId);
         formData.append('permission', false);
@@ -239,7 +235,7 @@ class MyUpload extends React.Component{
     /**
      * Clear localStorage in browser when logout.
      */
-    handleLogOut(){
+    handleLogOut() {
         localStorage.setItem("username",null)
         localStorage.setItem("instructorId",0)
         localStorage.setItem("isLogin",0)
@@ -250,7 +246,7 @@ class MyUpload extends React.Component{
     /**
      * return rendered UploadPage
      */
-    render(){
+    render() {
         const username = localStorage.getItem("username") ? localStorage.getItem("username") : "";
 
         const logOutBtnStyle = {
