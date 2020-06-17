@@ -113,6 +113,20 @@ class LoginPage extends Component {
     window.location = "/register";
   };
 
+  loginWithGitHub = () => {
+      const { history } = this.props;
+      window.location = "/github";
+      // let params
+      axios
+          .get(BASE_URL + "/github")
+          .then((res) => {
+            localStorage.setItem("instructorId", res.userId);
+            localStorage.setItem("username", res.name);
+            localStorage.setItem("githubId", res.githubId);
+            history.push("/HomePage");
+          })
+  }
+
   render() {
     const { getFieldProps } = this.props.form;
     const { instructorId, username } = this.props;
@@ -178,6 +192,9 @@ class LoginPage extends Component {
               onClick={this.registerButtonHandler}
             >
               Register
+            </Button>
+            <Button onClick={this.loginWithGitHub}>
+              Login with GitHub
             </Button>
           </Form.Item>
         </Form>

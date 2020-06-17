@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Input } from "./Input";
 import { Render } from "./Render";
-import EditorContext from "./editorContext";
+import editorContext from "./editorContext";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -28,18 +28,19 @@ const EditorContainer = styled.div`
 
 export default function Editor() {
     const [markdownText, setMarkdownText] = useState("");
-    // need to be initialize separately
     const [titleText, setTitleText] = useState("");
+    // useState will return an array of length 2: arr = useState(""):
+    // arr[0] is the state variable, arr[1] is the set function
 
     const contextValue = {
-        titleText,
-        setTitleText,
-        markdownText,
-        setMarkdownText
+        titleText, // titleText: titleText
+        setTitleText, // setTitleText: setTitleText
+        markdownText, // markdownText: markdownText
+        setMarkdownText // setMarkdownText: setMarkdownText
     };
 
     return (
-        <EditorContext.Provider value={contextValue}>
+        <editorContext.Provider value={contextValue}>
             <AppContainer>
                 <Title>Markdown Editor</Title>
                 <EditorContainer>
@@ -47,6 +48,6 @@ export default function Editor() {
                     <Render />
                 </EditorContainer>
             </AppContainer>
-        </EditorContext.Provider>
+        </editorContext.Provider>
     );
 }
