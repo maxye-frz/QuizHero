@@ -89,8 +89,8 @@ class LoginPage extends Component {
 
               localStorage.setItem("isLogin", 1);
 
-              // window.location = "/HomePage"
-              history.push("/HomePage");
+              window.location = "/HomePage"
+              // history.push("/HomePage");
             })
           );
         }
@@ -116,14 +116,17 @@ class LoginPage extends Component {
   loginWithGitHub = () => {
       const { history } = this.props;
       window.location = "/github";
+      console.log("go to github!!!!!!!!!!!")
       // let params
       axios
-          .get(BASE_URL + "/github")
+          .post(BASE_URL + "/githublogin")
           .then((res) => {
-            localStorage.setItem("instructorId", res.userId);
-            localStorage.setItem("username", res.name);
-            localStorage.setItem("githubId", res.githubId);
-            history.push("/HomePage");
+              console.log("HTTP get request!");
+              localStorage.setItem("instructorId", res.userId);
+              localStorage.setItem("username", res.name);
+              localStorage.setItem("githubId", res.githubId);
+              console.log("after setItem");
+              history.push("/HomePage");
           })
   }
 
