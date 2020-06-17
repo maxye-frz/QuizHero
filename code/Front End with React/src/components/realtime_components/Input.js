@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect } from "react";
+import React, {useContext, useState, useLayoutEffect} from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
@@ -90,7 +90,6 @@ export function Input(props) {
         localStorage.setItem("newFileName", newValue);
         localStorage.setItem("saved", "false");
         // setFileName(newValue);
-        // console.log(fileName);
         setTitleText(newValue);
     };
 

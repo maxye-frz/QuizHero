@@ -19,8 +19,7 @@ class EditPage extends React.Component {
         localStorage.setItem("data", null)
         window.location = "/login"
     }
-
-    render() {
+     render() {
         const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
 
         const logOutBtnStyle = {

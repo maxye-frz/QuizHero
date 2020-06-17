@@ -4,8 +4,11 @@
  */
 
 import React, { useContext, useEffect } from 'react';
+import {Layer, Stage} from 'react-konva';
+import SlideBackground from './SlideBackground';
+import SlideText from './SlideText';
 import 'antd/dist/antd.css';
-import '../../App.css'
+import '../../App.css';
 import {Link} from "react-router-dom";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {List, Button, Menu, message} from 'antd';
@@ -15,6 +18,39 @@ import {BASE_URL} from "../../config/config";
 import separateQuestion from "../Parse";
 import marpitConvert from "../Marpit";
 import fileListContext from "./fileListContext";
+import styled from "styled-components";
+
+// const Slide = styled.div`
+//   width: 15vw;
+//   height: 20vh;
+//   // padding: 10px;
+//   float: left;
+//   margin: 5px;
+//   border: 1.5px solid rgba(15, 15, 15, 0.4);
+// `;
+// const SlideContainer = styled.div`
+//   width: 100vw;
+//   height: 50vh;
+//   // position: relative;
+// `;
+
+// class CanvasComponent extends React.Component {
+//     constructor(...args) {
+//         super(...args);
+//         this.state = {
+//             color: 'green'
+//         };
+//     }
+//     render() {
+//         return (
+//             <Rect
+//                 x={10} y={10} width={50} height={50}
+//                 fill={'green'}
+//                 shadowBlur={10}
+//             />
+//         );
+//     }
+// }
 
 export default function History(props) {
 
@@ -174,55 +210,78 @@ export default function History(props) {
     // const { fileList } = this.state;
 
     return (
-        <List margin-top={"50px"}
-              className="demo-loadmore-list"
-              itemLayout="horizontal"
-              dataSource={fileList}
-              renderItem={item => (
-                  <List.Item
-                      actions={[
-                          <Button size={'small'}
-                                  onClick={() => deleteFile(item.fileId)}>
-                              <DeleteOutlined /> Delete
-                          </Button>,
-                          <Link to={{pathname: '/EditPage'}}>
+        <div>
+            {/* Tab form */}
+            <List margin-top={"50px"}
+                  className="demo-loadmore-list"
+                  itemLayout="horizontal"
+                  dataSource={fileList}
+                  renderItem={item => (
+                      <List.Item
+                          actions={[
                               <Button size={'small'}
-                                      onClick={() => editFile(item.fileId, item.fileName)}>
-                                  <EditOutlined /> Edit
-                              </Button>
-                          </Link>,
-                          // <Link to={{pathname: '/presenter'}} target = '_blank'>
-                          <Button size={"small"}
-                                  onClick={() => presenterMode(item.fileId)}>
-                              <FilePptOutlined /> Presentation
-                          </Button>,
-                          // </Link>,
-                          /**
-                           *  Do not delete comment, This is another way to write the function of jump to a new tab {pathname: '/presenter'}
-                           */
+                                      onClick={() => deleteFile(item.fileId)}>
+                                  <DeleteOutlined /> Delete
+                              </Button>,
+                              <Link to={{pathname: '/EditPage'}}>
+                                  <Button size={'small'}
+                                          onClick={() => editFile(item.fileId, item.fileName)}>
+                                      <EditOutlined /> Edit
+                                  </Button>
+                              </Link>,
+                              // <Link to={{pathname: '/presenter'}} target = '_blank'>
+                              <Button size={"small"}
+                                      onClick={() => presenterMode(item.fileId)}>
+                                  <FilePptOutlined /> Presentation
+                              </Button>,
+                              // </Link>,
+                              /**
+                               *  Do not delete comment, This is another way to write the function of jump to a new tab {pathname: '/presenter'}
+                               */
 
-                          // Start/Stop sharing file button
-                          <Button size={"small"}
-                                  onClick={() => onDownload(item.fileId, item.fileName, "HTML")}>
-                              <DownloadOutlined /> Download HTML
-                          </Button>,
-                          <CopyToClipboard text={item.fileId}
-                                           onCopy={() => startSharing(item.fileId)}>
-                              <Button size={"small"}>
-                                  <ShareAltOutlined /> Start sharing
+                              // Start/Stop sharing file button
+                              <Button size={"small"}
+                                      onClick={() => onDownload(item.fileId, item.fileName, "HTML")}>
+                                  <DownloadOutlined /> Download HTML
+                              </Button>,
+                              <CopyToClipboard text={item.fileId}
+                                               onCopy={() => startSharing(item.fileId)}>
+                                  <Button size={"small"}>
+                                      <ShareAltOutlined /> Start sharing
+                                  </Button>
+                              </CopyToClipboard>,
+                              <Button size={"small"}
+                                      onClick={() => stopSharing(item.fileId)}>
+                                  <StopOutlined /> Stop sharing
                               </Button>
-                          </CopyToClipboard>,
-                          <Button size={"small"}
-                                  onClick={() => stopSharing(item.fileId)}>
-                              <StopOutlined /> Stop sharing
-                          </Button>
-                      ]}
-                  >
-                      <List.Item.Meta style={{float:"left", marginLeft:"0px", width: "0px"}}
-                                      title={<a onClick={() => onDownload(item.fileId, item.fileName, "raw")}>{item.fileName}</a>}
-                      />
-                  </List.Item>
-              )}
-        />
+                          ]}
+                      >
+                          <List.Item.Meta style={{float:"left", marginLeft:"0px", width: "0px"}}
+                                          title={<a onClick={() => onDownload(item.fileId, item.fileName, "raw")}>{item.fileName}</a>}
+                          />
+                      </List.Item>
+                  )}
+            />
+            {/*Slide Form*/}
+
+            <List
+                grid={{ gutter: 10, column: 4 }}
+                dataSource={fileList}
+                renderItem={item => (
+                    <List.Item>
+                        <Stage width={window.innerWidth/5} height={window.innerHeight/5}>
+                            <Layer>
+                                <SlideBackground x={10} />
+                                <SlideText title={item.fileName} />
+                            </Layer>
+                        </Stage>
+                    </List.Item>
+                )}
+            />
+
+
+
+        </div>
+
     );
 }

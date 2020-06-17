@@ -40,7 +40,7 @@ export function Render(props) {
     // pre-set newFileString to "", because Marpit cannot take null input
     // const markdownText = localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : ""
 
-    console.log(markdownText);
+    console.log(editorContext);
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
