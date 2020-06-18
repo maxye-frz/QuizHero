@@ -1,6 +1,5 @@
 import React from "react";
 import {Circle, Label, Tag, Text, Group} from "react-konva";
-import styled from "styled-components";
 
 class SlideButton extends React.Component {
     constructor(props) {
@@ -12,32 +11,9 @@ class SlideButton extends React.Component {
         this.render = () => {
             return (
                 <Group onMouseLeave={this.handleMouseLeave}>
-                <Label x={this.props.x} y={this.props.y}
-                       onClick={this.handleClick}
-                >
-                    <Tag
-                        fill={'grey'}
-                        lineJoin={'round'}
-                        shadowColor={'grey'}
-                        shadowBlur={5}
-                        shadowOffset={5}
-                        shadowOpacity={0.75}
-                        cornerRadius={5}
-                    />
-                    <Text
-                        text={'Delete File'}
-                        fontFamily={'Calibri'}
-                        fontSize={12}
-                        padding={2.5}
-                        fill={'white'}
-                        width={this.props.width}
-                        onClick={this.props.delete}
-                        height={20}
-                        align={'center'}
-                    />
-                </Label>
 
-                <Label x={this.props.x} y={this.props.y + 20}
+
+                <Label x={this.props.x} y={this.props.y}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -61,7 +37,7 @@ class SlideButton extends React.Component {
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 40}
+                <Label x={this.props.x} y={this.props.y + 20}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -85,31 +61,31 @@ class SlideButton extends React.Component {
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 60}
-                           onClick={this.handleClick}
-                    >
-                        <Tag
-                            fill={'grey'}
-                            lineJoin={'round'}
-                            shadowColor={'black'}
-                            shadowBlur={5}
-                            shadowOffset={5}
-                            shadowOpacity={0.75}
-                            cornerRadius={5}
-                        />
-                        <Text
-                            text={'Present'}
-                            fontFamily={'Calibri'}
-                            fontSize={12}
-                            padding={2.5}
-                            fill={'white'}
-                            width={this.props.width}
-                            onClick={this.props.present}
-                            height={20}
-                            align={'center'}
-                        />
-                </Label>
-                <Label x={this.props.x} y={this.props.y + 60}
+                {/*<Label x={this.props.x} y={this.props.y + 40}*/}
+                {/*           onClick={this.handleClick}*/}
+                {/*    >*/}
+                {/*        <Tag*/}
+                {/*            fill={'grey'}*/}
+                {/*            lineJoin={'round'}*/}
+                {/*            shadowColor={'black'}*/}
+                {/*            shadowBlur={5}*/}
+                {/*            shadowOffset={5}*/}
+                {/*            shadowOpacity={0.75}*/}
+                {/*            cornerRadius={5}*/}
+                {/*        />*/}
+                {/*        <Text*/}
+                {/*            text={'Present'}*/}
+                {/*            fontFamily={'Calibri'}*/}
+                {/*            fontSize={12}*/}
+                {/*            padding={2.5}*/}
+                {/*            fill={'white'}*/}
+                {/*            width={this.props.width}*/}
+                {/*            onClick={this.props.present}*/}
+                {/*            height={20}*/}
+                {/*            align={'center'}*/}
+                {/*        />*/}
+                {/*</Label>*/}
+                <Label x={this.props.x} y={this.props.y + 40}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -133,7 +109,7 @@ class SlideButton extends React.Component {
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 80}
+                <Label x={this.props.x} y={this.props.y + 60}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -167,7 +143,6 @@ class SlideButton extends React.Component {
             return (
                 <Label x={this.props.x + 40} y={this.props.y}
                        onClick={this.handleClick}
-                       // onMouseLeave={this.handleMouseLeave}
                 >
                     <Tag
                         fill={'grey'}
@@ -196,7 +171,6 @@ class SlideButton extends React.Component {
         return (
             <Label x={this.props.x + 40} y={this.props.y}
                    onClick={this.handleClick}
-                   // onMouseLeave={this.handleMouseLeave}
             >
 
                 <Tag
@@ -221,6 +195,5 @@ class SlideButton extends React.Component {
         );
     }
 }
-
 
 export default SlideButton;

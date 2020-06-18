@@ -1,7 +1,7 @@
 import React from "react";
 import {Rect} from "react-konva";
 
-class SlideBackground extends React.Component {
+class ViewButton extends React.Component {
     constructor(props) {
         super(props);
         const image = new window.Image();
@@ -10,11 +10,11 @@ class SlideBackground extends React.Component {
                 fillImage: image
             });
         }
-        image.src = require('../../fig/background.png');
+        image.src = require('../../fig/view-icon.png');
         this.state = {
             fillImage: null
         }
-    };
+    }
 
     render() {
         return (
@@ -23,8 +23,9 @@ class SlideBackground extends React.Component {
                 y={this.props.y}
                 width={this.props.width}
                 height={this.props.height}
-                // fill={'rgba(217, 218, 217, 0.1)'}
-                shadowBlur={10}
+                onClick={this.props.present}
+                opacity={0.2}
+                shadowBlur={2.5}
                 lineCap={"round"}
                 lineJoin={"round"}
                 fillPatternImage={this.state.fillImage}
@@ -33,4 +34,4 @@ class SlideBackground extends React.Component {
     }
 }
 
-export default SlideBackground;
+export default ViewButton;

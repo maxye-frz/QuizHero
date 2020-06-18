@@ -8,6 +8,8 @@ import {Layer, Stage, Text} from 'react-konva';
 import SlideBackground from "./SlideBackground";
 import SlideText from "./SlideText";
 import SlideButton from "./SlideButton";
+import DeleteButton from "./DeleteButton";
+import ViewButton from "./ViewButton";
 import 'antd/dist/antd.css';
 import '../../App.css';
 import {Link} from "react-router-dom";
@@ -278,10 +280,18 @@ export default function History(props) {
                                            offsetY={-50}
                                            edit={() => editFile(item.fileId, item.fileName)}
                                 />
+                                <DeleteButton x={10} y={10}
+                                              width={25} height={25}
+                                              delete={() => deleteFile(item.fileId)}
+                                />
+                                <ViewButton x={12} y={95}
+                                              width={25} height={25}
+                                              present={() => presenterMode(item.fileId)}
+                                />
                                 <SlideButton x={120} y={10} width={90}
-                                             delete={() => deleteFile(item.fileId)}
+                                             // delete={() => deleteFile(item.fileId)}
                                              downloadRaw={() => onDownload(item.fileId, item.fileName, "HTML")}
-                                             present={() => presenterMode(item.fileId)}
+                                             // present={() => presenterMode(item.fileId)}
                                              downloadHTML={() => onDownload(item.fileId, item.fileName, "HTML")}
                                              share={() => startSharing(item.fileId)}
                                              stopShare={() => stopSharing(item.fileId)}
