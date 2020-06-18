@@ -278,11 +278,11 @@ export default function History(props) {
                                            offsetY={-50}
                                            edit={() => editFile(item.fileId, item.fileName)}
                                 />
-                                <SlideButton x={155} y={10} width={55}
+                                <SlideButton x={120} y={10} width={90}
                                              delete={() => deleteFile(item.fileId)}
-                                             edit={() => editFile(item.fileId, item.fileName)}
+                                             downloadRaw={() => onDownload(item.fileId, item.fileName, "HTML")}
                                              present={() => presenterMode(item.fileId)}
-                                             download={() => onDownload(item.fileId, item.fileName, "HTML")}
+                                             downloadHTML={() => onDownload(item.fileId, item.fileName, "HTML")}
                                              share={() => startSharing(item.fileId)}
                                              stopShare={() => stopSharing(item.fileId)}
                                 />

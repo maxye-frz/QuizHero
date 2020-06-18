@@ -10,7 +10,8 @@ class SlideButton extends React.Component {
 
     handleClick = () => {
         this.render = () => {
-            return ( <Group onMouseLeave={this.handleMouseLeave}>
+            return (
+                <Group onMouseLeave={this.handleMouseLeave}>
                 <Label x={this.props.x} y={this.props.y}
                        onClick={this.handleClick}
                 >
@@ -22,22 +23,21 @@ class SlideButton extends React.Component {
                         shadowOffset={5}
                         shadowOpacity={0.75}
                         cornerRadius={5}
-                        // pointerHeight={50}
                     />
                     <Text
-                        text={'Delete'}
+                        text={'Delete File'}
                         fontFamily={'Calibri'}
                         fontSize={12}
                         padding={2.5}
                         fill={'white'}
                         width={this.props.width}
                         onClick={this.props.delete}
-                        height={15}
+                        height={20}
                         align={'center'}
                     />
                 </Label>
 
-                <Label x={this.props.x} y={this.props.y + 15}
+                <Label x={this.props.x} y={this.props.y + 20}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -48,21 +48,20 @@ class SlideButton extends React.Component {
                             shadowOffset={5}
                             shadowOpacity={0.75}
                             cornerRadius={5}
-                            // pointerHeight={50}
                         />
                         <Text
-                            text={'Edit'}
+                            text={'Download Raw'}
                             fontFamily={'Calibri'}
                             fontSize={12}
                             padding={2.5}
                             fill={'white'}
                             width={this.props.width}
-                            onClick={this.props.edit}
-                            height={15}
+                            onClick={this.props.downloadRaw}
+                            height={20}
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 30}
+                <Label x={this.props.x} y={this.props.y + 40}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -73,21 +72,20 @@ class SlideButton extends React.Component {
                             shadowOffset={5}
                             shadowOpacity={0.75}
                             cornerRadius={5}
-                            // pointerHeight={50}
                         />
                         <Text
-                            text={'Download'}
+                            text={'Download HTML'}
                             fontFamily={'Calibri'}
                             fontSize={12}
                             padding={2.5}
                             fill={'white'}
                             width={this.props.width}
-                            onClick={this.props.download}
-                            height={15}
+                            onClick={this.props.downloadHTML}
+                            height={20}
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 45}
+                <Label x={this.props.x} y={this.props.y + 60}
                            onClick={this.handleClick}
                     >
                         <Tag
@@ -98,7 +96,6 @@ class SlideButton extends React.Component {
                             shadowOffset={5}
                             shadowOpacity={0.75}
                             cornerRadius={5}
-                            // pointerHeight={50}
                         />
                         <Text
                             text={'Present'}
@@ -108,13 +105,12 @@ class SlideButton extends React.Component {
                             fill={'white'}
                             width={this.props.width}
                             onClick={this.props.present}
-                            height={15}
+                            height={20}
                             align={'center'}
                         />
                 </Label>
                 <Label x={this.props.x} y={this.props.y + 60}
                            onClick={this.handleClick}
-                           // onMouseLeave={this.handleMouseLeave}
                     >
                         <Tag
                             fill={'grey'}
@@ -124,23 +120,21 @@ class SlideButton extends React.Component {
                             shadowOffset={5}
                             shadowOpacity={0.75}
                             cornerRadius={5}
-                            // pointerHeight={50}
                         />
                         <Text
-                            text={'Share'}
+                            text={'Start Sharing'}
                             fontFamily={'Calibri'}
                             fontSize={12}
                             padding={2.5}
                             fill={'white'}
                             width={this.props.width}
                             onClick={this.props.share}
-                            height={15}
+                            height={20}
                             align={'center'}
                         />
                 </Label>
-                <Label x={this.props.x} y={this.props.y + 75}
+                <Label x={this.props.x} y={this.props.y + 80}
                            onClick={this.handleClick}
-                           // onMouseLeave={this.handleMouseLeave}
                     >
                         <Tag
                             fill={'grey'}
@@ -150,7 +144,6 @@ class SlideButton extends React.Component {
                             shadowOffset={5}
                             shadowOpacity={0.75}
                             cornerRadius={5}
-                            // pointerHeight={50}
                         />
                         <Text
                             text={'Stop Sharing'}
@@ -159,9 +152,9 @@ class SlideButton extends React.Component {
                             padding={2.5}
                             fill={'white'}
                             width={this.props.width}
-                            onClick={this.props.stopshare}
+                            onClick={this.props.stopShare}
                             align={'center'}
-                            height={30}
+                            height={20}
                         />
                 </Label>
             </Group>
@@ -172,9 +165,9 @@ class SlideButton extends React.Component {
     handleMouseLeave = () => {
         this.render = () => {
             return (
-                <Label x={this.props.x} y={this.props.y}
+                <Label x={this.props.x + 40} y={this.props.y}
                        onClick={this.handleClick}
-                       onMouseLeave={this.handleMouseLeave}
+                       // onMouseLeave={this.handleMouseLeave}
                 >
                     <Tag
                         fill={'grey'}
@@ -191,7 +184,7 @@ class SlideButton extends React.Component {
                         fontSize={12}
                         padding={5}
                         fill={'white'}
-                        width={this.props.width}
+                        width={this.props.width - 40}
                         align={'center'}
                     />
                 </Label>
@@ -201,9 +194,9 @@ class SlideButton extends React.Component {
 
     render() {
         return (
-            <Label x={this.props.x} y={this.props.y}
+            <Label x={this.props.x + 40} y={this.props.y}
                    onClick={this.handleClick}
-                   onMouseLeave={this.handleMouseLeave}
+                   // onMouseLeave={this.handleMouseLeave}
             >
 
                 <Tag
@@ -221,7 +214,7 @@ class SlideButton extends React.Component {
                     fontSize={12}
                     padding={5}
                     fill={'white'}
-                    width={this.props.width}
+                    width={this.props.width - 40}
                     align={'center'}
                 />
             </Label>
