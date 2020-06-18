@@ -3,7 +3,7 @@
  * download raw Markdown file and static HTML file, delete the presentation from the database and control the sharing permission.
  */
 
-import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {Layer, Stage, Text} from 'react-konva';
 import SlideBackground from "./SlideBackground";
 import SlideText from "./SlideText";
@@ -13,7 +13,15 @@ import '../../App.css';
 import {Link} from "react-router-dom";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {List, Button, Menu, message} from 'antd';
-import {DeleteOutlined, EditOutlined, FilePptOutlined, DownloadOutlined, ShareAltOutlined, StopOutlined} from "@ant-design/icons";
+import {
+    DeleteOutlined,
+    EditOutlined,
+    FilePptOutlined,
+    DownloadOutlined,
+    ShareAltOutlined,
+    StopOutlined,
+    FilePdfOutlined
+} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
 import separateQuestion from "../Parse";
@@ -21,24 +29,11 @@ import marpitConvert from "../Marpit";
 import fileListContext from "./fileListContext";
 import styled from "styled-components";
 
-// const Slide = styled.div`
-//   width: 15vw;
-//   height: 20vh;
-//   // padding: 10px;
-//   float: left;
-//   margin: 5px;
-//   border: 1.5px solid rgba(15, 15, 15, 0.4);
-// `;
-// const SlideContainer = styled.div`
-//   width: 100vw;
-//   height: 50vh;
-//   // position: relative;
-// `;
 
 export default function History(props) {
 
     const { fileList } = useContext(fileListContext);
-
+    const [layout, setLayout] = useState("list");
     /**
      * useEffect with deps: [] is a Hook in function similar to componentDidMount() in class,
      * which is the function mounted whenever this page is loaded (refreshed) for only one time.
@@ -199,10 +194,21 @@ export default function History(props) {
 
     return (
         <div>
+            <div style={{display: "flex"}}>
+                <Button style={{ marginLeft: "auto" }}
+                    onClick={() => {
+                        if (layout === "grid") setLayout("list");
+                        else setLayout("grid");
+                    }}>
+                    Change layout
+                </Button>
+            </div>
+
             {/* Tab form */}
             <List margin-top={"50px"}
                   className="demo-loadmore-list"
                   itemLayout="horizontal"
+                  style={{display: layout === "list" ? "block" : "none"}}
                   dataSource={fileList}
                   renderItem={item => (
                       <List.Item
@@ -211,12 +217,12 @@ export default function History(props) {
                                       onClick={() => deleteFile(item.fileId)}>
                                   <DeleteOutlined /> Delete
                               </Button>,
-                              <Link to={{pathname: '/EditPage'}}>
-                                  <Button size={'small'}
-                                          onClick={() => editFile(item.fileId, item.fileName)}>
-                                      <EditOutlined /> Edit
-                                  </Button>
-                              </Link>,
+                              // <Link to={{pathname: '/EditPage'}}>
+                              //     <Button size={'small'}
+                              //             onClick={() => editFile(item.fileId, item.fileName)}>
+                              //         <EditOutlined /> Edit
+                              //     </Button>
+                              // </Link>,
                               // <Link to={{pathname: '/presenter'}} target = '_blank'>
                               <Button size={"small"}
                                       onClick={() => presenterMode(item.fileId)}>
@@ -229,8 +235,12 @@ export default function History(props) {
 
                               // Start/Stop sharing file button
                               <Button size={"small"}
+                                      onClick={() => onDownload(item.fileId, item.fileName, "raw")}>
+                                  <DownloadOutlined /> Download Raw
+                              </Button>,
+                              <Button size={"small"}
                                       onClick={() => onDownload(item.fileId, item.fileName, "HTML")}>
-                                  <DownloadOutlined /> Download HTML
+                                  <FilePdfOutlined /> Download HTML
                               </Button>,
                               <CopyToClipboard text={item.fileId}
                                                onCopy={() => startSharing(item.fileId)}>
@@ -245,7 +255,9 @@ export default function History(props) {
                           ]}
                       >
                           <List.Item.Meta style={{float:"left", marginLeft:"0px", width: "0px"}}
-                                          title={<a onClick={() => onDownload(item.fileId, item.fileName, "raw")}>{item.fileName}</a>}
+                                          title={<a onClick={() => editFile(item.fileId, item.fileName)}>
+                                                    <EditOutlined />  {item.fileName}
+                                                </a>}
                           />
                       </List.Item>
                   )}
@@ -253,7 +265,7 @@ export default function History(props) {
             {/*Slide Form*/}
             <List
                 grid={{ gutter: 25, column: window.innerWidth * 0.0034 }}
-
+                style={{display: layout === "grid" ? "block" : "none"}}
                 dataSource={fileList}
                 renderItem={item => (
                     <List.Item>
@@ -264,6 +276,7 @@ export default function History(props) {
                                            x={10} y={10}
                                            width={200} height={112}
                                            offsetY={-50}
+                                           edit={() => editFile(item.fileId, item.fileName)}
                                 />
                                 <SlideButton x={155} y={10} width={55}
                                              delete={() => deleteFile(item.fileId)}

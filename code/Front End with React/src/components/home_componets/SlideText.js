@@ -17,6 +17,7 @@ class SlideText extends React.Component {
                 height={this.props.height}
                 fontSize={18}
                 offsetY={this.props.offsetY}
+                onClick={this.props.edit}
             />
         );
     }

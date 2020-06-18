@@ -1,5 +1,6 @@
 import React from "react";
 import {Circle, Label, Tag, Text, Group} from "react-konva";
+import styled from "styled-components";
 
 class SlideButton extends React.Component {
     constructor(props) {
@@ -166,8 +167,8 @@ class SlideButton extends React.Component {
             </Group>
             );
         }
-
     }
+
     handleMouseLeave = () => {
         this.render = () => {
             return (
@@ -197,6 +198,7 @@ class SlideButton extends React.Component {
             );
         }
     }
+
     render() {
         return (
             <Label x={this.props.x} y={this.props.y}
