@@ -3,10 +3,11 @@
  * download raw Markdown file and static HTML file, delete the presentation from the database and control the sharing permission.
  */
 
-import React, { useContext, useEffect } from 'react';
-import {Layer, Stage} from 'react-konva';
-import SlideBackground from './SlideBackground';
-import SlideText from './SlideText';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import {Layer, Stage, Text} from 'react-konva';
+import SlideBackground from "./SlideBackground";
+import SlideText from "./SlideText";
+import SlideButton from "./SlideButton";
 import 'antd/dist/antd.css';
 import '../../App.css';
 import {Link} from "react-router-dom";
@@ -34,24 +35,6 @@ import styled from "styled-components";
 //   // position: relative;
 // `;
 
-// class CanvasComponent extends React.Component {
-//     constructor(...args) {
-//         super(...args);
-//         this.state = {
-//             color: 'green'
-//         };
-//     }
-//     render() {
-//         return (
-//             <Rect
-//                 x={10} y={10} width={50} height={50}
-//                 fill={'green'}
-//                 shadowBlur={10}
-//             />
-//         );
-//     }
-// }
-
 export default function History(props) {
 
     const { fileList } = useContext(fileListContext);
@@ -61,7 +44,7 @@ export default function History(props) {
      * which is the function mounted whenever this page is loaded (refreshed) for only one time.
      * request all the history files by sending the instructorId to back end.
      */
-    useEffect(() => props.refreshCallback(), []);
+    useEffect(() => props.refreshCallback(), );
 
 
     const fetchFile = (fileId) => {
@@ -69,10 +52,8 @@ export default function History(props) {
             let params = {
                 fileId: fileId
             }
-            console.log(fileId)
             axios.get(BASE_URL + "/fetch",  {params})
                 .then(res => {
-                    console.log("AAA", res.data);
                     message.success(`File ${fileId} fetched successfully.`);
                     resolve(res.data);
                 })
@@ -203,6 +184,13 @@ export default function History(props) {
             }))
     }
 
+    const handleClick = e => {
+        console.log(e.target);
+        e.target.setAttrs({
+            text: "888"
+        });
+
+    }
 
     /**
      * return rendered HomePage page. Use <List.Item/> to show the list of uploaded files.
@@ -263,23 +251,33 @@ export default function History(props) {
                   )}
             />
             {/*Slide Form*/}
-
             <List
-                grid={{ gutter: 10, column: 4 }}
+                grid={{ gutter: 25, column: window.innerWidth * 0.0034 }}
+
                 dataSource={fileList}
                 renderItem={item => (
                     <List.Item>
-                        <Stage width={window.innerWidth/5} height={window.innerHeight/5}>
+                        <Stage width={240} height={140}>
                             <Layer>
-                                <SlideBackground x={10} />
-                                <SlideText title={item.fileName} />
+                                <SlideBackground x={10} y={10} width={200} height={112}/>
+                                <SlideText title={item.fileName}
+                                           x={10} y={10}
+                                           width={200} height={112}
+                                           offsetY={-50}
+                                />
+                                <SlideButton x={155} y={10} width={55}
+                                             delete={() => deleteFile(item.fileId)}
+                                             edit={() => editFile(item.fileId, item.fileName)}
+                                             present={() => presenterMode(item.fileId)}
+                                             download={() => onDownload(item.fileId, item.fileName, "HTML")}
+                                             share={() => startSharing(item.fileId)}
+                                             stopShare={() => stopSharing(item.fileId)}
+                                />
                             </Layer>
                         </Stage>
                     </List.Item>
                 )}
             />
-
-
 
         </div>
 

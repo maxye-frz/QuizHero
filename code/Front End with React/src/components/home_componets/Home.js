@@ -34,15 +34,15 @@ export default function Home(props) {
         let params = {
             instructorId : localStorage.getItem("instructorId")
         }
-        console.log(params)
+        // console.log(params)
         axios
             .get(BASE_URL + "/history", {params})
             .then((res) => {
                 if(res.status === 200){
-                    console.log("res",res);
-                    console.log(fileList);
+                    // console.log("res",res);
+                    // console.log(fileList);
                     setFileList(res.data);
-                    console.log(fileList);
+                    // console.log(fileList);
                 }
             })
             .catch((error) => {
