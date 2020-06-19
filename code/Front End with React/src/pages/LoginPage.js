@@ -46,7 +46,12 @@ const mapDispatchToProps = (dispatch) => {
 class LoginPage extends Component {
   formRef = React.createRef();
 
-  /**
+  componentDidMount() {
+      if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
+      else window.location = "login";
+  }
+
+    /**
    * Form button listener, triggered when the login form is submitted
    * by the button
    *
