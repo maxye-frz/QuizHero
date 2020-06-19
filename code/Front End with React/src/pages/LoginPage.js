@@ -48,7 +48,6 @@ class LoginPage extends Component {
 
   componentDidMount() {
       if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
-      // else window.location = "login";
   }
 
     /**
