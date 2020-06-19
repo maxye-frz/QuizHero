@@ -48,7 +48,7 @@ class LoginPage extends Component {
 
   componentDidMount() {
       if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
-      else window.location = "login";
+      // else window.location = "login";
   }
 
     /**
@@ -123,16 +123,16 @@ class LoginPage extends Component {
       window.location = "/github";
       console.log("go to github!!!!!!!!!!!")
       // let params
-      axios
-          .post(BASE_URL + "/githublogin")
-          .then((res) => {
-              console.log("HTTP get request!");
-              localStorage.setItem("instructorId", res.userId);
-              localStorage.setItem("username", res.name);
-              localStorage.setItem("githubId", res.githubId);
-              console.log("after setItem");
-              history.push("/HomePage");
-          })
+      // axios
+      //     .post(BASE_URL + "/githublogin")
+      //     .then((res) => {
+      //         console.log("HTTP get request!");
+      //         localStorage.setItem("instructorId", res.userId);
+      //         localStorage.setItem("username", res.name);
+      //         localStorage.setItem("githubId", res.githubId);
+      //         console.log("after setItem");
+      //         history.push("/HomePage");
+      //     })
   }
 
   render() {

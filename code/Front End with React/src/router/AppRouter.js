@@ -46,7 +46,7 @@ class AppRouter extends Component {
       <Switch>
           <PublicRoute restricted={false} component={IndexPage} path="/" exact />
           <PublicRoute restricted={false} component={LoginPage} path="/login" exact />
-          <PublicRoute restricted={false} component={GithubLogin} path="/githublogin" exact />
+          {/*<PublicRoute restricted={false} component={GithubLogin} path="/githublogin" exact />*/}
           <PublicRoute restricted={false} component={RegisterPage} path="/register" exact />
           <PublicRoute restricted={false} component={StudentRequestPage} path="/StudentRequestPage" exact />
           <PublicRoute restricted={false} component={StudentPage} path="/student" exact />

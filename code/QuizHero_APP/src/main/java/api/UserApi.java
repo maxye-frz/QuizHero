@@ -84,7 +84,8 @@ public class UserApi {
                 User user = userDao.githubLogin(name, githubId);
                 ctx.json(user);
                 ctx.contentType("application/json");
-                ctx.status(200); // created successfully
+                ctx.status(201); // created successfully
+//                ctx.redirect("/login");
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {
