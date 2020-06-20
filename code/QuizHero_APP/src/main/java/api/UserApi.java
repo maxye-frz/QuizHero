@@ -82,10 +82,10 @@ public class UserApi {
             System.out.println(githubId);
             try {
                 User user = userDao.githubLogin(name, githubId);
-                ctx.json(user);
+                ctx.json(user); //json text of user model is printed on web page
                 System.out.println(user);
                 ctx.contentType("application/json");
-                ctx.status(201); // created successfully
+                ctx.status(200);
                 ctx.redirect("/login");
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
