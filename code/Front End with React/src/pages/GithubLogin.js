@@ -5,14 +5,15 @@ import {BASE_URL} from "../config/config";
 class GithubLogin extends React.Component {
     componentDidMount() {
         axios
-            .post(BASE_URL + "/githublogin")
+            .get(BASE_URL + "/github")
             .then((res) => {
                 console.log("HTTP get request!");
-                localStorage.setItem("instructorId", res.userId);
-                localStorage.setItem("username", res.name);
-                localStorage.setItem("githubId", res.githubId);
+                localStorage.setItem("instructorId", res.data.userId);
+                localStorage.setItem("username", res.data.name);
+                localStorage.setItem("githubId", res.data.githubId);
+                localStorage.setItem("isLogin", "1");
                 console.log("after setItem");
-                window.location("/HomePage");
+                window.location = '/HomePage';
             })
     }
 

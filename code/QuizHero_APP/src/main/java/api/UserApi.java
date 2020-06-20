@@ -10,14 +10,12 @@ import model.User;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.javalin.JavalinWebContext;
-import org.pac4j.oauth.client.GitHubClient;
-import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import java.util.List;
 import java.util.Objects;
 
-import static util.Pac4jUtil.githubSecurityHandler;
 import static util.JavalinUtil.app;
+import static util.Pac4jUtil.githubSecurityHandler;
 
 public class UserApi {
     /**
@@ -86,7 +84,7 @@ public class UserApi {
                 System.out.println(user);
                 ctx.contentType("application/json");
                 ctx.status(200);
-                ctx.redirect("/login");
+//                ctx.redirect("/login");
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {

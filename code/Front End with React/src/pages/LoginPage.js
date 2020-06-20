@@ -48,6 +48,20 @@ class LoginPage extends Component {
 
   componentDidMount() {
       if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
+
+      // if (localStorage.getItem("isGithubLogin") === '1') {
+      //     axios
+      //         .get(BASE_URL + "/github")
+      //         .then((res) => {
+      //             console.log("HTTP get request!");
+      //             localStorage.setItem("instructorId", res.data.userId);
+      //             localStorage.setItem("username", res.data.name);
+      //             localStorage.setItem("githubId", res.data.githubId);
+      //             localStorage.setItem("isLogin", "1");
+      //             console.log("after setItem");
+      //             window.location = '/HomePage';
+      //         })
+      // }
   }
 
     /**
@@ -118,20 +132,39 @@ class LoginPage extends Component {
   };
 
   loginWithGitHub = () => {
-      const { history } = this.props;
+      // const { history } = this.props;
       window.location = "/github";
       console.log("go to github!!!!!!!!!!!")
       // let params
+      // localStorage.setItem("isGithubLogin", '1');
+      // window.location = '/login';
       // axios
-      //     .post(BASE_URL + "/githublogin")
+      //     .get(BASE_URL + "/github")
       //     .then((res) => {
-      //         console.log("HTTP get request!");
-      //         localStorage.setItem("instructorId", res.userId);
-      //         localStorage.setItem("username", res.name);
-      //         localStorage.setItem("githubId", res.githubId);
-      //         console.log("after setItem");
-      //         history.push("/HomePage");
+      //         if (res.status === 200) {
+      //             console.log("HTTP get request!");
+      //             localStorage.setItem("instructorId", res.data.userId);
+      //             localStorage.setItem("username", res.data.name);
+      //             localStorage.setItem("githubId", res.data.githubId);
+      //             localStorage.setItem("isLogin", "1");
+      //             console.log("after setItem");
+      //             window.location = '/HomePage';
+      //         }
       //     })
+  }
+
+  getGithubLoginInfo = () => {
+      axios
+          .get(BASE_URL + "/github")
+          .then((res) => {
+              console.log("HTTP get request!");
+              localStorage.setItem("instructorId", res.data.userId);
+              localStorage.setItem("username", res.data.name);
+              localStorage.setItem("githubId", res.data.githubId);
+              localStorage.setItem("isLogin", "1");
+              console.log("after setItem");
+              window.location = '/HomePage';
+          })
   }
 
   render() {
@@ -203,6 +236,9 @@ class LoginPage extends Component {
             <Button onClick={this.loginWithGitHub}>
               Login with GitHub
             </Button>
+              <Button onClick={this.getGithubLoginInfo}>
+                  Get GitHub Login Info
+              </Button>
           </Form.Item>
         </Form>
       </div>
