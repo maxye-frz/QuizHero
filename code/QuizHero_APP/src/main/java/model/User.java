@@ -129,7 +129,7 @@ public class User {
      */
     @Override
     public String toString() {
-        return "Instructor{" +
+        return "User{" +
                 "instructorId=" + userId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
