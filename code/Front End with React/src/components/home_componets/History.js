@@ -39,7 +39,7 @@ export default function History(props) {
      * which is the function mounted whenever this page is loaded (refreshed) for only one time.
      * request all the history files by sending the userId to back end.
      */
-    useEffect(() => props.refreshCallback(), );
+    useEffect(() => props.refreshCallback(), []);
 
 
     const fetchFile = (fileId) => {

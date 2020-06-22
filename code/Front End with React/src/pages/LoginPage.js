@@ -133,24 +133,25 @@ class LoginPage extends Component {
 
   loginWithGitHub = () => {
       // const { history } = this.props;
-      window.location = "/github";
+      window.location = BASE_URL + "/github";
       console.log("go to github!!!!!!!!!!!")
       // let params
       // localStorage.setItem("isGithubLogin", '1');
       // window.location = '/login';
-      // axios
-      //     .get(BASE_URL + "/github")
-      //     .then((res) => {
-      //         if (res.status === 200) {
-      //             console.log("HTTP get request!");
-      //             localStorage.setItem("instructorId", res.data.userId);
-      //             localStorage.setItem("username", res.data.name);
-      //             localStorage.setItem("githubId", res.data.githubId);
-      //             localStorage.setItem("isLogin", "1");
-      //             console.log("after setItem");
-      //             window.location = '/HomePage';
-      //         }
-      //     })
+      axios
+          .get(BASE_URL + "/github")
+          .then((res) => {
+              if (res.status === 200) {
+                  console.log(res);
+                  console.log("HTTP get request!");
+                  localStorage.setItem("instructorId", res.data.userId);
+                  localStorage.setItem("username", res.data.name);
+                  localStorage.setItem("githubId", res.data.githubId);
+                  // localStorage.setItem("isLogin", "1");
+                  console.log("after setItem");
+                  // window.location = '/HomePage';
+              }
+          })
   }
 
   getGithubLoginInfo = () => {
