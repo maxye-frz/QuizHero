@@ -37,7 +37,7 @@ export default function History(props) {
     /**
      * useEffect with deps: [] is a Hook in function similar to componentDidMount() in class,
      * which is the function mounted whenever this page is loaded (refreshed) for only one time.
-     * request all the history files by sending the instructorId to back end.
+     * request all the history files by sending the userId to back end.
      */
     useEffect(() => props.refreshCallback(), );
 

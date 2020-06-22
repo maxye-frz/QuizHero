@@ -101,8 +101,8 @@ class LoginPage extends Component {
             "Login success, directing you to HomePage",
             [2],
             (onclose = () => {
-              this.props.login(res.data.name, res.data.instructorId);
-              localStorage.setItem("instructorId", res.data.instructorId);
+              this.props.login(res.data.name, res.data.userId);
+              localStorage.setItem("instructorId", res.data.userId);
               localStorage.setItem("username", res.data.name);
 
               localStorage.setItem("isLogin", 1);
