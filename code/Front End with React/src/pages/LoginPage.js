@@ -49,19 +49,19 @@ class LoginPage extends Component {
   componentDidMount() {
       if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
 
-      // if (localStorage.getItem("isGithubLogin") === '1') {
-      //     axios
-      //         .get(BASE_URL + "/github")
-      //         .then((res) => {
-      //             console.log("HTTP get request!");
-      //             localStorage.setItem("instructorId", res.data.userId);
-      //             localStorage.setItem("username", res.data.name);
-      //             localStorage.setItem("githubId", res.data.githubId);
-      //             localStorage.setItem("isLogin", "1");
-      //             console.log("after setItem");
-      //             window.location = '/HomePage';
-      //         })
-      // }
+      if (localStorage.getItem("isGithubLogin") === '1') {
+          axios
+              .get(BASE_URL + "/github")
+              .then((res) => {
+                  console.log("HTTP get request!");
+                  localStorage.setItem("instructorId", res.data.userId);
+                  localStorage.setItem("username", res.data.name);
+                  localStorage.setItem("githubId", res.data.githubId);
+                  localStorage.setItem("isLogin", "1");
+                  console.log("after setItem");
+                  window.location = '/HomePage';
+              })
+      }
   }
 
     /**
@@ -107,7 +107,7 @@ class LoginPage extends Component {
 
               localStorage.setItem("isLogin", 1);
 
-              window.location = "/HomePage"
+              window.location = "/login"
               // history.push("/HomePage");
             })
           );
@@ -136,22 +136,22 @@ class LoginPage extends Component {
       window.location = BASE_URL + "/github";
       console.log("go to github!!!!!!!!!!!")
       // let params
-      // localStorage.setItem("isGithubLogin", '1');
+      localStorage.setItem("isGithubLogin", '1');
       // window.location = '/login';
-      axios
-          .get(BASE_URL + "/github")
-          .then((res) => {
-              if (res.status === 200) {
-                  console.log(res);
-                  console.log("HTTP get request!");
-                  localStorage.setItem("instructorId", res.data.userId);
-                  localStorage.setItem("username", res.data.name);
-                  localStorage.setItem("githubId", res.data.githubId);
-                  // localStorage.setItem("isLogin", "1");
-                  console.log("after setItem");
-                  // window.location = '/HomePage';
-              }
-          })
+      // axios
+      //     .get(BASE_URL + "/github")
+      //     .then((res) => {
+      //         if (res.status === 200) {
+      //             console.log(res);
+      //             console.log("HTTP get request!");
+      //             localStorage.setItem("instructorId", res.data.userId);
+      //             localStorage.setItem("username", res.data.name);
+      //             localStorage.setItem("githubId", res.data.githubId);
+      //             // localStorage.setItem("isLogin", "1");
+      //             console.log("after setItem");
+      //             // window.location = '/HomePage';
+      //         }
+      //     })
   }
 
   getGithubLoginInfo = () => {

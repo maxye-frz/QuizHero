@@ -84,7 +84,7 @@ public class UserApi {
                 System.out.println(user);
                 ctx.contentType("application/json");
                 ctx.status(200);
-                ctx.redirect("http://localhost:3000/login");
+                ctx.redirect("http://localhost:3000/register");
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {
