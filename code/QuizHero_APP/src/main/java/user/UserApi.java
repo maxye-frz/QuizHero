@@ -1,12 +1,8 @@
-package api;
+package user;
 
-import dao.UserDao;
 import exception.ApiError;
 import exception.DaoException;
-import exception.LoginException;
-import exception.RegisterException;
 import model.File;
-import model.User;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.javalin.JavalinWebContext;
@@ -18,6 +14,7 @@ import static util.JavalinUtil.app;
 import static util.Pac4jUtil.githubSecurityHandler;
 
 public class UserApi {
+
     /**
      * This method is used to open the route for front-end to register a new instructor
      * pass data to the Instructor class
@@ -42,31 +39,47 @@ public class UserApi {
         });
     }
 
-
-    /**
-     * This method is used to open the route for instructor to login
-     * call instructorDao to check user identity
-     * if login successful, send status code 201
-     * if wrong user information, send status code 403, request forbidden
-     * @param userDao dao for instructor table
-     */
-    public static void login(UserDao userDao) {
-        // instructor login action, return user including his/her id
-        app.post("/login", ctx -> {
-            String email = ctx.formParam("email");
-            String pswd = ctx.formParam("pswd");
-            try {
-                User user = userDao.userLogin(email, pswd);
+    public static void emailForPassword(UserDao userDao) {
+        app.post("/emailForPassword", ctx -> {
+           String email = ctx.formParam("email");
+           try {
+                User user = userDao.findPassword(email);
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
-            } catch (DaoException ex) {
+           } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
             }
         });
     }
+
+
+//    /**
+//     * This method is used to open the route for instructor to login
+//     * call instructorDao to check user identity
+//     * if login successful, send status code 201
+//     * if wrong user information, send status code 403, request forbidden
+//     * @param userDao dao for instructor table
+//     */
+//    public static void login(UserDao userDao) {
+//        // instructor login action, return user including his/her id
+//        app.post("/login", ctx -> {
+//            String email = ctx.formParam("email");
+//            String pswd = ctx.formParam("pswd");
+//            try {
+//                User user = userDao.userLogin(email, pswd);
+//                ctx.json(user);
+//                ctx.contentType("application/json");
+//                ctx.status(201); // created successfully
+//            } catch (DaoException ex) {
+//                throw new ApiError(ex.getMessage(), 500); // server internal error
+//            } catch (LoginException ex) {
+//                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+//            }
+//        });
+//    }
 
     public static void githubLogin(UserDao userDao) {
         app.before("/github", githubSecurityHandler);

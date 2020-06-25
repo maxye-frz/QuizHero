@@ -4,6 +4,8 @@ import exception.DaoException;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
+import user.UserDao;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -75,6 +77,7 @@ public final class DaoFactory {
                 "email VARCHAR(30)," +
                 "pswd VARCHAR(30)," +
                 "githubId VARCHAR(30)," +
+                "salt VARCHAR(30)," +
                 "PRIMARY KEY (userId)" +
                 ");";
         try (Connection conn = sql2o.open()) {
@@ -228,8 +231,9 @@ public final class DaoFactory {
      */
     public static UserDao getUserDao() {
         createAccountTable(sql2o);
+        createFileTable(sql2o);
         createAccountFileTable(sql2o);
-        return new Sql2oUserDao(sql2o);
+        return new UserDao(sql2o);
     }
 
     /**

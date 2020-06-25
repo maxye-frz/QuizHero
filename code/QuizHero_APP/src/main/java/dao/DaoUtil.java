@@ -1,5 +1,6 @@
 package dao;
-import model.User;
+import user.User;
+import user.UserDao;
 
 /**
  * DaoUtil class contains methods that add some initial sample data to the database
@@ -17,9 +18,9 @@ public final class DaoUtil {
      * @param userDao dao for instructor table
      */
     public static void addSampleUsers(UserDao userDao) {
-        userDao.registerUser(new User("Allen", "zchen85@jhu.edu", "9999"));
-        userDao.registerUser(new User("Bob Wang", "bob@jhu.edu", "8888"));
-        userDao.registerUser(new User("Richard", "richard@jhu.edu", "7777"));
+        userDao.registerUser(new User("Allen", "zchen85@jhu.edu", "9999", "salt"));
+        userDao.registerUser(new User("Bob Wang", "bob@jhu.edu", "8888", "salt"));
+        userDao.registerUser(new User("Richard", "richard@jhu.edu", "7777", "salt"));
     }
 
 }

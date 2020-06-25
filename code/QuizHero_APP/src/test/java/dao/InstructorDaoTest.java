@@ -1,7 +1,7 @@
 //package dao;
 //
-//import exception.LoginException;
-//import exception.RegisterException;
+//import user.LoginException;
+//import user.RegisterException;
 //import model.File;
 //import model.Instructor;
 //import org.junit.After;
