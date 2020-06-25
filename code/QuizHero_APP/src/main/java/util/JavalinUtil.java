@@ -5,6 +5,8 @@ import dao.*;
 import exception.ApiError;
 import io.javalin.Javalin;
 import io.javalin.plugin.json.JavalinJson;
+import user.UserApi;
+import user.UserDao;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -81,12 +83,13 @@ public class JavalinUtil {
         api.Pac4jApi.getLocalLogout();
 
         // login and register
-        api.UserApi.register(userDao);
-        api.UserApi.login(userDao);
+        UserApi.register(userDao);
+//        UserApi.login(userDao);
+        UserApi.emailForPassword(userDao);
         // login from github
-        api.UserApi.githubLogin(userDao);
+        UserApi.githubLogin(userDao);
         // get file list from user
-        api.UserApi.getFileListFromInstructor(userDao);
+        UserApi.getFileListFromInstructor(userDao);
         // fetch quiz statistics
         api.QuizApi.getQuizStatByFileId(quizDao);
         // update quiz statistics

@@ -1,4 +1,4 @@
-package exception;
+package user;
 
 /**
  * exception class related to user login
