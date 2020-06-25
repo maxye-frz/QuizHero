@@ -66,6 +66,7 @@ class RegisterPage extends Component {
                     name: username,
                     email: email,
                     pswd: hash,
+                    salt: "salt",
                 };
 
                 axios

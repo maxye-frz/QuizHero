@@ -50,8 +50,11 @@ class LoginPage extends Component {
         if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
 
         if (localStorage.getItem("isGithubLogin") === '1') {
+            let params = {
+                login : "1",
+            }
             axios
-                .get(BASE_URL + "/github")
+                .get(BASE_URL + "/github", {params})
                 .then((res) => {
                     console.log("HTTP get request!");
                     localStorage.setItem("instructorId", res.data.userId);
@@ -59,7 +62,12 @@ class LoginPage extends Component {
                     localStorage.setItem("githubId", res.data.githubId);
                     localStorage.setItem("isLogin", "1");
                     console.log("after setItem");
-                    window.location = '/HomePage';
+                    message.loading(
+                        "Login success, directing you to HomePage",
+                        [0.1],
+                        () => {
+                            window.location = '/HomePage';
+                        });
                 })
         }
     }
@@ -87,75 +95,51 @@ class LoginPage extends Component {
             return;
         }
 
-        var bcrypt = require('bcryptjs');
-        const saltRounds = 10;
-        const myPlaintextPassword = 's0/\/\P4$$w0rD';
-        // const someOtherPlaintextPassword = 'not_bacon';
-
-        // async
-        // generate a salt and hash on separate function calls
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            console.log(salt);
-            bcrypt.hash(myPlaintextPassword, salt, function(err, hash) {
-                // Store hash in your password DB.
-                console.log(hash);
-                bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
-                    // result == true
-                    console.log(result)
-                });
-            });
-        });
-        // // auto-gen a salt and hash
-        // bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-        //     // Store hash in your password DB.
-        // });
-        // Load hash from your password DB.
-        // bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
-        //     // result == true
-        //     console.log(result)
-        // });
-
-        // // sync
-        // // generate a salt and hash on separate function calls
-        // const salt = bcrypt.genSaltSync(saltRounds);
-        // const hash = bcrypt.hashSync(myPlaintextPassword, salt);
-        // // Store hash in your password DB.
-        // // auto-gen a salt and hash
-        // const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
-        // // Store hash in your password DB.
-
         const formData = new FormData();
         formData.append("email", email);
-        formData.append("pswd", password);
-
         axios
-            .post(BASE_URL + "/login", formData)
+            .post(BASE_URL + "/emailForPassword", formData)
             .then((res) => {
-                console.log(res.status);
-                if (res.status === 201) {
-                    console.log("Login success");
-                    message.loading(
-                        "Login success, directing you to HomePage",
-                        [2],
-                        (onclose = () => {
-                            this.props.login(res.data.name, res.data.userId);
-                            localStorage.setItem("instructorId", res.data.userId);
-                            localStorage.setItem("username", res.data.name);
-
-                            localStorage.setItem("isLogin", 1);
-
-                            // window.location = "/login"
-                            // history.push("/HomePage");
-                        })
-                    );
-                }
+                let bcrypt = require('bcryptjs');
+                bcrypt.compare(password, res.data.pswd, function(err, result) {
+                    // result == true
+                    console.log(result)
+                    if (result === true) {
+                        axios
+                            .post(BASE_URL + "/login", formData)
+                            .then((res) => {
+                                console.log(res.status);
+                                if (res.status === 201) {
+                                    console.log("Login success");
+                                    message.loading(
+                                        "Login success, directing you to HomePage",
+                                        [0.1],
+                                        () => {
+                                            // this.props.login(res.data.name, res.data.userId);
+                                            window.location = "/HomePage";
+                                            // history.push("/HomePage");
+                                        });
+                                    localStorage.setItem("instructorId", res.data.userId);
+                                    localStorage.setItem("username", res.data.name);
+                                    localStorage.setItem("isLogin", 1);
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        // Wrong Password
+                        message.error("Log in failed. Please check your account and password and try again!");
+                    }
+                });
             })
             .catch((err) => {
+                // No account
                 console.log(err);
-                message.error(
-                    "Log in failed. Please check your account and password and try again!"
-                );
+                message.error("Log in failed. Please check your account and password.\n\n" +
+                    "If do not have an account, please register first!");
             });
+
     };
 
     /**
@@ -171,39 +155,10 @@ class LoginPage extends Component {
     loginWithGitHub = () => {
         // const { history } = this.props;
         window.location = BASE_URL + "/github";
-        console.log("go to github!!!!!!!!!!!")
-        // let params
         localStorage.setItem("isGithubLogin", '1');
-        // window.location = '/login';
-        // axios
-        //     .get(BASE_URL + "/github")
-        //     .then((res) => {
-        //         if (res.status === 200) {
-        //             console.log(res);
-        //             console.log("HTTP get request!");
-        //             localStorage.setItem("instructorId", res.data.userId);
-        //             localStorage.setItem("username", res.data.name);
-        //             localStorage.setItem("githubId", res.data.githubId);
-        //             // localStorage.setItem("isLogin", "1");
-        //             console.log("after setItem");
-        //             // window.location = '/HomePage';
-        //         }
-        //     })
+        // localStorage.setItem("isLogin", '1');
     }
 
-    getGithubLoginInfo = () => {
-        axios
-            .get(BASE_URL + "/github")
-            .then((res) => {
-                console.log("HTTP get request!");
-                localStorage.setItem("instructorId", res.data.userId);
-                localStorage.setItem("username", res.data.name);
-                localStorage.setItem("githubId", res.data.githubId);
-                localStorage.setItem("isLogin", "1");
-                console.log("after setItem");
-                window.location = '/HomePage';
-            })
-    }
 
     render() {
         const {getFieldProps} = this.props.form;
@@ -273,9 +228,6 @@ class LoginPage extends Component {
                         </Button>
                         <Button onClick={this.loginWithGitHub}>
                             Login with GitHub
-                        </Button>
-                        <Button onClick={this.getGithubLoginInfo}>
-                            Get GitHub Login Info
                         </Button>
                     </Form.Item>
                 </Form>

@@ -56,30 +56,30 @@ public class UserApi {
     }
 
 
-//    /**
-//     * This method is used to open the route for instructor to login
-//     * call instructorDao to check user identity
-//     * if login successful, send status code 201
-//     * if wrong user information, send status code 403, request forbidden
-//     * @param userDao dao for instructor table
-//     */
-//    public static void login(UserDao userDao) {
-//        // instructor login action, return user including his/her id
-//        app.post("/login", ctx -> {
-//            String email = ctx.formParam("email");
+    /**
+     * This method is used to open the route for instructor to login
+     * call instructorDao to check user identity
+     * if login successful, send status code 201
+     * if wrong user information, send status code 403, request forbidden
+     * @param userDao dao for instructor table
+     */
+    public static void login(UserDao userDao) {
+        // instructor login action, return user including his/her id
+        app.post("/login", ctx -> {
+            String email = ctx.formParam("email");
 //            String pswd = ctx.formParam("pswd");
-//            try {
-//                User user = userDao.userLogin(email, pswd);
-//                ctx.json(user);
-//                ctx.contentType("application/json");
-//                ctx.status(201); // created successfully
-//            } catch (DaoException ex) {
-//                throw new ApiError(ex.getMessage(), 500); // server internal error
-//            } catch (LoginException ex) {
-//                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
-//            }
-//        });
-//    }
+            try {
+                User user = userDao.userLogin(email);
+                ctx.json(user);
+                ctx.contentType("application/json");
+                ctx.status(201); // created successfully
+            } catch (DaoException ex) {
+                throw new ApiError(ex.getMessage(), 500); // server internal error
+            } catch (LoginException ex) {
+                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+            }
+        });
+    }
 
     public static void githubLogin(UserDao userDao) {
         app.before("/github", githubSecurityHandler);
@@ -97,7 +97,11 @@ public class UserApi {
                 System.out.println(user);
                 ctx.contentType("application/json");
                 ctx.status(200);
-                ctx.redirect("http://localhost:3000/register");
+                System.out.println(ctx.queryParam("login"));
+                if (Objects.isNull(ctx.queryParam("login"))) {
+                    System.out.println("Redirect");
+                    ctx.redirect("http://localhost:3000/login");
+                }
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {

@@ -84,7 +84,7 @@ public class JavalinUtil {
 
         // login and register
         UserApi.register(userDao);
-//        UserApi.login(userDao);
+        UserApi.login(userDao);
         UserApi.emailForPassword(userDao);
         // login from github
         UserApi.githubLogin(userDao);

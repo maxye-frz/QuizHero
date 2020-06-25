@@ -7,8 +7,10 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import '../App.css'
 import {Link} from "react-router-dom";
-import { Menu, Layout } from 'antd';
+import { Menu, Layout, message } from 'antd';
 import Home from "../components/home_componets/Home";
+import axios from "axios";
+import {BASE_URL} from "../config/config";
 
 const { Header } = Layout;
 
@@ -21,9 +23,17 @@ class HomePage extends React.Component {
     handleLogOut(){
         localStorage.setItem("username", null);
         localStorage.setItem("instructorId", '0');
+        localStorage.setItem("githubId", '0');
         localStorage.setItem("isGithubLogin", '0');
         localStorage.setItem("isLogin", '0');
         localStorage.setItem("data", null);
+        axios.get(BASE_URL + "/logout")
+            .then(() => {
+                console.log("logoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogout");
+                message.loading('Local logout!', [2]);
+            })
+
+        // window.location = BASE_URL + "/logout";
         window.location = "/login";
     }
 
@@ -34,7 +44,7 @@ class HomePage extends React.Component {
 
         // const { fileList } = this.state;
 
-        const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
+        const username = localStorage.getItem("username") ? localStorage.getItem("username"):"";
 
         const logOutBtnStyle = {
             background: "none",

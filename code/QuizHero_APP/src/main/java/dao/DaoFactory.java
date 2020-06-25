@@ -75,7 +75,7 @@ public final class DaoFactory {
                 "userId SERIAL," +
                 "name VARCHAR(30)," +
                 "email VARCHAR(30)," +
-                "pswd VARCHAR(30)," +
+                "pswd VARCHAR(100)," +
                 "githubId VARCHAR(30)," +
                 "salt VARCHAR(30)," +
                 "PRIMARY KEY (userId)" +

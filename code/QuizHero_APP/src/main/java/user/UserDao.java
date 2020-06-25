@@ -46,7 +46,6 @@ public class UserDao {
      */
     public void registerUser(User user) {
         checkUserExist(user.getEmail());
-        System.out.println("user not exists, register permit.");
         try (Connection conn = sql2o.open()) {
             String sql = "INSERT INTO account(name, email, pswd, salt) VALUES (:name, :email, :pswd, :salt);";
             int id = (int) conn.createQuery(sql, true)
@@ -80,30 +79,28 @@ public class UserDao {
         return user;
     }
 
-//    /**
-//     * This method is used to verify registered user information for given input
-//     * @param email String of user email address
-//     * @param pswd String of user password
-//     * @return an instance of Instructor class with matching email and password fields
-//     */
-//    public User userLogin(String email, String pswd) {
-//        User user;
-//        try (Connection conn = sql2o.open()) {
-//            String sql = "SELECT userId, name, email, githubId FROM account Where email = :email AND pswd = :pswd;";
-//            user =  conn.createQuery(sql)
-//                    .addParameter("email", email)
-//                    .addParameter("pswd", pswd)
-//                    .executeAndFetchFirst(User.class);
-//        } catch (Sql2oException ex) {
-//            throw new DaoException("Database error", ex);
-//        }
-//
-//        if (user == null) {
-//            throw new LoginException("User authentication failure. Please input again.");
-//        }
-//
-//        return user; // return if find the instructor
-//    }
+    /**
+     * This method is used to verify registered user information for given input
+     * @param email String of user email address
+     * @return an instance of Instructor class with matching email and password fields
+     */
+    public User userLogin(String email) {
+        User user;
+        try (Connection conn = sql2o.open()) {
+            String sql = "SELECT userId, name, email FROM account Where email = :email;";
+            user =  conn.createQuery(sql)
+                    .addParameter("email", email)
+                    .executeAndFetchFirst(User.class);
+        } catch (Sql2oException ex) {
+            throw new DaoException("Database error", ex);
+        }
+
+        if (user == null) {
+            throw new LoginException("User authentication failure. Please input again.");
+        }
+
+        return user; // return if find the instructor
+    }
 
     /**
      * This method is used to verify user login from github
