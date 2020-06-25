@@ -19,11 +19,12 @@ class HomePage extends React.Component {
      * Clear localStorage in browser when logout.
      */
     handleLogOut(){
-        localStorage.setItem("username",null)
-        localStorage.setItem("instructorId",0)
-        localStorage.setItem("isLogin",0)
-        localStorage.setItem("data", null)
-        window.location = "/login"
+        localStorage.setItem("username", null);
+        localStorage.setItem("instructorId", '0');
+        localStorage.setItem("isGithubLogin", '0');
+        localStorage.setItem("isLogin", '0');
+        localStorage.setItem("data", null);
+        window.location = "/login";
     }
 
     /**
