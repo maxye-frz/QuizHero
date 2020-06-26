@@ -61,9 +61,10 @@ export function Input(props) {
     // if (markdownText === "") setMarkdownText(localStorage.getItem("newFileString"));
 
     // Similar to componentDidMount and componentDidUpdate:
+    // !localStorage.hasOwnProperty('saved')
     useLayoutEffect(() => {
-        setTitleText(localStorage.getItem("newFileName"));
-        setMarkdownText(localStorage.getItem("newFileString"));
+        setTitleText(localStorage.getItem("newFileName") ? localStorage.getItem("newFileName") : "");
+        setMarkdownText(localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : "");
     }, []);
 
     const discard = () => {

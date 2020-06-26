@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import {Button, Layout, Menu, message} from "antd";
 import Realtime from "../components/realtime_components/Realtime";
+import axios from "axios";
+import {BASE_URL} from "../config/config";
 const { Header } = Layout;
 
 class EditPage extends React.Component {
@@ -15,12 +17,17 @@ class EditPage extends React.Component {
     handleLogOut(){
         localStorage.setItem("username", null);
         localStorage.setItem("instructorId", '0');
+        localStorage.setItem("githubId", '0');
         localStorage.setItem("isGithubLogin", '0');
         localStorage.setItem("isLogin", '0');
         localStorage.setItem("data", null);
-        window.location = "/login";
+        axios.get(BASE_URL + "/logout")
+            .then(() => {
+                message.loading('Local logout!', [0.1], () => {window.location = "/login";});
+            })
     }
-     render() {
+
+    render() {
         const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
 
         const logOutBtnStyle = {

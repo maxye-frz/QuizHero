@@ -29,12 +29,8 @@ class HomePage extends React.Component {
         localStorage.setItem("data", null);
         axios.get(BASE_URL + "/logout")
             .then(() => {
-                console.log("logoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogoutlogout");
-                message.loading('Local logout!', [2]);
+                message.loading('Local logout!', [0.1], () => {window.location = "/login";});
             })
-
-        // window.location = BASE_URL + "/logout";
-        window.location = "/login";
     }
 
     /**
