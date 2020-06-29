@@ -11,11 +11,17 @@ import { Menu, Layout, message } from 'antd';
 import Home from "../components/home_componets/Home";
 import axios from "axios";
 import {BASE_URL} from "../config/config";
+import {useCookies} from "react-cookie";
+import jwt_decode from "jwt-decode";
 
 const { Header } = Layout;
 
 
 class HomePage extends React.Component {
+
+    const cookies = getCookies(['token']);
+    var decoded = jwt_decode(cookies);
+    console.log(decoded);
 
     /**
      * Clear localStorage in browser when logout.

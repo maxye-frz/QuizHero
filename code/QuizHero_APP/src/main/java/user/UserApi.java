@@ -2,6 +2,7 @@ package user;
 
 import exception.ApiError;
 import exception.DaoException;
+import javalinjwt.JWTProvider;
 import model.File;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -70,6 +71,10 @@ public class UserApi {
 //            String pswd = ctx.formParam("pswd");
             try {
                 User user = userDao.userLogin(email);
+                JWTProvider provider = userJWTProvider.createHMAC512();
+                String token = provider.generateToken(user);
+                ctx.json(new JWTResponse(token));
+                ctx.cookie("token", token);
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
