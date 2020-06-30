@@ -16,6 +16,8 @@ import static util.Pac4jUtil.githubSecurityHandler;
 
 public class UserApi {
 
+    private static JWTProvider provider = userJWTProvider.createHMAC512(); //initialize provider
+
     /**
      * This method is used to open the route for front-end to register a new instructor
      * pass data to the Instructor class
@@ -71,11 +73,10 @@ public class UserApi {
 //            String pswd = ctx.formParam("pswd");
             try {
                 User user = userDao.userLogin(email);
-                JWTProvider provider = userJWTProvider.createHMAC512();
                 String token = provider.generateToken(user);
                 ctx.json(new JWTResponse(token));
                 ctx.cookie("token", token);
-                ctx.json(user);
+                ctx.json(user); //comment this line after cookie is done
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
             } catch (DaoException ex) {
@@ -98,10 +99,16 @@ public class UserApi {
             System.out.println(githubId);
             try {
                 User user = userDao.githubLogin(name, githubId);
-                ctx.json(user); //json text of user model is printed on web page
-                System.out.println(user);
+//                ctx.json(user); //json text of user model is printed on web page
+//                System.out.println(user);
+//                ctx.contentType("application/json");
+//                ctx.status(200);
+                String token = provider.generateToken(user);
+                ctx.json(new JWTResponse(token));
+                ctx.cookie("token", token);
+                ctx.json(user); //comment this line after cookie is done
                 ctx.contentType("application/json");
-                ctx.status(200);
+                ctx.status(200); // created successfully
                 System.out.println(ctx.queryParam("login"));
                 if (Objects.isNull(ctx.queryParam("login"))) {
                     System.out.println("Redirect");
