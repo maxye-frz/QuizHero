@@ -2,6 +2,8 @@ import UploadNew from "./UploadNew";
 import History from "./History";
 import FileListContext from "./fileListContext";
 import React, {useState} from "react";
+// import {useCookies} from "react-cookie";
+// import jwt from "jwt-decode";
 import styled from "styled-components";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
@@ -24,6 +26,11 @@ const ContainerRight = styled.div`
 export default function Home(props) {
 
     const [fileList, setFileList] = useState([]);
+
+    // const [cookies, setCookie, removeCookie] = useCookies('token');
+    // var jwtDecode = require('jwt-decode');
+    // var jwt = require("jsonwebtoken");
+    // var decoded = jwt.decode(cookies);
 
     const contextValue = {
         fileList,
@@ -53,6 +60,8 @@ export default function Home(props) {
     return(
         <FileListContext.Provider value={contextValue}>
             <ContainerLeft>
+                {/*{console.log(cookies)}*/}
+                {/*/!*{decoded}*!/*/}
                 <UploadNew refreshCallback = {refreshCallback} />
             </ContainerLeft>
 
