@@ -2,7 +2,7 @@
 //
 //import user.LoginException;
 //import user.RegisterException;
-//import model.File;
+//import file.File;
 //import model.Instructor;
 //import org.junit.After;
 //import org.junit.Before;

@@ -3,7 +3,7 @@ package user;
 import exception.ApiError;
 import exception.DaoException;
 import javalinjwt.JWTProvider;
-import model.File;
+import file.File;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.javalin.JavalinWebContext;
@@ -86,6 +86,7 @@ public class UserApi {
             }
         });
     }
+
 
     public static void githubLogin(UserDao userDao) {
         app.before("/github", githubSecurityHandler);

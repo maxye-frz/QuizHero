@@ -1,4 +1,4 @@
-import dao.DaoFactory;
+import util.DaoFactory;
 import util.JavalinUtil;
 
 import java.net.URISyntaxException;

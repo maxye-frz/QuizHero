@@ -1,10 +1,14 @@
 package util;
 
 import com.google.gson.Gson;
-import dao.*;
 import exception.ApiError;
+import file.FileApi;
+import file.FileDao;
 import io.javalin.Javalin;
 import io.javalin.plugin.json.JavalinJson;
+import pac4j.Pac4jApi;
+import quiz.QuizApi;
+import quiz.QuizDao;
 import user.UserApi;
 import user.UserDao;
 
@@ -78,9 +82,9 @@ public class JavalinUtil {
      */
     private static void routing(FileDao fileDao, UserDao userDao, QuizDao quizDao) {
         //sign in service
-        api.Pac4jApi.getCallBack();
-        api.Pac4jApi.postCallBack();
-        api.Pac4jApi.getLocalLogout();
+        Pac4jApi.getCallBack();
+        Pac4jApi.postCallBack();
+        Pac4jApi.getLocalLogout();
 
         // login and register
         UserApi.register(userDao);
@@ -88,23 +92,24 @@ public class JavalinUtil {
         UserApi.emailForPassword(userDao);
         // login from github
         UserApi.githubLogin(userDao);
+
         // get file list from user
         UserApi.getFileListFromInstructor(userDao);
         // fetch quiz statistics
-        api.QuizApi.getQuizStatByFileId(quizDao);
+        QuizApi.getQuizStatByFileId(quizDao);
         // update quiz statistics
-        api.QuizApi.postQuiz(quizDao);
-        api.QuizApi.postRecords(quizDao);
+        QuizApi.postQuiz(quizDao);
+        QuizApi.postRecords(quizDao);
 
         // upload, fetch file content and modify file status
-        api.FileApi.uploadFile(fileDao);
-        api.FileApi.saveFile(fileDao);
-        api.FileApi.fetchFile(fileDao);
-        api.FileApi.changeFilePermission(fileDao);
-        api.FileApi.checkFilePermission(fileDao);
-        api.FileApi.changeQuizPermission(fileDao);
-        api.FileApi.checkQuizPermission(fileDao);
-        api.FileApi.deleteFile(fileDao);
+        FileApi.uploadFile(fileDao);
+        FileApi.saveFile(fileDao);
+        FileApi.fetchFile(fileDao);
+        FileApi.changeFilePermission(fileDao);
+        FileApi.checkFilePermission(fileDao);
+        FileApi.changeQuizPermission(fileDao);
+        FileApi.checkQuizPermission(fileDao);
+        FileApi.deleteFile(fileDao);
     }
 
     /**

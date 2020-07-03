@@ -1,7 +1,7 @@
 //package dao;
 //
 //import exception.DaoException;
-//import model.File;
+//import file.File;
 //import model.Instructor;
 //import org.apache.commons.io.IOUtils;
 //import org.junit.After;

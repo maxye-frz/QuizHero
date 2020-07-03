@@ -1,7 +1,7 @@
 package user;
 
 import exception.DaoException;
-import model.File;
+import file.File;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;

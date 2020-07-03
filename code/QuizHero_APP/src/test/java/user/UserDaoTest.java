@@ -1,10 +1,9 @@
 package user;
 
-import dao.DaoFactory;
+import util.DaoFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.net.URISyntaxException;
 

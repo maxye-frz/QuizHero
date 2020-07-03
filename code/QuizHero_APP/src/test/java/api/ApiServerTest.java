@@ -7,8 +7,8 @@
 //import com.mashape.unirest.http.Unirest;
 //import com.mashape.unirest.http.exceptions.UnirestException;
 //import com.mashape.unirest.request.GetRequest;
-//import dao.DaoFactory;
-//import dao.DaoUtil;
+//import util.DaoFactory;
+//import util.DaoUtil;
 //import exception.DaoException;
 //import io.javalin.http.UploadedFile;
 //import org.json.JSONArray;

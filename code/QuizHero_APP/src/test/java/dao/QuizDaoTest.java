@@ -1,9 +1,9 @@
 //package dao;
 //
-//import model.File;
+//import file.File;
 //import model.Instructor;
-//import model.Quiz;
-//import model.Record;
+//import quiz.Quiz;
+//import quiz.Record;
 //import org.junit.After;
 //import org.junit.Before;
 //import org.junit.Test;
