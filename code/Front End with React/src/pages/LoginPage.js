@@ -159,6 +159,15 @@ class LoginPage extends Component {
         // localStorage.setItem("isLogin", '1');
     }
 
+    loginTest = () => {
+        axios
+            .get("https://github.com/login/oauth/authorize")
+            .then((HTML) => {
+                console.log(HTML);
+                // this.setState("HTML", HTML);
+            });
+    }
+
 
     render() {
         const {getFieldProps} = this.props.form;
@@ -229,8 +238,12 @@ class LoginPage extends Component {
                         <Button onClick={this.loginWithGitHub}>
                             Login with GitHub
                         </Button>
+                        <Button onClick={this.loginTest}>
+                            LoginTest
+                        </Button>
                     </Form.Item>
                 </Form>
+                {/*{this.state.HTML}*/}
             </div>
         );
     }

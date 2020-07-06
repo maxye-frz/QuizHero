@@ -105,6 +105,7 @@ public class JavalinUtil {
         FileApi.uploadFile(fileDao);
         FileApi.saveFile(fileDao);
         FileApi.fetchFile(fileDao);
+        FileApi.studentFetchFile(fileDao);
         FileApi.changeFilePermission(fileDao);
         FileApi.checkFilePermission(fileDao);
         FileApi.changeQuizPermission(fileDao);

@@ -74,6 +74,32 @@ public class FileApi {
         });
     }
 
+    public static void studentFetchFile(FileDao fileDao) {
+        app.get("/studentfetch", context -> {
+            try {
+                String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
+                System.out.println("file id: " + fileId);
+                Boolean filePermission = fileDao.checkFilePermission(fileId);
+                if (filePermission) {
+                    InputStream in = fileDao.getFileContent(fileId);
+                    InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
+                    context.result(inputStream);
+                    System.out.println("Send file successfully.");
+                    context.status(200);
+//                    context.redirect("http://localhost:3000/student");
+                } else {
+                    System.out.println("Don't have permission");
+                    context.status(200);
+                    context.redirect("http://localhost:3000/nopermission");
+                }
+            } catch (DaoException ex) {
+                throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400);
+            }
+        });
+    }
+
     /**
      *  Save (new) file api
      */
