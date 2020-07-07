@@ -45,7 +45,7 @@ export default function History(props) {
 
 
     const fetchFile = (fileId) => {
-        return new Promise(((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             let params = {
                 fileId: fileId
             }
@@ -58,7 +58,7 @@ export default function History(props) {
                     alert(`Fail to fetch File ${fileId}. ${error}`);
                     reject(error);
                 })
-        }))
+        })
     }
 
     const editFile = (fileId, fileName) => {

@@ -20,6 +20,12 @@ class StudentRequestPage extends Component{
         }
     }
 
+    componentDidMount() {
+        // console.log(this.props);
+        const fileId = this.props.location.search.split("=")[1];
+        this.studentFetchFile(fileId);
+    }
+
     /**
      * Search the input shared code. If the presenter release the permission, go and call fetchFile(); else alert error.
      * @param value
@@ -50,6 +56,28 @@ class StudentRequestPage extends Component{
     /**
      * fetchFile from the back end and callSeparateQuestion(rawString) to prepare for the presentation.
      */
+    studentFetchFile = (fileId) => {
+        // return new Promise((resolve, reject) => {
+            let params = {
+                fileId: fileId
+            }
+
+            axios.get(BASE_URL + "/studentfetch", {params})
+                .then(res => {
+                    this.callSeparateQuestion(res.data, fileId);
+                    message.success(`File ${fileId} fetched successfully.`);
+                    // resolve(res.data);
+                })
+                .catch((error) => {
+                    alert(`Fail to fetch File ${fileId}. ${error}`);
+                    // reject(error);
+                })
+        // })
+    }
+
+    /**
+     * fetchFile from the back end and callSeparateQuestion(rawString) to prepare for the presentation.
+     */
     fetchFile = (fileId) => {
         let params = {
             fileId: fileId
@@ -58,11 +86,11 @@ class StudentRequestPage extends Component{
         axios.get(BASE_URL + "/fetch",  {params})
             .then(res => {
                 console.log("AAA", res.data);
-                this.callSeparateQuestion(res.data);
-                message.success(`File ${this.state.fileId} fetched successfully.`)
+                this.callSeparateQuestion(res.data, fileId);
+                message.success(`File ${fileId} fetched successfully.`);
             })
             .catch((error) => {
-                alert(`Fail to fetch File ${this.state.fileId}. ${error}`)
+                alert(`Fail to fetch File ${fileId}. ${error}`);
             })
     }
 
@@ -77,11 +105,12 @@ class StudentRequestPage extends Component{
      * which will be set to localStorage in browser, which will be used in PresenterPage.js
      * @param rawString
      */
-    callSeparateQuestion = (rawString) =>{
+    callSeparateQuestion = (rawString, fileId) =>{
         var data = separateQuestion(rawString);
-        data.fileId = this.state.fileId;
+        data.fileId = fileId;
         data = JSON.stringify(data);
         localStorage.setItem("data", data);
+        window.open('/student', "_self");
         // this.setState({display_name: 'block'});
     }
 
