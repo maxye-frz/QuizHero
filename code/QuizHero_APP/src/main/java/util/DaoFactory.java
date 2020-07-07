@@ -126,6 +126,7 @@ public final class DaoFactory {
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
                 "fileContent bytea" +
+                "fileCss bytea" +
                 ")";
 
 //        System.out.println(sql);

@@ -21,6 +21,7 @@ public class File {
     private Boolean filePermission; // permission control of access to viewing the file
     private Boolean quizPermission; // permission control of access to all quizzes in the file
     private InputStream fileContent; // byte stream of the file content
+    private InputStream css; // css string of the file
 
     /**
      * This method is the constructor of the class
@@ -65,13 +66,14 @@ public class File {
      * @param fileAccess access permission of the file
      * @param quizAccess access permission of the quiz
      */
-    public File(int instructorId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream fileContent) {
+    public File(int instructorId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream fileContent, InputStream css) {
         this.userId = instructorId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePermission = fileAccess;
         this.quizPermission = quizAccess;
         this.fileContent = fileContent;
+        this.css = css;
     }
 
     /**
@@ -130,6 +132,8 @@ public class File {
         return fileContent;
     }
 
+    public InputStream getCss() {return css;}
+
 
     /**
      * This method overrides the toString method of the class
@@ -143,6 +147,7 @@ public class File {
                 ", filePermission=" + filePermission +
                 ", quizPermission=" + quizPermission +
                 ", fileContent=" + fileContent +
+                ", css=" + css +
                 '}';
     }
 
@@ -160,7 +165,8 @@ public class File {
                 Objects.equals(getFileName(), file.getFileName()) &&
                 Objects.equals(getFilePermission(), file.getFilePermission()) &&
                 Objects.equals(getQuizPermission(), file.getQuizPermission()) &&
-                Objects.equals(getFileContent(), file.getFileContent());
+                Objects.equals(getFileContent(), file.getFileContent()) &&
+                Objects.equals(getCss(), file.getCss());
     }
 
     /**
@@ -170,6 +176,6 @@ public class File {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getFileId(), getFileName(), getFilePermission(), getQuizPermission(), getFileContent());
+        return Objects.hash(getFileId(), getFileName(), getFilePermission(), getQuizPermission(), getFileContent(), getCss());
     }
 }

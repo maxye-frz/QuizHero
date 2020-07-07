@@ -219,4 +219,35 @@ public class FileDao {
             throw new DaoException("database connection error", ex);
         }
     }
+
+    public InputStream getCss(String fileId) {
+        checkFileExist(fileId);
+        ByteArrayInputStream byteStream;
+        try (Connection conn = sql2o.open()) {
+            String sql = "SELECT fileCss FROM file WHERE fileId = :fileId";
+            byteStream = conn.createQuery(sql)
+                    .addParameter("fileId", fileId)
+                    .executeAndFetchFirst(ByteArrayInputStream.class);
+
+            return byteStream;
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to fetch file.", ex);
+        }
+    }
+
+    public void updateCss(String fileId, InputStream css) {
+        checkFileExist(fileId);
+        try (Connection conn = sql2o.open()) {
+            String sql = "UPDATE file SET fileCss = :css" +
+                    " WHERE fileId = :fileId";
+
+            System.out.println(sql); //console msg
+            conn.createQuery(sql)
+                    .addParameter("css", css)
+                    .addParameter("fileId", fileId)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to update css", ex);
+        }
+    }
 }
