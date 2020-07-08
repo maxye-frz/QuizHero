@@ -35,7 +35,7 @@ const ResultArea = styled.div`
 
 
 export function Render(props) {
-    const { titleText, markdownText } = useContext(editorContext);
+    const { titleText, markdownText, CSS } = useContext(editorContext);
 
     // pre-set newFileString to "", because Marpit cannot take null input
     // const markdownText = localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : ""
@@ -62,7 +62,7 @@ export function Render(props) {
             </Title>
             <ResultArea>
                 {/*<ReactMarkdown source={markdownText} />*/}
-                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, realtimeTheme)}}/>
+                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, CSS)}}/>
             </ResultArea>
         </Container>
     );

@@ -242,17 +242,17 @@ public class FileApi {
         });
     }
 
-    public static void uploadCss(FileDao fileDao) {
-        app.post("/uploadCss", context -> {
-            UploadedFile uploadedCss = context.uploadedFile("css"); // get file part
+    public static void uploadCSS(FileDao fileDao) {
+        app.post("/uploadCSS", context -> {
+            UploadedFile uploadedCss = context.uploadedFile("fileCSS"); // get file part
             try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
                 // fetch file id from form-data, require argument not null
                 String fileId = Objects.requireNonNull(context.formParam("fileId"));
                 System.out.println("file id: " + fileId);
-                fileDao.updateCss(fileId, inputStream);
+                fileDao.updateCSS(fileId, inputStream);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
                 fileMap.put("fileId", fileId);
-                fileMap.put("css", inputStream);
+                fileMap.put("fileCSS", inputStream);
                 context.json(fileMap);
                 context.contentType("application/json");
                 context.status(201);
@@ -264,17 +264,17 @@ public class FileApi {
         });
     }
 
-    public static void saveCss(FileDao fileDao) {
-        app.post("/saveCss", context -> {
+    public static void saveCSS(FileDao fileDao) {
+        app.post("/saveCSS", context -> {
             try {
                 String fileId = context.formParam("fileId");
-                String cssContent = context.formParam("fileCss");
+                String cssContent = context.formParam("fileCSS");
                 InputStream cssStream = new ByteArrayInputStream(cssContent.getBytes(StandardCharsets.UTF_8));
                 assert fileId != null;
-                fileDao.updateCss(fileId, cssStream);
+                fileDao.updateCSS(fileId, cssStream);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
                 fileMap.put("fileId", fileId);
-                fileMap.put("fileCss", cssContent);
+                fileMap.put("fileCSS", cssContent);
                 context.json(fileMap);
                 context.contentType("application/json");
                 context.status(201);
@@ -286,12 +286,12 @@ public class FileApi {
         });
     }
 
-    public static void readCss(FileDao fileDao) {
-        app.get("/readCss", context -> {
+    public static void readCSS(FileDao fileDao) {
+        app.get("/readCSS", context -> {
             try {
                 String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
-                InputStream in = fileDao.getCss(fileId);
+                InputStream in = fileDao.getCSS(fileId);
                 InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
                 context.result(inputStream);
                 System.out.println("Send file successfully.");

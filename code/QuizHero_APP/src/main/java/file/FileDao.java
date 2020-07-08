@@ -220,7 +220,7 @@ public class FileDao {
         }
     }
 
-    public InputStream getCss(String fileId) {
+    public InputStream getCSS(String fileId) {
         checkFileExist(fileId);
         ByteArrayInputStream byteStream;
         try (Connection conn = sql2o.open()) {
@@ -235,7 +235,7 @@ public class FileDao {
         }
     }
 
-    public void updateCss(String fileId, InputStream css) {
+    public void updateCSS(String fileId, InputStream css) {
         checkFileExist(fileId);
         try (Connection conn = sql2o.open()) {
             String sql = "UPDATE file SET fileCss = :css" +

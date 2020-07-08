@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Input } from "./Input";
 import { Render } from "./Render";
 import editorContext from "./editorContext";
+import {InputCSS} from "./InputCSS";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -27,8 +28,9 @@ const EditorContainer = styled.div`
 `;
 
 export default function Editor() {
-    const [markdownText, setMarkdownText] = useState("");
     const [titleText, setTitleText] = useState("");
+    const [markdownText, setMarkdownText] = useState("");
+    const [CSS, setCSS] = useState("")
     // useState will return an array of length 2: arr = useState(""):
     // arr[0] is the state variable, arr[1] is the set function
 
@@ -36,15 +38,19 @@ export default function Editor() {
         titleText, // titleText: titleText
         setTitleText, // setTitleText: setTitleText
         markdownText, // markdownText: markdownText
-        setMarkdownText // setMarkdownText: setMarkdownText
+        setMarkdownText, // setMarkdownText: setMarkdownText
+        CSS,
+        setCSS
     };
 
     return (
         <editorContext.Provider value={contextValue}>
             <AppContainer>
                 <Title>Markdown Editor</Title>
+                Markdown Editor
                 <EditorContainer>
-                    <Input />
+                    <Input style={{display: "flex"}}/>
+                    <InputCSS style={{display: "flex"}}/>
                     <Render />
                 </EditorContainer>
             </AppContainer>
