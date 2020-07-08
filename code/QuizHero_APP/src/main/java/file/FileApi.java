@@ -264,6 +264,28 @@ public class FileApi {
         });
     }
 
+    public static void saveCss(FileDao fileDao) {
+        app.post("/saveCss", context -> {
+            try {
+                String fileId = context.formParam("fileId");
+                String cssContent = context.formParam("fileCss");
+                InputStream cssStream = new ByteArrayInputStream(cssContent.getBytes(StandardCharsets.UTF_8));
+                assert fileId != null;
+                fileDao.updateCss(fileId, cssStream);
+                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+                fileMap.put("fileId", fileId);
+                fileMap.put("fileCss", cssContent);
+                context.json(fileMap);
+                context.contentType("application/json");
+                context.status(201);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when save file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+            }
+        });
+    }
+
     public static void readCss(FileDao fileDao) {
         app.get("/readCss", context -> {
             try {

@@ -113,6 +113,7 @@ public class JavalinUtil {
         FileApi.deleteFile(fileDao);
         FileApi.readCss(fileDao);
         FileApi.uploadCss(fileDao);
+        FileApi.saveCss(fileDao);
     }
 
     /**
