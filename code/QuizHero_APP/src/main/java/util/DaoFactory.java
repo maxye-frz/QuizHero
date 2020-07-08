@@ -125,7 +125,7 @@ public final class DaoFactory {
                 "fileName VARCHAR(30) NOT NULL, " +
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
-                "fileContent bytea" +
+                "fileContent bytea," +
                 "fileCss bytea" +
                 ")";
 

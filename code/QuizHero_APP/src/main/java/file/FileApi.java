@@ -247,7 +247,7 @@ public class FileApi {
             UploadedFile uploadedCss = context.uploadedFile("css"); // get file part
             try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
                 // fetch file id from form-data, require argument not null
-                String fileId = Objects.requireNonNull(context.queryParam("fileId"));
+                String fileId = Objects.requireNonNull(context.formParam("fileId"));
                 System.out.println("file id: " + fileId);
                 fileDao.updateCss(fileId, inputStream);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
