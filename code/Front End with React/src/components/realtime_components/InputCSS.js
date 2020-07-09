@@ -9,7 +9,7 @@ import {BASE_URL} from "../../config/config";
 import realtimeTheme from "../default_theme/realtime-theme";
 
 const Container = styled.div`
-  width: 50%;
+  width: calc(50vw);
   height: 100%;
   padding: 13px;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
@@ -56,6 +56,7 @@ export function InputCSS(props) {
     // set them to context to share with render.js
     const { CSS, setCSS } = useContext(editorContext);
 
+    console.log(props);
     // Initialization (only once)
     // 土办法
     // if (titleText === "") setTitleText(localStorage.getItem("newFileName"));
@@ -65,7 +66,8 @@ export function InputCSS(props) {
     // !localStorage.hasOwnProperty('saved')
     useLayoutEffect(() => {
         setCSS(realtimeTheme); //default
-        readCSS();
+        if (localStorage.getItem("fileId") !== "null")
+            readCSS();
         // setCSS(localStorage.getItem("CSS") ? localStorage.getItem("CSS") : realtimeTheme);
     }, []);
 
@@ -90,7 +92,7 @@ export function InputCSS(props) {
 
     const onInputChange = e => {
         const newValue = e.currentTarget.value;
-        localStorage.setItem("newFileString", newValue);
+        // localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
         // setFileValue(newValue);
         // console.log(fileValue);
@@ -113,28 +115,31 @@ export function InputCSS(props) {
     }
 
     const saveCSS = () => {
-        const formData = new FormData();
-        formData.append('fileId', localStorage.getItem("fileId"));
-        formData.append('fileCSS', CSS);
-        // formData.append('userId', localStorage.getItem("instructorId"));
+        if (localStorage.getItem("fileId") === "null")
+            message.warning("You need to save file first");
+        else {
+            const formData = new FormData();
+            formData.append('fileId', localStorage.getItem("fileId"));
+            formData.append('fileCSS', CSS);
+            // formData.append('userId', localStorage.getItem("instructorId"));
 
-        console.log("Save CSS to backend", formData);
-        axios.post(BASE_URL + "/saveCSS", formData)
-            .then(res => {message.success(`CSS saved`);
-                // localStorage.setItem("saved", "true");
-                // localStorage.setItem("fileId", res.data.fileId);
-            })
-            .catch(() => message.error('error'));
+            console.log("Save CSS to backend", formData);
+            axios.post(BASE_URL + "/saveCSS", formData)
+                .then(res => {
+                    message.success(`CSS saved`);
+                    localStorage.setItem("saved", "true");
+                    // localStorage.setItem("fileId", res.data.fileId);
+                })
+                .catch(() => message.error('error'));
+        }
     }
 
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
             <Title>
-                {/*<TitleArea placeholder="Please type a file name"*/}
-                {/*           rows="1"*/}
-                {/*           onChange={onTitleChange}*/}
-                {/*           value={titleText} />*/}
+                <TitleArea placeholder="Please type a file name"
+                           rows="1" />
                 <div style={{paddingTop: 1}}>
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={saveCSS}>
@@ -144,6 +149,10 @@ export function InputCSS(props) {
                     {/*        onClick={discard}>*/}
                     {/*    <DeleteOutlined /> Discard*/}
                     {/*</Button>*/}
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={() => props.setDisplay("Text")}>
+                        <DeleteOutlined /> Edit Text
+                    </Button>
                 </div>
             </Title>
             <TextArea placeholder="Please type in MarkDown"

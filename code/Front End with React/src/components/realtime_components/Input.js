@@ -8,7 +8,7 @@ import axios from "axios";
 import {BASE_URL} from "../../config/config";
 
 const Container = styled.div`
-  width: 50%;
+  width: calc(50vw);
   height: 100%;
   padding: 13px;
   border-right: 1.5px solid rgba(15, 15, 15, 0.4);
@@ -140,6 +140,10 @@ export function Input(props) {
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={discard}>
                         <DeleteOutlined /> Discard
+                    </Button>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={() => props.setDisplay("CSS")}>
+                        <DeleteOutlined /> Edit CSS
                     </Button>
                 </div>
             </Title>

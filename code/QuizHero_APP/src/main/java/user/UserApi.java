@@ -31,6 +31,9 @@ public class UserApi {
             User user = ctx.bodyAsClass(User.class);
             try {
                 userDao.registerUser(user);
+                String token = provider.generateToken(user);
+                ctx.json(new JWTResponse(token));
+                ctx.cookie("token", token);
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully

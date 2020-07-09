@@ -31,6 +31,7 @@ export default function Editor() {
     const [titleText, setTitleText] = useState("");
     const [markdownText, setMarkdownText] = useState("");
     const [CSS, setCSS] = useState("")
+    const [display, setDisplay] = useState("Text")
     // useState will return an array of length 2: arr = useState(""):
     // arr[0] is the state variable, arr[1] is the set function
 
@@ -47,10 +48,15 @@ export default function Editor() {
         <editorContext.Provider value={contextValue}>
             <AppContainer>
                 <Title>Markdown Editor</Title>
-                Markdown Editor
+                {/*Markdown Editor*/}
                 <EditorContainer>
-                    <Input style={{display: "flex"}}/>
-                    <InputCSS style={{display: "flex"}}/>
+                    <div style={{display: display === "Text" ? "flex" : "none"}}>
+                        <Input setDisplay={setDisplay}/>
+                    </div>
+                    <div style={{display: display === "CSS" ? "flex" : "none"}}>
+                        <InputCSS setDisplay={setDisplay} />
+                    </div>
+
                     <Render />
                 </EditorContainer>
             </AppContainer>
