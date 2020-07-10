@@ -7,6 +7,8 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
+import jwt_decode from "jwt-decode";
+import cookie from "react-cookies";
 
 const ContainerLeft = styled.div`
   width: 20%;
@@ -37,9 +39,11 @@ export default function Home(props) {
         setFileList
     }
 
+    const loginInfo = jwt_decode(cookie.load('token'));
+
     const refreshCallback = () => {
         let params = {
-            userId : localStorage.getItem("instructorId")
+            userId : loginInfo['userId']
         }
         // console.log(params)
         axios

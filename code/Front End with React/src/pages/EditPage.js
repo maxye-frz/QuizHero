@@ -2,33 +2,23 @@ import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import {Button, Layout, Menu, message} from "antd";
 import Realtime from "../components/realtime_components/Realtime";
-import axios from "axios";
-import {BASE_URL} from "../config/config";
+import jwt_decode from "jwt-decode";
+import cookie from "react-cookies";
+import {handleLogout} from "../utils/handleLogout";
+
 const { Header } = Layout;
+
 
 class EditPage extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    /**
-     * Clear localStorage in browser when logout.
-     */
-    handleLogOut(){
-        localStorage.setItem("username", null);
-        localStorage.setItem("instructorId", '0');
-        localStorage.setItem("githubId", '0');
-        localStorage.setItem("isGithubLogin", '0');
-        localStorage.setItem("isLogin", '0');
-        localStorage.setItem("data", null);
-        axios.get(BASE_URL + "/logout")
-            .then(() => {
-                message.loading('Local logout!', [0.1], () => {window.location = "/login";});
-            })
-    }
 
     render() {
-        const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
+        const loginInfo = jwt_decode(cookie.load('token'));
+        const username = loginInfo['name'];
+        // const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
 
         const logOutBtnStyle = {
             background: "none",
@@ -59,7 +49,7 @@ class EditPage extends React.Component {
 
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                             Welcome, {username}
-                            <button onClick={this.handleLogOut} style={logOutBtnStyle}>Log Out</button>
+                            <button onClick={handleLogout} style={logOutBtnStyle}>Log Out</button>
                         </div>
 
                     </Menu>

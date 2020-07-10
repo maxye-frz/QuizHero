@@ -80,9 +80,9 @@ class RegisterPage extends Component {
                                 (onclose = () => {
                                     console.log(res);
                                     // this.props.login(res.data.name, res.data.userId);
-                                    localStorage.setItem("instructorId", res.data.userId);
-                                    localStorage.setItem("username", res.data.name);
-                                    localStorage.setItem("isLogin", 1);
+                                    // localStorage.setItem("instructorId", res.data.userId);
+                                    // localStorage.setItem("username", res.data.name);
+                                    // localStorage.setItem("isLogin", 1);
                                     window.location = "/HomePage";
                                 })
                             );

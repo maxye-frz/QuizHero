@@ -9,31 +9,14 @@ import '../App.css'
 import {Link} from "react-router-dom";
 import { Menu, Layout, message } from 'antd';
 import Home from "../components/home_componets/Home";
-import axios from "axios";
-import {BASE_URL} from "../config/config";
 import cookie from 'react-cookies';
 import jwt_decode from "jwt-decode";
+import {handleLogout} from "../utils/handleLogout";
 
 const { Header } = Layout;
 
 
 class HomePage extends React.Component {
-
-    /**
-     * Clear localStorage in browser when logout.
-     */
-    handleLogOut(){
-        localStorage.setItem("username", null);
-        localStorage.setItem("instructorId", '0');
-        localStorage.setItem("githubId", '0');
-        localStorage.setItem("isGithubLogin", '0');
-        localStorage.setItem("isLogin", '0');
-        localStorage.setItem("data", null);
-        axios.get(BASE_URL + "/logout")
-            .then(() => {
-                message.loading('Local logout!', [0.1], () => {window.location = "/login";});
-            })
-    }
 
     /**
      * return rendered HomePage page. Use <List.Item/> to show the list of uploaded files.
@@ -75,7 +58,7 @@ class HomePage extends React.Component {
 
                         <div style={{display:"inline-block",float:"right",paddingRight:"60px"}}>
                             Welcome, {username}
-                            <button onClick={this.handleLogOut} style={logOutBtnStyle}>Log Out</button>
+                            <button onClick={handleLogout} style={logOutBtnStyle}>Log Out</button>
                         </div>
 
                     </Menu>

@@ -6,6 +6,9 @@ import {Button, message} from "antd";
 import {DeleteOutlined, SaveOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
+import jwt_decode from "jwt-decode";
+import cookie from "react-cookies";
+import separateQuestion from "../Parse";
 
 const Container = styled.div`
   width: calc(50vw);
@@ -67,8 +70,9 @@ export function Input(props) {
         setMarkdownText(localStorage.getItem("newFileString") ? localStorage.getItem("newFileString") : "");
     }, []);
 
-    const discard = () => {
+    const loginInfo = jwt_decode(cookie.load('token'));
 
+    const discard = () => {
         if (localStorage.getItem("saved") === "true") {
             window.alert("You have not make any changes.")
         } else {
@@ -112,13 +116,14 @@ export function Input(props) {
             formData.append('fileId', localStorage.getItem("fileId"));
             formData.append('fileName', localStorage.getItem("newFileName"));
             formData.append('rawString', localStorage.getItem("newFileString"));
-            formData.append('userId', localStorage.getItem("instructorId"));
+            formData.append('userId', loginInfo['userId']);
 
             console.log("Save file to backend", formData);
             axios.post(BASE_URL + "/save", formData)
                 .then(res => {message.success(`File saved`);
                     localStorage.setItem("saved", "true");
                     localStorage.setItem("fileId", res.data.fileId);
+                    separateQuestion(localStorage.getItem("newFileString"), res.data.fileId);
                 })
                 .catch(() => message.error('error'));
         }

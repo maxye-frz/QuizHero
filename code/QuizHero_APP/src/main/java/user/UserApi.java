@@ -34,7 +34,7 @@ public class UserApi {
                 String token = provider.generateToken(user);
                 ctx.json(new JWTResponse(token));
                 ctx.cookie("token", token);
-                ctx.json(user);
+//                ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
             } catch (DaoException ex) {
@@ -79,7 +79,7 @@ public class UserApi {
                 String token = provider.generateToken(user);
                 ctx.json(new JWTResponse(token));
                 ctx.cookie("token", token);
-                ctx.json(user); //comment this line after cookie is done
+//                ctx.json(user); //comment this line after cookie is done
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
             } catch (DaoException ex) {
@@ -110,13 +110,13 @@ public class UserApi {
                 String token = provider.generateToken(user);
                 ctx.json(new JWTResponse(token));
                 ctx.cookie("token", token);
-                ctx.json(user); //comment this line after cookie is done
+//                ctx.json(user); //comment this line after cookie is done
                 ctx.contentType("application/json");
                 ctx.status(200); // created successfully
                 System.out.println(ctx.queryParam("login"));
                 if (Objects.isNull(ctx.queryParam("login"))) {
                     System.out.println("Redirect");
-                    ctx.redirect("http://localhost:3000/login");
+                    ctx.redirect("http://localhost:3000/githublogin");
                 }
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error

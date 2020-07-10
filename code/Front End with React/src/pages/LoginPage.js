@@ -8,6 +8,7 @@ import "../style/loginPageStyle.css";
 import logo from "../fig/logo.png";
 import axios from "axios";
 import {BASE_URL} from "../config/config";
+import {isLogin} from "../utils/isLogin";
 
 /**
  * Map the state from reducer to the props of the component
@@ -47,29 +48,33 @@ class LoginPage extends Component {
     formRef = React.createRef();
 
     componentDidMount() {
-        if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
-
-        if (localStorage.getItem("isGithubLogin") === '1') {
-            let params = {
-                login : "1",
-            }
-            axios
-                .get(BASE_URL + "/github", {params})
-                .then((res) => {
-                    console.log("HTTP get request!");
-                    localStorage.setItem("instructorId", res.data.userId);
-                    localStorage.setItem("username", res.data.name);
-                    localStorage.setItem("githubId", res.data.githubId);
-                    localStorage.setItem("isLogin", "1");
-                    console.log("after setItem");
-                    message.loading(
-                        "Login success, directing you to HomePage",
-                        [0.1],
-                        () => {
-                            window.location = '/HomePage';
-                        });
-                })
+        if (isLogin()) {
+            window.location = '/HomePage';
         }
+
+        // if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
+
+        // if (localStorage.getItem("isGithubLogin") === '1') {
+        //     let params = {
+        //         login : "1",
+        //     }
+        //     axios
+        //         .get(BASE_URL + "/github", {params})
+        //         .then((res) => {
+        //             console.log("HTTP get request!");
+        //             localStorage.setItem("instructorId", res.data.userId);
+        //             localStorage.setItem("username", res.data.name);
+        //             localStorage.setItem("githubId", res.data.githubId);
+        //             localStorage.setItem("isLogin", "1");
+        //             console.log("after setItem");
+        //             message.loading(
+        //                 "Login success, directing you to HomePage",
+        //                 [0.1],
+        //                 () => {
+        //                     window.location = '/HomePage';
+        //                 });
+        //         })
+        // }
     }
 
     /**
@@ -119,9 +124,9 @@ class LoginPage extends Component {
                                             window.location = "/HomePage";
                                             // history.push("/HomePage");
                                         });
-                                    localStorage.setItem("instructorId", res.data.userId);
-                                    localStorage.setItem("username", res.data.name);
-                                    localStorage.setItem("isLogin", 1);
+                                    // localStorage.setItem("instructorId", res.data.userId);
+                                    // localStorage.setItem("username", res.data.name);
+                                    // localStorage.setItem("isLogin", 1);
                                 }
                             })
                             .catch((err) => {
@@ -155,7 +160,7 @@ class LoginPage extends Component {
     loginWithGitHub = () => {
         // const { history } = this.props;
         window.location = BASE_URL + "/github";
-        localStorage.setItem("isGithubLogin", '1');
+        // localStorage.setItem("isGithubLogin", '1');
         // localStorage.setItem("isLogin", '1');
     }
 

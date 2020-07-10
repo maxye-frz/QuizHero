@@ -51,6 +51,7 @@ class AppRouter extends Component {
           <PublicRoute restricted={false} component={StudentRequestPage} path="/StudentRequestPage" exact />
           <PublicRoute restricted={false} component={StudentPage} path="/student" exact />
           <PrivateRoute component={MyUpload} path="/UploadPage" exact />
+          <PrivateRoute component={GithubLogin} path="/githublogin" exact />
           <PrivateRoute component={PresentPage} path="/presenter" exact />
           {/*<PrivateRoute component={HomePage} path="/HistoryPage" exact />*/}
           <PrivateRoute component={HomePage} path="/HomePage" exact />

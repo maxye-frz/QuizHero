@@ -68,7 +68,6 @@ export function InputCSS(props) {
         setCSS(realtimeTheme); //default
         if (localStorage.getItem("fileId") !== "null")
             readCSS();
-        // setCSS(localStorage.getItem("CSS") ? localStorage.getItem("CSS") : realtimeTheme);
     }, []);
 
     // const discard = () => {

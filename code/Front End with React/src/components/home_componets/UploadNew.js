@@ -10,6 +10,8 @@ import axios from 'axios';
 import {BASE_URL} from "../../config/config"
 import styled from "styled-components";
 import separateQuestion from "../Parse";
+import jwt_decode from "jwt-decode";
+import cookie from "react-cookies";
 
 const Header = styled.div`
   background-color: #ffffff !important;
@@ -34,6 +36,8 @@ export default function UploadNew (props){
 
     const [ fileName, setFileName ] = useState("fileName");
     const [ rawString, setRawString ] = useState("rawString");
+
+    const loginInfo = jwt_decode(cookie.load('token'));
 
     /**
      * Catch the uploaded file and handle multiple uploads error.
@@ -76,16 +80,16 @@ export default function UploadNew (props){
             // console.log(rawString);
             message.success(`${info.file.name} file uploaded successfully`);
             // Send uploaded
-            sendFile(info.file.originFileObj)
-                .then(fileId => {
-                    readFile(info.file.originFileObj)
-                        .then(r => {
+
+            readFile(info.file.originFileObj)
+                .then(r => {
+                    saveFile(info.file.name, r)
+                        .then(fileId => {
                             setRawString(r);
-                            separateQuestion(r, fileId)
-                        })
-                })
-                .then(props.refreshCallback);
-            console.log("AAAAAAAAAAAAAAAAAAAA");
+                            separateQuestion(r, fileId);
+                            props.refreshCallback();
+                        });
+                });
 
         } else if (info.file.status === 'error') {
             console.log(info.file.name);
@@ -131,13 +135,16 @@ export default function UploadNew (props){
     /**
      * send markdown file to backend and set the database returned fileId to state
      */
-    const sendFile = (file) => {
+    const saveFile = (fileName, raw) => {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('userId', localStorage.getItem("instructorId"));
+            formData.append('fileId', "");
+            formData.append('fileName', fileName);
+            formData.append('rawString', raw);
+            formData.append('userId', loginInfo['userId']);
+
             console.log("Send data to backend", formData);
-            axios.post(BASE_URL + "/upload", formData)
+            axios.post(BASE_URL + "/save", formData)
                 .then(res => {
                     console.log("CCC", res.data);
                     resolve(res.data.fileId);
