@@ -1,7 +1,9 @@
 package file;
 
+import com.sun.tools.javac.util.DefinedBy;
 import exception.ApiError;
 import exception.DaoException;
+import exception.UserAuthenticationException;
 import io.javalin.http.UploadedFile;
 
 import java.io.BufferedInputStream;
@@ -59,6 +61,11 @@ public class FileApi {
     public static void fetchFile(FileDao fileDao) {
         app.get("/fetch", context -> {
             try {
+                String token = context.cookie("token");
+                if (token == null) {
+                    System.out.println("no token");
+                    throw new UserAuthenticationException("need user authentication");
+                }
                 String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
                 InputStream in = fileDao.getFileContent(fileId);
@@ -66,6 +73,8 @@ public class FileApi {
                 context.result(inputStream);
                 System.out.println("Send file successfully.");
                 context.status(200);
+            } catch (UserAuthenticationException ex) {
+                    throw new ApiError("403 Forbidden: " + ex.getMessage(), 403);
             } catch (DaoException ex) {
                 throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {
