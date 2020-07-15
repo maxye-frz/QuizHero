@@ -6,7 +6,7 @@ import file.FileApi;
 import file.FileDao;
 import io.javalin.Javalin;
 import io.javalin.plugin.json.JavalinJson;
-import pac4j.Pac4jApi;
+//import pac4j.Pac4jApi;
 import quiz.QuizApi;
 import quiz.QuizDao;
 import user.UserApi;
@@ -82,9 +82,9 @@ public class JavalinUtil {
      */
     private static void routing(FileDao fileDao, UserDao userDao, QuizDao quizDao) {
         //sign in service
-        Pac4jApi.getCallBack();
-        Pac4jApi.postCallBack();
-        Pac4jApi.getLocalLogout();
+//        Pac4jApi.getCallBack();
+//        Pac4jApi.postCallBack();
+//        Pac4jApi.getLocalLogout();
 
         // login and register
         UserApi.register(userDao);
