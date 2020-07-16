@@ -91,7 +91,8 @@ public class JavalinUtil {
         UserApi.login(userDao);
         UserApi.emailForPassword(userDao);
         // login from github
-        UserApi.githubLogin(userDao);
+        UserApi.githubLogin();
+        UserApi.githubCallback();
 
         // get file list from user
         UserApi.getFileListFromInstructor(userDao);
