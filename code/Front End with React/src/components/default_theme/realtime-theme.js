@@ -3,27 +3,29 @@ export default
     /* @theme example */
 
     section {
-      background-color: #FFFAFA;
-      height: calc(28vw);
-      width: calc(50vw);
+      background-color: #F5FBFF;
       color: #000;
-      font-size: 1vw;
-      padding: 1.4vw;
+      font-size: 30px;
+      padding: 40px;
+      font-size: 1.0526315789473684vw;
+      padding: 1.5625vw;
+      height: calc(28.125vw);
+      width: calc(50vw);
       border-bottom: 1px solid rgba(15, 15, 15, 0.3);
       border-top: 1px solid rgba(15, 15, 15, 0.3);
     }
 
     h1 {
-      font-size: 2.5vw;
-      color: #FF1493;
+      color: #000;
       text-align: center;
+      font-size: 2.5vw;
       margin: 1.4vw;
     }
     
     h2 {
-      font-size: 2vw;
-      color: #FF1493;
+      color: #000;
       text-align: center;
+      font-size: 2vw;
       margin: 1.3vw;
     }
     

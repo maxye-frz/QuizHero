@@ -201,7 +201,7 @@ export default function UploadNew (props){
             </div>
 
             <Link to={{pathname: '/EditPage'}}>
-                <Button size={"median"}
+                <Button
                         onClick={() => {
                             if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
                                 localStorage.setItem("saved", "true");

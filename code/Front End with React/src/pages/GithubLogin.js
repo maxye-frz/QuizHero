@@ -5,6 +5,7 @@ import {message} from "antd";
 
 class GithubLogin extends React.Component {
     componentDidMount() {
+// export const GithubLogin = () => {
         let params = {
             login : "1",
         }

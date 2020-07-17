@@ -8,6 +8,7 @@ import separateQuestion from "../Parse";
 import {Link} from "react-router-dom";
 import {Button} from "antd";
 import {FilePptOutlined} from "@ant-design/icons";
+import marpit2realtime from "../default_theme/marpit2realtime";
 
 const Container = styled.div`
     width: calc(50vw);
@@ -62,7 +63,7 @@ export function Render(props) {
             </Title>
             <ResultArea>
                 {/*<ReactMarkdown source={markdownText} />*/}
-                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, CSS)}}/>
+                <div dangerouslySetInnerHTML = {{__html: marpitConvert(markdownText, marpit2realtime(CSS))}}/>
             </ResultArea>
         </Container>
     );

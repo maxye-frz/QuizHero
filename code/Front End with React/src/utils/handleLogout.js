@@ -16,6 +16,6 @@ export const handleLogout = () => {
     localStorage.setItem("data", null);
     axios.get(BASE_URL + "/logout")
         .then(() => {
-            message.loading('Local logout!', [0.1], () => {window.location = "/login";});
+            message.loading('Local logout!', [0.2], () => {window.location = "/login";});
         })
 }

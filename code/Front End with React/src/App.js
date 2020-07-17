@@ -11,9 +11,9 @@ class App extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount(){
+  // componentDidMount(){
     // localStorage.setItem('isLogin', 0);
-  }
+  // }
 
   render() {
     return (

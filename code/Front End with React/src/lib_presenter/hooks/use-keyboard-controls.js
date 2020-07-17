@@ -71,6 +71,10 @@ var useKeyboardControls = function useKeyboardControls(_ref) {
             toggleFullScreen();
             break;
 
+          case 'å':
+            toggleMode('exportMode');
+            break;
+
           // default:
           //   null;
         }

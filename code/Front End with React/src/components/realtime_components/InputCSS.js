@@ -6,7 +6,7 @@ import {Button, message} from "antd";
 import {DeleteOutlined, SaveOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
-import realtimeTheme from "../default_theme/realtime-theme";
+import marpitTheme from "../default_theme/marpit-theme";
 
 const Container = styled.div`
   width: calc(50vw);
@@ -48,11 +48,6 @@ const TextArea = styled.textarea`
 
 export function InputCSS(props) {
 
-    // Please do not delete this. get initial value from localStorage
-    // these is for use inside of this component only, like state and setState in class
-    // const [ fileName, setFileName ] = useState(localStorage.getItem("newFileName"));
-    // const [ fileValue, setFileValue ] = useState(localStorage.getItem("newFileString"));
-
     // set them to context to share with render.js
     const { CSS, setCSS } = useContext(editorContext);
 
@@ -65,9 +60,7 @@ export function InputCSS(props) {
     // Similar to componentDidMount and componentDidUpdate:
     // !localStorage.hasOwnProperty('saved')
     useLayoutEffect(() => {
-        setCSS(realtimeTheme); //default
-        if (localStorage.getItem("fileId") !== "null")
-            readCSS();
+        readCSS();
     }, []);
 
     // const discard = () => {
@@ -91,10 +84,7 @@ export function InputCSS(props) {
 
     const onInputChange = e => {
         const newValue = e.currentTarget.value;
-        // localStorage.setItem("newFileString", newValue);
         localStorage.setItem("saved", "false");
-        // setFileValue(newValue);
-        // console.log(fileValue);
         setCSS(newValue);
 
     }
@@ -108,8 +98,10 @@ export function InputCSS(props) {
                 // localStorage.setItem("CSS", res.data);
                 setCSS(res.data);
             })
+            // no user specified CSS or no fileId, will catch error
             .catch((e) => {
-                message.error(`error: ${e}`)
+                setCSS(marpitTheme); //default
+                console.log(`error: ${e}`);
             })
     }
 

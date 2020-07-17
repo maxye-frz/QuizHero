@@ -15,15 +15,7 @@ import '../../App.css';
 import {Link} from "react-router-dom";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {List, Button, Menu, message} from 'antd';
-import {
-    DeleteOutlined,
-    EditOutlined,
-    FilePptOutlined,
-    DownloadOutlined,
-    ShareAltOutlined,
-    StopOutlined,
-    FilePdfOutlined
-} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, FilePptOutlined, DownloadOutlined, ShareAltOutlined, StopOutlined, FilePdfOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
 import separateQuestion from "../Parse";
@@ -134,6 +126,24 @@ export default function History(props) {
             .catch((error)=> message.error(error));
     }
 
+    const readCSS = (fileId) => {
+        return new Promise(((resolve, reject) => {
+            let params = {
+                fileId: fileId
+            }
+            axios.get(BASE_URL + "/readCSS", {params})
+                .then(res => {
+                    // localStorage.setItem("CSS", res.data);
+                    resolve(res.data);
+                })
+                // no user specified CSS, will catch error
+                .catch((e) => {
+                    console.log(`error: ${e}`);
+                    reject(e);
+                })
+        }))
+    }
+
     /**
      * onDownload(fileId, fileName, fileType) is used to handle download request, both raw Markdown file and static HTML file.
      * It is decided by the last parameter fileType.
@@ -159,7 +169,13 @@ export default function History(props) {
         fetchFile(fileId)
             .then(rawString => {
                 if (fileType === "raw") exportRaw(fileName, rawString);
-                else if (fileType === "HTML") exportRaw(`${fileName}.html`, marpitConvert(rawString));
+                else if (fileType === "HTML") {
+                    readCSS(fileId)
+                        // has user specified CSS
+                        .then(CSS => exportRaw(`${fileName}.html`, marpitConvert(rawString, CSS)))
+                        // No user specified CSS
+                        .catch(e => exportRaw(`${fileName}.html`, marpitConvert(rawString)))
+                }
             })
     }
 

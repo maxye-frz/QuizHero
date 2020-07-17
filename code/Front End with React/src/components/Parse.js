@@ -124,6 +124,7 @@ const parseQuiz = (quizString, fileId) => {
                                 countB: 0,
                                 countC: 0,
                                 countD: 0,
+                                // countE: 0,
                             }
                             count++;
                             console.log(formData)
