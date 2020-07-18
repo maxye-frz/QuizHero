@@ -21,6 +21,7 @@ import {BASE_URL} from "../../config/config";
 import separateQuestion from "../Parse";
 import marpitConvert from "../Marpit";
 import fileListContext from "./fileListContext";
+import marpit2spectacle from "../default_theme/marpit2spectacle";
 import styled from "styled-components";
 
 
@@ -53,6 +54,24 @@ export default function History(props) {
         })
     }
 
+    const readCSS = (fileId) => {
+        return new Promise(((resolve, reject) => {
+            let params = {
+                fileId: fileId
+            }
+            axios.get(BASE_URL + "/readCSS", {params})
+                .then(res => {
+                    // localStorage.setItem("CSS", res.data);
+                    resolve(res.data);
+                })
+                // no user specified CSS, will catch error
+                .catch((e) => {
+                    console.log(`error: ${e}`);
+                    reject(e);
+                })
+        }))
+    }
+
     const editFile = (fileId, fileName) => {
         if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
             localStorage.setItem("saved", "true");
@@ -77,7 +96,10 @@ export default function History(props) {
      */
     const presenterMode = (fileId) => {
         fetchFile(fileId)
-            .then(rawString => {callSeparateQuestion(rawString, fileId)});
+            .then(rawString => {
+                readCSS(fileId)
+                    .then(CSS => callSeparateQuestion(rawString, fileId, CSS))
+            });
     }
 
     /**
@@ -91,10 +113,13 @@ export default function History(props) {
      * which will be set to localStorage in browser, which will be used in PresenterPage.js
      * @param rawString
      * @param fileId
+     * @param CSS
      */
-    const callSeparateQuestion = (rawString, fileId) =>{
+    const callSeparateQuestion = (rawString, fileId, CSS) =>{
         var data = separateQuestion(rawString);
         data.fileId = fileId;
+        console.log(CSS);
+        data.CSS = marpit2spectacle(CSS);
         data = JSON.stringify(data);
         localStorage.setItem("data", data)
         window.open('/presenter');
@@ -124,24 +149,6 @@ export default function History(props) {
         axios.post(BASE_URL + "/filepermission", formData)
             .then(()=> message.success(`File ${fileId} stop sharing`))
             .catch((error)=> message.error(error));
-    }
-
-    const readCSS = (fileId) => {
-        return new Promise(((resolve, reject) => {
-            let params = {
-                fileId: fileId
-            }
-            axios.get(BASE_URL + "/readCSS", {params})
-                .then(res => {
-                    // localStorage.setItem("CSS", res.data);
-                    resolve(res.data);
-                })
-                // no user specified CSS, will catch error
-                .catch((e) => {
-                    console.log(`error: ${e}`);
-                    reject(e);
-                })
-        }))
     }
 
     /**

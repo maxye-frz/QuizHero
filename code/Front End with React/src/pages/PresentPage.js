@@ -25,7 +25,8 @@ class PresentPage extends Component {
             quizCounter : 0,
             quizList: JSON.parse(localStorage.getItem("data")).quiz,
             quizQuestions:JSON.parse(localStorage.getItem("data")).quiz[0],
-            slides: JSON.parse(localStorage.getItem("data")).slidesString
+            slides: JSON.parse(localStorage.getItem("data")).slidesString,
+            CSS: JSON.parse(localStorage.getItem("data")).CSS
         };
         console.log(this.state.quizList)
         this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
@@ -56,7 +57,7 @@ class PresentPage extends Component {
     /**
      * set parameters to be the next question.
      */
-    setNextQuestion() {
+    setNextQuestion = () => {
         const counter = this.state.counter + 1;
         const questionId = this.state.questionId + 1;
         const questionCounter = this.state.questionCounter + 1;
@@ -151,7 +152,7 @@ class PresentPage extends Component {
         })
     };
 
-    toSlidesCallback=()=>{
+    toSlidesCallback = () => {
         this.stopQuiz();
         this.setState({
             quizFlag : 0,
@@ -179,7 +180,8 @@ class PresentPage extends Component {
         return (
             <div>
                 <Slides toQuizCallback={this.toQuizCallback}
-                        slides={this.state.slides}/>
+                        slides={this.state.slides}
+                        CSS={this.state.CSS}/>
             </div>
         )
     }

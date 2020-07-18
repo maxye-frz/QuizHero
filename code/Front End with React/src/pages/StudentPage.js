@@ -26,6 +26,7 @@ class StudentPage extends Component {
             quizList: JSON.parse(localStorage.getItem("data")).quiz,
             quizQuestions:JSON.parse(localStorage.getItem("data")).quiz[0],
             slides: JSON.parse(localStorage.getItem("data")).slidesString,
+            CSS: JSON.parse(localStorage.getItem("data")).CSS
         };
         this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
     }
@@ -200,7 +201,8 @@ class StudentPage extends Component {
         return (
             <div>
                 <Slides toQuizCallback={this.checkQuizPermission}
-                        slides={this.state.slides}/>
+                        slides={this.state.slides}
+                        CSS={this.state.CSS}/>
             </div>
         )
     }

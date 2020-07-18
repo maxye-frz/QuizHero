@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import {Button} from "antd";
 import {FilePptOutlined} from "@ant-design/icons";
 import marpit2realtime from "../default_theme/marpit2realtime";
+import marpit2spectacle from "../default_theme/marpit2spectacle";
 
 const Container = styled.div`
     width: calc(50vw);
@@ -45,6 +46,7 @@ export function Render(props) {
 
     const callSeparateQuestion =(rawString)=>{
         var data = separateQuestion(rawString);
+        data.CSS = marpit2spectacle(CSS);
         data = JSON.stringify(data);
         localStorage.setItem("data", data)
         // this.jump();

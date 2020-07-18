@@ -2,7 +2,6 @@
  * The Spectacle component is to render slides and quiz access button.
  */
 import React from 'react';
-import { render } from 'react-dom';
 import { Upload, message, Button, Icon } from 'antd';
 import defaultTheme from './default_theme/spectacle-theme';
 import { Box, Deck, FlexBox, FullScreen, Markdown, Progress, Slide, Heading, Notes, CodePane} from '../lib_presenter';
@@ -33,19 +32,17 @@ const template = () => (
 class Slides extends React.Component{
     constructor(props) {
         super(props);
-        this.toQuizCallback = props.toQuizCallback;
+        // this.toQuizCallback = props.toQuizCallback;
         this.slides = props.slides;
-        // this.beforeUpload.bind = this.beforeUpload.bind(this);
-
     }
 
     /**
      * The onclick function is to callback quiz page when click "start quiz".
      */
-    onClick = () => {
-        this.toQuizCallback(1);
-        console.log(this.slides)
-    }
+    // onClick = () => {
+    //     this.toQuizCallback(1);
+    //     console.log(this.slides)
+    // }
 
     /**
      *The render function is to get composite slides data and render them as slides page using Spectacle.
@@ -75,15 +72,14 @@ class Slides extends React.Component{
                 slideBlock.splice(slideBlock.length - 1, 1);
                 data = slideBlock.join("---\n\n");
                 content.push(
-                    <Markdown containsSlides>{data}</Markdown>
-
+                    <Markdown containsSlides>{data}</Markdown> // red warnings
                 )
                 content.push(
                     <Slide style={{backgroundColor:"#fff"}} align="flex-start">
                         <Heading>Now lets do some funny quizzes!</Heading>
                         <Heading>
                             <Button
-                                onClick={() => {this.toQuizCallback(count)}} style={buttonStyle}>
+                                onClick={() => {this.props.toQuizCallback(count)}} style={buttonStyle}>
                                 Click to start quiz
                             </Button>
                         </Heading>
@@ -105,7 +101,7 @@ class Slides extends React.Component{
          */
         return (
 
-            <Deck loop theme={defaultTheme} template={template} transition={["slide"]}>
+            <Deck loop theme={this.props.CSS} template={template} transition={["slide"]}>
                 {content}
             </Deck>
         );
