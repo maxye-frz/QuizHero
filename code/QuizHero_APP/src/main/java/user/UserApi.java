@@ -177,7 +177,10 @@ public class UserApi {
                 System.out.println(accessToken);
             }
 
+            //save access_token
+            //get user info, create/get user model, put jwt to cookie
 
+            ctx.redirect("/login");
         });
     }
 
