@@ -92,7 +92,7 @@ public class JavalinUtil {
         UserApi.emailForPassword(userDao);
         // login from github
         UserApi.githubLogin();
-        UserApi.githubCallback();
+        UserApi.githubCallback(userDao);
 
         // get file list from user
         UserApi.getFileListFromInstructor(userDao);
