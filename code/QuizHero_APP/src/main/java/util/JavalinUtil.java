@@ -112,6 +112,7 @@ public class JavalinUtil {
         FileApi.changeQuizPermission(fileDao);
         FileApi.checkQuizPermission(fileDao);
         FileApi.deleteFile(fileDao);
+        FileApi.pull(fileDao);
     }
 
     /**

@@ -1,13 +1,26 @@
 package file;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
 import io.javalin.http.UploadedFile;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -240,5 +253,69 @@ public class FileApi {
                 throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400);
             }
         });
+    }
+
+
+    //github pull file
+    public static void pull(FileDao fileDao) {
+        app.post("/pull", context -> {
+            //get the desired file from github
+            System.out.println("here");
+            String owner = Objects.requireNonNull(context.queryParam("owner"));
+            String repo = Objects.requireNonNull(context.queryParam("repo"));
+            String path = Objects.requireNonNull(context.queryParam("path"));
+            String accessToken = context.cookie("access_token");
+            String tokenType = context.cookie("token_type");
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            httpget.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
+            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+//            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
+//            System.out.println(JsonObject);
+//            String content = JsonObject.get("content").toString().replaceAll("\"", "");
+//
+//            System.out.print(content);
+//            byte[] decodedContent =  Base64.getMimeDecoder().decode(content.getBytes("UTF-8"));
+//            InputStream inputStream = new ByteArrayInputStream(decodedContent);
+            InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());
+
+            try  {
+                // fetch user id from form-data, require argument not null
+                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId")));
+                System.out.println("user id: " + userId);
+                String fileName = path;
+                System.out.println("file content received. File name: " + fileName);
+//                File localFile = new File("upload/" + uploadedFile.getFilename());
+//                FileUtils.copyInputStreamToFile(inputStream, localFile);
+//                String url = localFile.getAbsolutePath();
+
+                File file = new File (userId, fileName, inputStream); // generate File object
+                fileDao.storeFile(file); // store file and update user-file info in database
+
+                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+                fileMap.put("fileId", file.getFileId());
+                fileMap.put("fileName", file.getFileName());
+                context.json(fileMap);
+                context.contentType("application/json");
+                context.status(201);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+            }
+        });
+    }
+
+    public static void push(FileDao fileDao) {
+
     }
 }
