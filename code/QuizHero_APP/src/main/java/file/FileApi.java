@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import sun.nio.cs.US_ASCII;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -274,19 +275,27 @@ public class FileApi {
                     .build();
             HttpGet httpget = new HttpGet(getUri);
             httpget.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
-            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
+//            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
             HttpResponse response = httpclient.execute(httpget);
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
             System.out.println(responseString);
-//            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
+            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
 //            System.out.println(JsonObject);
-//            String content = JsonObject.get("content").toString().replaceAll("\"", "");
-//
-//            System.out.print(content);
-//            byte[] decodedContent =  Base64.getMimeDecoder().decode(content.getBytes("UTF-8"));
-//            InputStream inputStream = new ByteArrayInputStream(decodedContent);
-            InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());
+            String content = JsonObject.get("content")
+                    .toString()
+                    .replace("\"", "")
+                    .replace("\\n", "");
+            System.out.println(content);
+            String sha = JsonObject.get("sha").toString().replaceAll("\"", "");
+            System.out.println(sha);
+
+            byte[] decodedContent = Base64.getMimeDecoder().decode(content);
+
+//            byte[] decodedContent =  Base64.getMimeDecoder().decode(content.getBytes(StandardCharsets.US_ASCII));
+            InputStream inputStream = new ByteArrayInputStream(decodedContent);
+
+//            InputStream inputStream = new ByteArrayInputStream(responseString.getBytes()); //this is for reponse from .raw
 
             try  {
                 // fetch user id from form-data, require argument not null

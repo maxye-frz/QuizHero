@@ -192,9 +192,9 @@ public class UserApi {
             String getResponseString = EntityUtils.toString(getResponseEntity);
             JsonObject newJsonObject = new Gson().fromJson(getResponseString, JsonObject.class);
             System.out.print(newJsonObject);
-            String githubUserName = newJsonObject.get("login").toString().replaceAll("\"", "");
-            String githubEmail = newJsonObject.get("email").toString().replaceAll("\"", "");
-            String githubId = newJsonObject.get("id").toString().replaceAll("\"", "");
+            String githubUserName = newJsonObject.get("login").toString().replace("\"", "");
+            String githubEmail = newJsonObject.get("email").toString().replace("\"", "");
+            String githubId = newJsonObject.get("id").toString().replace("\"", "");
 
             //create/get user model
             try {
