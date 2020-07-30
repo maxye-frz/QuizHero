@@ -10,10 +10,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import sun.nio.cs.US_ASCII;
+import util.OAuthUtil;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -261,7 +263,6 @@ public class FileApi {
     public static void pull(FileDao fileDao) {
         app.post("/pull", context -> {
             //get the desired file from github
-            System.out.println("here");
             String owner = Objects.requireNonNull(context.queryParam("owner"));
             String repo = Objects.requireNonNull(context.queryParam("repo"));
             String path = Objects.requireNonNull(context.queryParam("path"));
@@ -289,6 +290,7 @@ public class FileApi {
             System.out.println(content);
             String sha = JsonObject.get("sha").toString().replaceAll("\"", "");
             System.out.println(sha);
+            context.cookie("sha", sha);
 
             byte[] decodedContent = Base64.getMimeDecoder().decode(content);
 
@@ -325,6 +327,34 @@ public class FileApi {
     }
 
     public static void push(FileDao fileDao) {
+        //save file first; execute in order?
+        saveFile(fileDao);
+        app.post("/push", context -> {
+            String owner = Objects.requireNonNull(context.queryParam("owner"));
+            String repo = Objects.requireNonNull(context.queryParam("repo"));
+            String path = Objects.requireNonNull(context.queryParam("path"));
+            String fileContent = context.formParam("rawString");
+            String message = context.formParam("commit");
+            String accessToken = context.cookie("access_token");
+            String tokenType = context.cookie("token_type");
+            String sha = context.cookie("sha");
+            String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
 
+            HttpClient httpclient = HttpClients.createDefault();
+            URI putUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .setParameter("message", message)
+                    .setParameter("content", content)
+                    .setParameter("sha", sha)
+                    .build();
+            HttpPut httpput = new HttpPut(putUri);
+            httpput.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
+            HttpResponse response = httpclient.execute(httpput);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+        });
     }
 }
