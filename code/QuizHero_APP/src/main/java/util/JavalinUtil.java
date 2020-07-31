@@ -113,6 +113,9 @@ public class JavalinUtil {
         FileApi.checkQuizPermission(fileDao);
         FileApi.deleteFile(fileDao);
         FileApi.pull(fileDao);
+        FileApi.push(fileDao);
+        FileApi.listRepo();
+        FileApi.listContent();
     }
 
     /**

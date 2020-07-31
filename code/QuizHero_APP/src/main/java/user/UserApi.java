@@ -147,6 +147,7 @@ public class UserApi {
             String githubOAuth = "https://github.com/login/oauth/authorize?client_id="
                     + OAuthUtil.getClientId() + "&scope=" + OAuthUtil.getScope();
             ctx.redirect(githubOAuth);
+            ctx.status(302);
         });
     }
 
@@ -219,8 +220,8 @@ public class UserApi {
             } catch (LoginException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
             }
-
             ctx.redirect("/login");
+            ctx.status(302);
         });
     }
 

@@ -2,6 +2,8 @@ package file;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
@@ -23,10 +25,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static util.JavalinUtil.app;
 
@@ -263,6 +262,7 @@ public class FileApi {
     public static void pull(FileDao fileDao) {
         app.post("/pull", context -> {
             //get the desired file from github
+            //read owner, repo and path as query parameter
             String owner = Objects.requireNonNull(context.queryParam("owner"));
             String repo = Objects.requireNonNull(context.queryParam("repo"));
             String path = Objects.requireNonNull(context.queryParam("path"));
@@ -327,12 +327,13 @@ public class FileApi {
     }
 
     public static void push(FileDao fileDao) {
-        //save file first; execute in order?
-        saveFile(fileDao);
+//        saveFile(fileDao);
         app.post("/push", context -> {
+            //read owner, repo and path as query parameter
             String owner = Objects.requireNonNull(context.queryParam("owner"));
             String repo = Objects.requireNonNull(context.queryParam("repo"));
             String path = Objects.requireNonNull(context.queryParam("path"));
+            //read file content string as form parameter
             String fileContent = context.formParam("rawString");
             String message = context.formParam("commit");
             String accessToken = context.cookie("access_token");
@@ -355,6 +356,68 @@ public class FileApi {
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
             System.out.println(responseString);
+            //ctx.json?
+            context.status(201);
+        });
+    }
+
+    public static void listRepo() {
+        app.get("/listRepo", ctx -> {
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/user/repos")
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            String accessToken = ctx.cookie("access_token");
+            httpget.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            JsonArray JsonArray = new Gson().fromJson(responseString, JsonArray.class);
+            System.out.println(JsonArray);
+            List<String> repo = new ArrayList<>();
+            for (int i = 0; i < JsonArray.size(); i++) {
+                JsonObject repoObject = new Gson().fromJson(JsonArray.get(i), JsonObject.class);
+                String repoName = repoObject.get("full_name").toString().replaceAll("\"", "");
+                repo.add(repoName);
+            }
+            System.out.println(repo);
+            ctx.json(repo);
+            ctx.status(200);
+        });
+    }
+
+    public static void listContent() {
+        app.get("listContent", ctx -> {
+            String owner = Objects.requireNonNull(ctx.queryParam("owner"));
+            String repo = Objects.requireNonNull(ctx.queryParam("repo"));
+            String path = Objects.requireNonNull(ctx.queryParam("path"));
+            String accessToken = ctx.cookie("access_token");
+            String tokenType = ctx.cookie("token_type");
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            httpget.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
+//            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            JsonArray JsonArray = new Gson().fromJson(responseString, JsonArray.class);
+            System.out.println(JsonArray);
+            List<String> pathArray = new ArrayList<>();
+            for (int i = 0; i < JsonArray.size(); i++) {
+                JsonObject repoObject = new Gson().fromJson(JsonArray.get(i), JsonObject.class);
+                String pathName = repoObject.get("path").toString().replaceAll("\"", "");
+                pathArray.add(pathName);
+            }
+            ctx.json(pathArray);
+            ctx.status(200);
         });
     }
 }
