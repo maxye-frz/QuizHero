@@ -24,7 +24,7 @@ class HomePage extends React.Component {
     render() {
 
         // const { fileList } = this.state;
-
+        // cookie catch error, redirect to LoginPage
         const loginInfo = jwt_decode(cookie.load('token'));
         const username = loginInfo['name'];
         // const username = localStorage.getItem("username") ? localStorage.getItem("username"):"";

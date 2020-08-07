@@ -9,6 +9,7 @@ import {BASE_URL} from "../../config/config";
 import jwt_decode from "jwt-decode";
 import cookie from "react-cookies";
 import separateQuestion from "../Parse";
+import MyControl from "../home_componets/popup";
 
 const Container = styled.div`
   width: calc(50vw);
@@ -138,6 +139,7 @@ export function Input(props) {
                            onChange={onTitleChange}
                            value={titleText} />
                 <div style={{paddingTop: 1}}>
+                    <MyControl />
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={saveFile}>
                         <SaveOutlined /> Save File
