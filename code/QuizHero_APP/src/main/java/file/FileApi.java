@@ -10,11 +10,15 @@ import exception.DaoException;
 import io.javalin.http.UploadedFile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import sun.nio.cs.US_ASCII;
 import util.OAuthUtil;
@@ -267,6 +271,7 @@ public class FileApi {
             String repo = Objects.requireNonNull(context.queryParam("repo"));
             String path = Objects.requireNonNull(context.queryParam("path"));
             String accessToken = context.cookie("access_token");
+            System.out.println(accessToken);
             String tokenType = context.cookie("token_type");
             HttpClient httpclient = HttpClients.createDefault();
             URI getUri = new URIBuilder()
@@ -275,8 +280,8 @@ public class FileApi {
                     .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
                     .build();
             HttpGet httpget = new HttpGet(getUri);
-            httpget.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
-//            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
+            httpget.setHeader("AUTHORIZATION", "token " + accessToken);
+            httpget.setHeader("Accept", "application/vnd.github.v3+json");
             HttpResponse response = httpclient.execute(httpget);
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
@@ -291,6 +296,8 @@ public class FileApi {
             String sha = JsonObject.get("sha").toString().replaceAll("\"", "");
             System.out.println(sha);
             context.cookie("sha", sha);
+            Map<String, Object> pullMap = new HashMap<>();
+            pullMap.put("sha", sha);
 
             byte[] decodedContent = Base64.getMimeDecoder().decode(content);
 
@@ -312,10 +319,9 @@ public class FileApi {
                 File file = new File (userId, fileName, inputStream); // generate File object
                 fileDao.storeFile(file); // store file and update user-file info in database
 
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", file.getFileId());
-                fileMap.put("fileName", file.getFileName());
-                context.json(fileMap);
+                pullMap.put("fileId", file.getFileId());
+                pullMap.put("fileName", file.getFileName());
+                context.json(pullMap);
                 context.contentType("application/json");
                 context.status(201);
             } catch (DaoException ex) {
@@ -346,17 +352,26 @@ public class FileApi {
                     .setScheme("https")
                     .setHost("api.github.com")
                     .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
-                    .setParameter("message", message)
-                    .setParameter("content", content)
-                    .setParameter("sha", sha)
                     .build();
             HttpPut httpput = new HttpPut(putUri);
-            httpput.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
+            String inputJson = "{\n" +
+                    "\"message\": \"" + message + "\",\n" +
+                    "\"content\": \"" + content + "\",\n" +
+                    "\"sha\": \"" + sha + "\"\n" +
+                    "}";
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httpput.setEntity(stringEntity);
+
+            httpput.setHeader("Accept", "application/vnd.github.v3+json");
+            httpput.setHeader("AUTHORIZATION", "token " + accessToken);
             HttpResponse response = httpclient.execute(httpput);
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
             System.out.println(responseString);
-            //ctx.json?
+            Map<String, Object> pushMap = new HashMap<>(); // return  to front-end
+            pushMap.put("sha", sha);
+            pushMap.put("message", message);
+            context.json(pushMap);
             context.status(201);
         });
     }
