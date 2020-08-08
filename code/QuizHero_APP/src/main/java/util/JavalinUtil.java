@@ -91,7 +91,8 @@ public class JavalinUtil {
         UserApi.login(userDao);
         UserApi.emailForPassword(userDao);
         // login from github
-        UserApi.githubLogin(userDao);
+        UserApi.githubLogin();
+        UserApi.githubCallback(userDao);
 
         // get file list from user
         UserApi.getFileListFromInstructor(userDao);
@@ -111,9 +112,10 @@ public class JavalinUtil {
         FileApi.changeQuizPermission(fileDao);
         FileApi.checkQuizPermission(fileDao);
         FileApi.deleteFile(fileDao);
-        FileApi.readCSS(fileDao);
-        FileApi.uploadCSS(fileDao);
-        FileApi.saveCSS(fileDao);
+        FileApi.pull(fileDao);
+        FileApi.push(fileDao);
+        FileApi.listRepo();
+        FileApi.listContent();
     }
 
     /**

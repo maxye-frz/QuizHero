@@ -39,8 +39,9 @@ public class User {
      * @param name name of the instructor
      * @param githubId githubId of the instructor
      */
-    public User(String name, String githubId) {
+    public User(String name, String email, String githubId) {
         this.name = name;
+        this.email = email;
         this.githubId = githubId;
     }
 

@@ -108,7 +108,7 @@ public class UserDao {
      * @param githubId String of user GitHub ID
      * @return an instance of Instructor class with matching email and password fields
      */
-    public User githubLogin(String name, String githubId) {
+    public User githubLogin(String name, String email, String githubId) {
         User user;
         try (Connection conn = sql2o.open()) {
             String sql = "SELECT userId, name, email, githubId FROM account Where githubId = :githubId;";
@@ -121,11 +121,12 @@ public class UserDao {
 
         if (user == null) {
             //github login not exists, register new user
-            user = new User(name, githubId);
+            user = new User(name, email, githubId);
             try (Connection conn = sql2o.open()) {
-                String sql = "INSERT INTO account(name, githubId) VALUES (:name, :githubId);";
+                String sql = "INSERT INTO account(name, email, githubId) VALUES (:name, :email, :githubId);";
                 int id = (int) conn.createQuery(sql, true)
                         .addParameter("name", user.getName())
+                        .addParameter("email", user.getEmail())
                         .addParameter("githubId", user.getGithubId())
                         .executeUpdate()
                         .getKey(); // Returns the key this connection is associated with.

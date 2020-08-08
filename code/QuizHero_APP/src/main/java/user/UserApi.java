@@ -1,14 +1,32 @@
 package user;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
 import javalinjwt.JWTProvider;
 import file.File;
+import org.apache.http.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.javalin.JavalinWebContext;
 import util.OAuthUtil;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -88,7 +106,7 @@ public class UserApi {
         });
     }
 
-
+// old github login api using pac4j and github client
 //    public static void githubLogin(UserDao userDao) {
 //        app.before("/github", githubSecurityHandler);
 //        app.get("/github", ctx -> {
@@ -129,12 +147,81 @@ public class UserApi {
             String githubOAuth = "https://github.com/login/oauth/authorize?client_id="
                     + OAuthUtil.getClientId() + "&scope=" + OAuthUtil.getScope();
             ctx.redirect(githubOAuth);
+            ctx.status(302);
         });
     }
 
-    public static void githubCallback() {
+    public static void githubCallback(UserDao userDao) {
         app.get("/callback", ctx-> {
+            // receive the code from github api after user login
             String code = Objects.requireNonNull(ctx.queryParam("code"));
+            // start http request to receive access token from github api
+            HttpClient httpclientPost = HttpClients.createDefault();
+            URI postUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("github.com")
+                    .setPath("/login/oauth/access_token")
+                    .setParameter("client_id", OAuthUtil.getClientId())
+                    .setParameter("client_secret", OAuthUtil.getClientSecret())
+                    .setParameter("code", code)
+                    .build();
+            HttpPost httppost = new HttpPost(postUri);
+            httppost.setHeader("Accept", "application/json");
+            HttpResponse postResponse = httpclientPost.execute(httppost);
+            HttpEntity postEntity = postResponse.getEntity();
+            String postResponseString = EntityUtils.toString(postEntity);
+            JsonObject jsonObject = new Gson().fromJson(postResponseString, JsonObject.class);
+            System.out.println(jsonObject);
+            String accessToken = jsonObject.get("access_token").toString().replaceAll("\"", "");
+            String tokenType = jsonObject.get("token_type").toString().replaceAll("\"", "");
+
+            //write access token to cookie; require no encryption?
+            ctx.cookie("access_token", accessToken);
+            ctx.cookie("token_type", tokenType);
+
+            //get user info
+            HttpClient httpclientGet = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/user")
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            httpget.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse getResponse = httpclientGet.execute(httpget);
+            HttpEntity getResponseEntity = getResponse.getEntity();
+            String getResponseString = EntityUtils.toString(getResponseEntity);
+            JsonObject newJsonObject = new Gson().fromJson(getResponseString, JsonObject.class);
+            System.out.print(newJsonObject);
+            String githubUserName = newJsonObject.get("login").toString().replace("\"", "");
+            String githubEmail = newJsonObject.get("email").toString().replace("\"", "");
+            String githubId = newJsonObject.get("id").toString().replace("\"", "");
+
+            //create/get user model
+            try {
+                User user = userDao.githubLogin(githubUserName, githubEmail, githubId);
+                ctx.json(user); //json text of user model is printed on web page
+                System.out.println(user);
+                ctx.contentType("application/json");
+                ctx.status(200);
+                String token = provider.generateToken(user);
+                ctx.json(new JWTResponse(token));
+                ctx.cookie("token", token);
+                ctx.json(user); //comment this line after cookie is done
+                ctx.contentType("application/json");
+                ctx.status(200); // created successfully
+                System.out.println(ctx.queryParam("login"));
+                if (Objects.isNull(ctx.queryParam("login"))) {
+                    System.out.println("Redirect");
+                    ctx.redirect("http://localhost:3000/login");
+                }
+            } catch (DaoException ex) {
+                throw new ApiError(ex.getMessage(), 500); // server internal error
+            } catch (LoginException ex) {
+                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
+            }
+            ctx.redirect("/login");
+            ctx.status(302);
         });
     }
 

@@ -1,18 +1,35 @@
 package file;
 
-import com.sun.tools.javac.util.DefinedBy;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
-import exception.UserAuthenticationException;
 import io.javalin.http.UploadedFile;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import sun.nio.cs.US_ASCII;
+import util.OAuthUtil;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static util.JavalinUtil.app;
 
@@ -61,11 +78,6 @@ public class FileApi {
     public static void fetchFile(FileDao fileDao) {
         app.get("/fetch", context -> {
             try {
-                String token = context.cookie("token");
-                if (token == null) {
-                    System.out.println("no token");
-                    throw new UserAuthenticationException("need user authentication");
-                }
                 String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
                 InputStream in = fileDao.getFileContent(fileId);
@@ -73,8 +85,6 @@ public class FileApi {
                 context.result(inputStream);
                 System.out.println("Send file successfully.");
                 context.status(200);
-            } catch (UserAuthenticationException ex) {
-                    throw new ApiError("403 Forbidden: " + ex.getMessage(), 403);
             } catch (DaoException ex) {
                 throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {
@@ -251,18 +261,67 @@ public class FileApi {
         });
     }
 
-    public static void uploadCSS(FileDao fileDao) {
-        app.post("/uploadCSS", context -> {
-            UploadedFile uploadedCss = context.uploadedFile("fileCSS"); // get file part
-            try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
-                // fetch file id from form-data, require argument not null
-                String fileId = Objects.requireNonNull(context.formParam("fileId"));
-                System.out.println("file id: " + fileId);
-                fileDao.updateCSS(fileId, inputStream);
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", fileId);
-                fileMap.put("fileCSS", inputStream);
-                context.json(fileMap);
+
+    //github pull file
+    public static void pull(FileDao fileDao) {
+        app.post("/pull", context -> {
+            //get the desired file from github
+            //read owner, repo and path as query parameter
+            String owner = Objects.requireNonNull(context.queryParam("owner"));
+            String repo = Objects.requireNonNull(context.queryParam("repo"));
+            String path = Objects.requireNonNull(context.queryParam("path"));
+            String accessToken = context.cookie("access_token");
+            System.out.println(accessToken);
+            String tokenType = context.cookie("token_type");
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            httpget.setHeader("AUTHORIZATION", "token " + accessToken);
+            httpget.setHeader("Accept", "application/vnd.github.v3+json");
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
+//            System.out.println(JsonObject);
+            String content = JsonObject.get("content")
+                    .toString()
+                    .replace("\"", "")
+                    .replace("\\n", "");
+            System.out.println(content);
+            String sha = JsonObject.get("sha").toString().replaceAll("\"", "");
+            System.out.println(sha);
+            context.cookie("sha", sha);
+            Map<String, Object> pullMap = new HashMap<>();
+            pullMap.put("sha", sha);
+
+            byte[] decodedContent = Base64.getMimeDecoder().decode(content);
+
+//            byte[] decodedContent =  Base64.getMimeDecoder().decode(content.getBytes(StandardCharsets.US_ASCII));
+            InputStream inputStream = new ByteArrayInputStream(decodedContent);
+
+//            InputStream inputStream = new ByteArrayInputStream(responseString.getBytes()); //this is for reponse from .raw
+
+            try  {
+                // fetch user id from form-data, require argument not null
+                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId")));
+                System.out.println("user id: " + userId);
+                String fileName = path;
+                System.out.println("file content received. File name: " + fileName);
+//                File localFile = new File("upload/" + uploadedFile.getFilename());
+//                FileUtils.copyInputStreamToFile(inputStream, localFile);
+//                String url = localFile.getAbsolutePath();
+
+                File file = new File (userId, fileName, inputStream); // generate File object
+                fileDao.storeFile(file); // store file and update user-file info in database
+
+                pullMap.put("fileId", file.getFileId());
+                pullMap.put("fileName", file.getFileName());
+                context.json(pullMap);
                 context.contentType("application/json");
                 context.status(201);
             } catch (DaoException ex) {
@@ -273,43 +332,107 @@ public class FileApi {
         });
     }
 
-    public static void saveCSS(FileDao fileDao) {
-        app.post("/saveCSS", context -> {
-            try {
-                String fileId = context.formParam("fileId");
-                String cssContent = context.formParam("fileCSS");
-                InputStream cssStream = new ByteArrayInputStream(cssContent.getBytes(StandardCharsets.UTF_8));
-                assert fileId != null;
-                fileDao.updateCSS(fileId, cssStream);
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", fileId);
-                fileMap.put("fileCSS", cssContent);
-                context.json(fileMap);
-                context.contentType("application/json");
-                context.status(201);
-            } catch (DaoException ex) {
-                throw new ApiError("server error when save file: " + ex.getMessage(), 500);
-            } catch (NullPointerException ex) {
-                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
-            }
+    public static void push(FileDao fileDao) {
+//        saveFile(fileDao);
+        app.post("/push", context -> {
+            //read owner, repo and path as query parameter
+            String owner = Objects.requireNonNull(context.queryParam("owner"));
+            String repo = Objects.requireNonNull(context.queryParam("repo"));
+            String path = Objects.requireNonNull(context.queryParam("path"));
+            //read file content string as form parameter
+            String fileContent = context.formParam("rawString");
+            String message = context.formParam("commit");
+            String accessToken = context.cookie("access_token");
+            String tokenType = context.cookie("token_type");
+            String sha = context.cookie("sha");
+            String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
+
+            HttpClient httpclient = HttpClients.createDefault();
+            URI putUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpPut httpput = new HttpPut(putUri);
+            String inputJson = "{\n" +
+                    "\"message\": \"" + message + "\",\n" +
+                    "\"content\": \"" + content + "\",\n" +
+                    "\"sha\": \"" + sha + "\"\n" +
+                    "}";
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httpput.setEntity(stringEntity);
+
+            httpput.setHeader("Accept", "application/vnd.github.v3+json");
+            httpput.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse response = httpclient.execute(httpput);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+            Map<String, Object> pushMap = new HashMap<>(); // return  to front-end
+            pushMap.put("sha", sha);
+            pushMap.put("message", message);
+            context.json(pushMap);
+            context.status(201);
         });
     }
 
-    public static void readCSS(FileDao fileDao) {
-        app.get("/readCSS", context -> {
-            try {
-                String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
-                System.out.println("file id: " + fileId);
-                InputStream in = fileDao.getCSS(fileId);
-                InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
-                context.result(inputStream);
-                System.out.println("Send file successfully.");
-                context.status(200);
-            } catch (DaoException ex) {
-                throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
-            } catch (NullPointerException ex) {
-                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400);
+    public static void listRepo() {
+        app.get("/listRepo", ctx -> {
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/user/repos")
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            String accessToken = ctx.cookie("access_token");
+            httpget.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            JsonArray JsonArray = new Gson().fromJson(responseString, JsonArray.class);
+            System.out.println(JsonArray);
+            List<String> repo = new ArrayList<>();
+            for (int i = 0; i < JsonArray.size(); i++) {
+                JsonObject repoObject = new Gson().fromJson(JsonArray.get(i), JsonObject.class);
+                String repoName = repoObject.get("full_name").toString().replaceAll("\"", "");
+                repo.add(repoName);
             }
+            System.out.println(repo);
+            ctx.json(repo);
+            ctx.status(200);
+        });
+    }
+
+    public static void listContent() {
+        app.get("listContent", ctx -> {
+            String owner = Objects.requireNonNull(ctx.queryParam("owner"));
+            String repo = Objects.requireNonNull(ctx.queryParam("repo"));
+            String path = Objects.requireNonNull(ctx.queryParam("path"));
+            String accessToken = ctx.cookie("access_token");
+            String tokenType = ctx.cookie("token_type");
+            HttpClient httpclient = HttpClients.createDefault();
+            URI getUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpGet httpget = new HttpGet(getUri);
+            httpget.setHeader("AUTHORIZATION", tokenType + " " + accessToken);
+//            httpget.setHeader("Accept", "application/vnd.github.VERSION.raw");
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            JsonArray JsonArray = new Gson().fromJson(responseString, JsonArray.class);
+            System.out.println(JsonArray);
+            List<String> pathArray = new ArrayList<>();
+            for (int i = 0; i < JsonArray.size(); i++) {
+                JsonObject repoObject = new Gson().fromJson(JsonArray.get(i), JsonObject.class);
+                String pathName = repoObject.get("path").toString().replaceAll("\"", "");
+                pathArray.add(pathName);
+            }
+            ctx.json(pathArray);
+            ctx.status(200);
         });
     }
 }
