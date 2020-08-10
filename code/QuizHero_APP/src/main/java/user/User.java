@@ -5,41 +5,42 @@ import java.util.UUID;
 
 
 /**
- * Instructor class is the data model of an Instructor. Each object of Instructor class
- * stores relevant data of a single instructor such as instructor id
- * instructor's name, instructor's email and password
+ * User class is the data model of a user.
  *
- * @author Ziming Chen, Nanxi Ye, Chenghao Sun
- * @version 1.0
+ * @author QuizHero team @JHU OOSE
+ * @version 1.3
  */
 public class User {
-    private Integer userId; // unique id of user
-    private String name; // name of user
-    private String email; // email of user
-    private String pswd; // password of user
-    private String githubId; // githubId of user
-    private String salt; // salt of user
+    private Integer userId; // serial id of registered user
+    private String name; // user name
+    private String email; // user email
+    private String pswd; // user password hashed by frontend
+    private String salt; // salt of user for password hashing
+    private String repoId; // UUID of the private repo created under organization on github; for non-github login user only
+    private String githubId; // GitHub ID for github login user only
 
     /**
-     * This method is the constructor of the class when a user login without github
-     * It is equivalent to using a pre-set github account to create a private repo under organization
+     * Constructor of user without github login
      *
-     * @param name name of the instructor
-     * @param email email of the instructor
-     * @param pswd password of the instructor
+     * @param name name of the user
+     * @param email email of the user
+     * @param pswd password of the user
+     * @param salt salt of the user
      */
     public User(String name, String email, String pswd, String salt) {
         this.name = name;
         this.email = email;
         this.pswd = pswd;
         this.salt = salt;
+        this.repoId = UUID.randomUUID().toString();
     }
 
     /**
-     * This method is the constructor of the class when a user login with github
+     * Constructor of user with github login
      *
-     * @param name name of the instructor
-     * @param githubId githubId of the instructor
+     * @param name name of the user from its github profile
+     * @param email email of the user from its github profile
+     * @param githubId GitHub ID of the user from its github profile
      */
     public User(String name, String email, String githubId) {
         this.name = name;
@@ -79,20 +80,28 @@ public class User {
         this.pswd = pswd;
     }
 
-    public String getGithubId() {
-        return githubId;
-    }
-
-    public void setGithubId(String githubId) {
-        this.githubId = githubId;
-    }
-
     public String getSalt() {
         return salt;
     }
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getRepoId() {
+        return repoId;
+    }
+
+    public void setRepoId(String repoId) {
+        this.repoId = repoId;
+    }
+
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public void setGithubId(String githubId) {
+        this.githubId = githubId;
     }
 
     @Override
@@ -104,13 +113,14 @@ public class User {
                 Objects.equals(name, user.name) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(pswd, user.pswd) &&
-                Objects.equals(githubId, user.githubId) &&
-                Objects.equals(salt, user.salt);
+                Objects.equals(salt, user.salt) &&
+                Objects.equals(repoId, user.repoId) &&
+                Objects.equals(githubId, user.githubId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name, email, pswd, githubId, salt);
+        return Objects.hash(userId, name, email, pswd, salt, repoId, githubId);
     }
 
     @Override
