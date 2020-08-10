@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static util.JavalinUtil.app;
 //import static util.Pac4jUtil.githubSecurityHandler;
@@ -48,8 +49,36 @@ public class UserApi {
         // instructor login action, return user including his/her id
         app.post("/register", ctx -> {
             User user = ctx.bodyAsClass(User.class);
+            String uniqueId = UUID.randomUUID().toString();
+            user.setGithubId(uniqueId);
             try {
                 userDao.registerUser(user);
+
+                String accessToken = OAuthUtil.getPersonalAccessToken();
+                String org = OAuthUtil.getOrganizationName();
+                String repoName = user.getGithubId();
+                System.out.println(repoName);
+                HttpClient httpclient = HttpClients.createDefault();
+                URI postUri = new URIBuilder()
+                        .setScheme("https")
+                        .setHost("api.github.com")
+                        .setPath("/orgs/" + org + "/repos")
+                        .build();
+                HttpPost httppost = new HttpPost(postUri);
+                String inputJson = "{\n" +
+                        "\"name\": \"" + repoName + "\",\n" +
+                        "\"private\": \"" + true + "\"\n" +
+                        "}";
+                System.out.println(inputJson);
+                StringEntity stringEntity = new StringEntity(inputJson);
+                httppost.setEntity(stringEntity);
+                httppost.setHeader("AUTHORIZATION", "token " + accessToken);
+                httppost.setHeader("Accept", "application/vnd.github.v3+json");
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity responseEntity = response.getEntity();
+                String responseString = EntityUtils.toString(responseEntity);
+                System.out.println(responseString);
+
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully

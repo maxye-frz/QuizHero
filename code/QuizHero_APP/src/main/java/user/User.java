@@ -1,6 +1,7 @@
 package user;
 
 import java.util.Objects;
+import java.util.UUID;
 
 
 /**
@@ -20,7 +21,8 @@ public class User {
     private String salt; // salt of user
 
     /**
-     * This method is the constructor of the class
+     * This method is the constructor of the class when a user login without github
+     * It is equivalent to using a pre-set github account to create a private repo under organization
      *
      * @param name name of the instructor
      * @param email email of the instructor
@@ -34,7 +36,7 @@ public class User {
     }
 
     /**
-     * This method is the constructor of the class
+     * This method is the constructor of the class when a user login with github
      *
      * @param name name of the instructor
      * @param githubId githubId of the instructor
