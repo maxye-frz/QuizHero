@@ -130,6 +130,7 @@ public class FileApi {
                 String fileId = context.formParam("fileId"); //get fileId
                 String fileName = context.formParam("fileName"); //get file name
                 String fileContent = context.formParam("rawString"); //get file content as string
+                String githubId = context.formParam("githubId"); //get login user githubId
                 InputStream fileStream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)); //convert string inputsStream
                 assert fileId != null;
                 if (!fileId.equals("null") && !fileId.equals("")) {
