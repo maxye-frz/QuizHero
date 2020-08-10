@@ -15,11 +15,11 @@ import java.net.URISyntaxException;
  * DaoFactory class is used for constructing and creating connections to the database
  * Create tables in the database and create DAOs and return DAOs to other classes who want to use
  * Factory Design Pattern
- * @author Ziming Chen, Nanxi Ye, Chenghao Sun
- * @version 1.0
+ * @author QuizHero team @JHU OOSE spring20
+ * @version 1.3
  */
 public final class DaoFactory {
-    public static boolean DROP_TABLES_IF_EXIST = true;
+    public static boolean DROP_TABLES_IF_EXIST = true; // this value set to true by default; this value can be altered in Main.java
     public static String PATH_TO_DATABASE_FILE = "./Store.db";
     private static Sql2o sql2o;
 

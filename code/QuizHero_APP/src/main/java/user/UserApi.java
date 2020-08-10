@@ -8,25 +8,15 @@ import javalinjwt.JWTProvider;
 import file.File;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.javalin.JavalinWebContext;
-import util.OAuthUtil;
+import util.GithubUtil;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -54,8 +44,8 @@ public class UserApi {
             try {
                 userDao.registerUser(user);
 
-                String accessToken = OAuthUtil.getPersonalAccessToken();
-                String org = OAuthUtil.getOrganizationName();
+                String accessToken = GithubUtil.getPersonalAccessToken();
+                String org = GithubUtil.getOrganizationName();
                 String repoName = user.getGithubId();
                 System.out.println(repoName);
                 HttpClient httpclient = HttpClients.createDefault();
@@ -174,7 +164,7 @@ public class UserApi {
     public static void githubLogin() {
         app.get("/github", ctx-> {
             String githubOAuth = "https://github.com/login/oauth/authorize?client_id="
-                    + OAuthUtil.getClientId() + "&scope=" + OAuthUtil.getScope();
+                    + GithubUtil.getClientId() + "&scope=" + GithubUtil.getScope();
             ctx.redirect(githubOAuth);
             ctx.status(302);
         });
@@ -190,8 +180,8 @@ public class UserApi {
                     .setScheme("https")
                     .setHost("github.com")
                     .setPath("/login/oauth/access_token")
-                    .setParameter("client_id", OAuthUtil.getClientId())
-                    .setParameter("client_secret", OAuthUtil.getClientSecret())
+                    .setParameter("client_id", GithubUtil.getClientId())
+                    .setParameter("client_secret", GithubUtil.getClientSecret())
                     .setParameter("code", code)
                     .build();
             HttpPost httppost = new HttpPost(postUri);

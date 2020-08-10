@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * User class is the data model of a user.
  *
- * @author QuizHero team @JHU OOSE
+ * @author QuizHero team @JHU OOSE spring20
  * @version 1.3
  */
 public class User {
