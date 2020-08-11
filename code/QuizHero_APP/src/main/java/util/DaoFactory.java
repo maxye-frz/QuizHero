@@ -34,6 +34,7 @@ public final class DaoFactory {
         dropQuizTableIfExists(sql2o);
         dropAccountTableIfExists(sql2o);
         dropFileTableIfExists(sql2o);
+        System.out.println("database cleared");
     }
 
     /**
@@ -61,7 +62,7 @@ public final class DaoFactory {
             }
 
             sql2o = new Sql2o(URI, USERNAME, PASSWORD);
-            System.out.println("database instantiated successfully.");
+            System.out.println("database connected.");
         }
         if (DROP_TABLES_IF_EXIST) {
             clearDatabase();
@@ -76,14 +77,16 @@ public final class DaoFactory {
         String sql = "CREATE TABLE IF NOT EXISTS account(" +
                 "userId SERIAL," +
                 "name VARCHAR(30)," +
-                "email VARCHAR(30)," +
                 "pswd VARCHAR(100)," +
-                "githubId VARCHAR(36)," +
+                "email VARCHAR(30)," +
+                "repoId VARCHAR(36)" +
+                "githubId VARCHAR(30)," +
                 "salt VARCHAR(30)," +
                 "PRIMARY KEY (userId)" +
                 ");";
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("account table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create account table", ex);
         }
@@ -95,7 +98,6 @@ public final class DaoFactory {
      */
     private static void createQuizTable(Sql2o sql2o) {
         String sql = "CREATE TABLE IF NOT EXISTS quiz(" +
-//                "id SERIAL PRIMARY KEY," +
                 "fileId VARCHAR(50) NOT NULL," +
                 "questionId INTEGER NOT NULL," +
                 "answer VARCHAR(30)," +
@@ -107,9 +109,9 @@ public final class DaoFactory {
                 "FOREIGN KEY (fileId) REFERENCES file(fileId)" +
                 ");";
 
-//        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("quiz table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create quiz table", ex);
         }
@@ -129,7 +131,6 @@ public final class DaoFactory {
                 "fileCss bytea" +
                 ")";
 
-//        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {
@@ -153,6 +154,7 @@ public final class DaoFactory {
 //        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("account_file table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create account_file table", ex);
         }
@@ -167,7 +169,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop Quiz table successfully.");
+            System.out.println("quiz table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping Quiz table.", ex);
         }
@@ -182,7 +184,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop account table successfully.");
+            System.out.println("account table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping account table.", ex);
         }
@@ -197,7 +199,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop account_file table successfully.");
+            System.out.println("account_file table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping account_file table.", ex);
         }
@@ -212,7 +214,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop file table successfully.");
+            System.out.println("file table dropped.");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping file table.", ex);
         }

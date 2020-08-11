@@ -11,8 +11,8 @@ import java.util.*;
 /**
  * InstructorDao interface defines methods related to the instructor table
  * e.g. user login, user register, get files of a user
- * @author Ziming Chen, Nanxi Ye, Chenghao Sun
- * @version 1.0
+ * @author QuizHero team @JHU spring20
+ * @version 1.3
  */
 public class UserDao {
     private Sql2o sql2o;
