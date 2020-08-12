@@ -47,12 +47,13 @@ public class UserDao {
     public void registerUser(User user) {
         checkUserExist(user.getEmail());
         try (Connection conn = sql2o.open()) {
-            String sql = "INSERT INTO account(name, email, pswd, githubId, salt) " +
-                    "VALUES (:name, :email, :pswd, :githubId, :salt);";
+            String sql = "INSERT INTO account(name, email, pswd, repoId, githubId, salt) " +
+                    "VALUES (:name, :email, :pswd, :repoId, :githubId, :salt);";
             int id = (int) conn.createQuery(sql, true)
                     .addParameter("name", user.getName())
                     .addParameter("email", user.getEmail())
                     .addParameter("pswd", user.getPswd())
+                    .addParameter("repoId", user.getRepoId())
                     .addParameter("githubId", user.getGithubId())
                     .addParameter("salt", user.getSalt())
                     .executeUpdate()

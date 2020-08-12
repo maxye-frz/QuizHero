@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static util.JavalinUtil.app;
-//import static util.Pac4jUtil.githubSecurityHandler;
 
 public class UserApi {
 
@@ -125,41 +124,6 @@ public class UserApi {
         });
     }
 
-// old github login api using pac4j and github client
-//    public static void githubLogin(UserDao userDao) {
-//        app.before("/github", githubSecurityHandler);
-//        app.get("/github", ctx -> {
-//            //get profile id and name
-//            List<CommonProfile> profile = new ProfileManager<CommonProfile>(new JavalinWebContext(ctx)).getAll(true);
-//            CommonProfile userProfile = profile.get(0);
-//            String name = userProfile.getUsername();
-//            String githubId = userProfile.getId();
-//            System.out.println(name);
-//            System.out.println(githubId);
-//            try {
-//                User user = userDao.githubLogin(name, githubId);
-////                ctx.json(user); //json text of user model is printed on web page
-////                System.out.println(user);
-////                ctx.contentType("application/json");
-////                ctx.status(200);
-//                String token = provider.generateToken(user);
-//                ctx.json(new JWTResponse(token));
-//                ctx.cookie("token", token);
-//                ctx.json(user); //comment this line after cookie is done
-//                ctx.contentType("application/json");
-//                ctx.status(200); // created successfully
-//                System.out.println(ctx.queryParam("login"));
-//                if (Objects.isNull(ctx.queryParam("login"))) {
-//                    System.out.println("Redirect");
-//                    ctx.redirect("http://localhost:3000/login");
-//                }
-//            } catch (DaoException ex) {
-//                throw new ApiError(ex.getMessage(), 500); // server internal error
-//            } catch (LoginException ex) {
-//                throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
-//            }
-//        });
-//    }
 
     public static void githubLogin() {
         app.get("/github", ctx-> {
@@ -233,14 +197,13 @@ public class UserApi {
                 if (Objects.isNull(ctx.queryParam("login"))) {
                     System.out.println("Redirect");
                     ctx.redirect("http://localhost:3000/login");
+                    ctx.status(302);
                 }
             } catch (DaoException ex) {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (LoginException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
             }
-            ctx.redirect("/login");
-            ctx.status(302);
         });
     }
 
