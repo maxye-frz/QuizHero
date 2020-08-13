@@ -182,7 +182,7 @@ public class UserApi {
 
             //create/get user model
             try {
-                User user = userDao.githubLogin(githubUserName, githubEmail, githubId);
+                User user = userDao.githubLogin(githubUserName, githubId);
                 ctx.json(user); //json text of user model is printed on web page
                 System.out.println(user);
                 ctx.contentType("application/json");

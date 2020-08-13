@@ -85,7 +85,7 @@ public class UserDao {
     /**
      * This method is used to verify registered user information for given input
      * @param email String of user email address
-     * @return an instance of Instructor class with matching email and password fields
+     * @return an instance of user class with matching name and email fields and no other user fields
      */
     public User userLogin(String email) {
         User user;
@@ -102,7 +102,7 @@ public class UserDao {
             throw new LoginException("User authentication failure. Please input again.");
         }
 
-        return user; // return if find the instructor
+        return user; // return if find the user
     }
 
     /**
@@ -111,7 +111,7 @@ public class UserDao {
      * @param githubId String of user GitHub ID
      * @return an instance of Instructor class with matching email and password fields
      */
-    public User githubLogin(String name, String email, String githubId) {
+    public User githubLogin(String name, String githubId) {
         User user;
         try (Connection conn = sql2o.open()) {
             String sql = "SELECT userId, name, email, githubId FROM account Where githubId = :githubId;";
@@ -124,7 +124,7 @@ public class UserDao {
 
         if (user == null) {
             //github login not exists, register new user
-            user = new User(name, email, githubId);
+            user = new User(name, githubId);
             try (Connection conn = sql2o.open()) {
                 String sql = "INSERT INTO account(name, email, githubId) VALUES (:name, :email, :githubId);";
                 int id = (int) conn.createQuery(sql, true)

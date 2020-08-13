@@ -79,7 +79,7 @@ public final class DaoFactory {
                 "name VARCHAR(30)," +
                 "pswd VARCHAR(100)," +
                 "email VARCHAR(30)," +
-                "repoId VARCHAR(36)" +
+                "repoId VARCHAR(36)," +
                 "githubId VARCHAR(30)," +
                 "salt VARCHAR(30)," +
                 "PRIMARY KEY (userId)" +

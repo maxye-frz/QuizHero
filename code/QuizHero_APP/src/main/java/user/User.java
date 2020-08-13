@@ -39,12 +39,10 @@ public class User {
      * Constructor of user with github login
      *
      * @param name name of the user from its github profile
-     * @param email email of the user from its github profile
      * @param githubId GitHub ID of the user from its github profile
      */
-    public User(String name, String email, String githubId) {
+    public User(String name, String githubId) {
         this.name = name;
-        this.email = email;
         this.githubId = githubId;
     }
 
