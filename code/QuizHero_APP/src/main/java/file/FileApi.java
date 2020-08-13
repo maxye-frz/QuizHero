@@ -1,33 +1,25 @@
 package file;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
 import io.javalin.http.UploadedFile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import sun.nio.cs.US_ASCII;
-import util.OAuthUtil;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -262,6 +254,67 @@ public class FileApi {
         });
     }
 
+    public static void uploadCSS(FileDao fileDao) {
+        app.post("/uploadCSS", context -> {
+            UploadedFile uploadedCss = context.uploadedFile("fileCSS"); // get file part
+            try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
+                // fetch file id from form-data, require argument not null
+                String fileId = Objects.requireNonNull(context.formParam("fileId"));
+                System.out.println("file id: " + fileId);
+                fileDao.updateCSS(fileId, inputStream);
+                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+                fileMap.put("fileId", fileId);
+                fileMap.put("fileCSS", inputStream);
+                context.json(fileMap);
+                context.contentType("application/json");
+                context.status(201);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+            }
+        });
+    }
+
+    public static void saveCSS(FileDao fileDao) {
+        app.post("/saveCSS", context -> {
+            try {
+                String fileId = context.formParam("fileId");
+                String cssContent = context.formParam("fileCSS");
+                InputStream cssStream = new ByteArrayInputStream(cssContent.getBytes(StandardCharsets.UTF_8));
+                assert fileId != null;
+                fileDao.updateCSS(fileId, cssStream);
+                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+                fileMap.put("fileId", fileId);
+                fileMap.put("fileCSS", cssContent);
+                context.json(fileMap);
+                context.contentType("application/json");
+                context.status(201);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when save file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+            }
+        });
+    }
+
+    public static void readCSS(FileDao fileDao) {
+        app.get("/readCSS", context -> {
+            try {
+                String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
+                System.out.println("file id: " + fileId);
+                InputStream in = fileDao.getCSS(fileId);
+                InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
+                context.result(inputStream);
+                System.out.println("Send file successfully.");
+                context.status(200);
+            } catch (DaoException ex) {
+                throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
+            } catch (NullPointerException ex) {
+                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400);
+            }
+        });
+    }
 
     //github pull file
     public static void pull(FileDao fileDao) {
