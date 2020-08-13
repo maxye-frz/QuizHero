@@ -14,8 +14,9 @@ export const handleLogout = () => {
     // localStorage.setItem("isLogin", '0');
     cookie.remove('token');
     localStorage.setItem("data", null);
-    axios.get(BASE_URL + "/logout")
-        .then(() => {
-            message.loading('Local logout!', [0.2], () => {window.location = "/login";});
-        })
+    // axios.get(BASE_URL + "/logout")
+    //     .then(() => {
+    //         message.loading('Local logout!', [0.2], () => {window.location = "/login";});
+    //     })
+    message.loading('Local logout!', [0.2], () => {window.location = "/login";});
 }

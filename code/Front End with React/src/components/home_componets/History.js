@@ -204,14 +204,6 @@ export default function History(props) {
             }))
     }
 
-    const handleClick = e => {
-        console.log(e.target);
-        e.target.setAttrs({
-            text: "888"
-        });
-
-    }
-
     /**
      * return rendered HomePage page. Use <List.Item/> to show the list of uploaded files.
      */

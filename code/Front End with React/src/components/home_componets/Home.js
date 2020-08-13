@@ -9,6 +9,7 @@ import axios from "axios";
 import {BASE_URL} from "../../config/config";
 import jwt_decode from "jwt-decode";
 import cookie from "react-cookies";
+import MyControl from "./popup";
 
 const ContainerLeft = styled.div`
   width: 20%;
@@ -67,6 +68,7 @@ export default function Home(props) {
                 {/*{console.log(cookies)}*/}
                 {/*/!*{decoded}*!/*/}
                 <UploadNew refreshCallback = {refreshCallback} />
+                <MyControl />
             </ContainerLeft>
 
             <ContainerRight>

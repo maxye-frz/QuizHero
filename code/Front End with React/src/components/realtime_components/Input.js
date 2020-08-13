@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import editorContext from "./editorContext";
 import {Button, message} from "antd";
-import {DeleteOutlined, SaveOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {BASE_URL} from "../../config/config";
 import jwt_decode from "jwt-decode";
@@ -139,7 +139,7 @@ export function Input(props) {
                            onChange={onTitleChange}
                            value={titleText} />
                 <div style={{paddingTop: 1}}>
-                    <MyControl />
+                    {/*<MyControl />*/}
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={saveFile}>
                         <SaveOutlined /> Save File
@@ -150,7 +150,7 @@ export function Input(props) {
                     </Button>
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={() => props.setDisplay("CSS")}>
-                        <DeleteOutlined /> Edit CSS
+                        <EditOutlined /> Edit CSS
                     </Button>
                 </div>
             </Title>
