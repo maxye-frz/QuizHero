@@ -156,6 +156,7 @@ class StudentRequestPage extends Component{
                         <Search
                             style={{width: 400}}
                             placeholder="input shared code"
+                            defaultValue="979149bf-7f9c-4c29-be75-bb3080e19f2c"
                             enterButton="Search"
                             size="large"
                             onSearch={this.onSearch}

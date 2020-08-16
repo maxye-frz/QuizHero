@@ -21,6 +21,7 @@ import EditPage from "../pages/EditPage";
 import GithubLogin from "../pages/GithubLogin";
 import Select from "../components/home_componets/test";
 import MyControl from "../components/home_componets/popup";
+import App from "../components/fileSystem";
 
 const history = createBrowserHistory();
 
@@ -60,6 +61,7 @@ class AppRouter extends Component {
           <PrivateRoute component={EditPage} path="/EditPage" exact />
           <PrivateRoute component={Select} path="/Select" exact />
           <PrivateRoute component={MyControl} path="/Popup" exact />
+          <PrivateRoute component={App} path="/fileSystem" exact />
       </Switch>
       </Router>
      

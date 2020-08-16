@@ -68,7 +68,7 @@ export default function Home(props) {
                 {/*{console.log(cookies)}*/}
                 {/*/!*{decoded}*!/*/}
                 <UploadNew refreshCallback = {refreshCallback} />
-                <MyControl />
+                <MyControl refreshCallback = {refreshCallback} />
             </ContainerLeft>
 
             <ContainerRight>

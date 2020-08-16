@@ -4,29 +4,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
-import javalinjwt.JWTProvider;
 import file.File;
-import org.apache.http.*;
+import javalinjwt.JWTProvider;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.javalin.JavalinWebContext;
 import util.OAuthUtil;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -249,8 +240,8 @@ public class UserApi {
             } catch (LoginException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user not found
             }
-            ctx.redirect("/login");
-            ctx.status(302);
+//            ctx.redirect("/login");
+//            ctx.status(302);
         });
     }
 

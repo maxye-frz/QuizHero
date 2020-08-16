@@ -116,6 +116,9 @@ public class JavalinUtil {
         FileApi.push(fileDao);
         FileApi.listRepo();
         FileApi.listContent();
+        FileApi.readCSS(fileDao);
+        FileApi.saveCSS(fileDao);
+        FileApi.uploadCSS(fileDao);
     }
 
     /**

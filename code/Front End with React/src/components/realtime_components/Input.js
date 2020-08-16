@@ -130,6 +130,27 @@ export function Input(props) {
         }
     }
 
+    const push =()=>{
+        if (localStorage.getItem("newFileName").match(/^[ ]*$/)) {
+            alert("Please input a non-empty title");
+        } else {
+            const formData = new FormData();
+            formData.append('fileId', localStorage.getItem("fileId"));
+            formData.append('fileName', localStorage.getItem("newFileName"));
+            formData.append('rawString', localStorage.getItem("newFileString"));
+            formData.append('userId', loginInfo['userId']);
+
+            console.log("Save file to backend", formData);
+            axios.post(BASE_URL + "/save", formData)
+                .then(res => {message.success(`File saved`);
+                    localStorage.setItem("saved", "true");
+                    localStorage.setItem("fileId", res.data.fileId);
+                    separateQuestion(localStorage.getItem("newFileString"), res.data.fileId);
+                })
+                .catch(() => message.error('error'));
+        }
+    }
+
     return (
         <Container>
             {/*<Title>Markdown Text</Title>*/}
@@ -147,6 +168,10 @@ export function Input(props) {
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={discard}>
                         <DeleteOutlined /> Discard
+                    </Button>
+                    <Button size={"small"} style={{marginLeft: 10}}
+                            onClick={push}>
+                        <SaveOutlined /> Push
                     </Button>
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={() => props.setDisplay("CSS")}>

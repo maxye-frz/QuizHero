@@ -179,11 +179,13 @@ class MyControl extends React.Component<any, any> {
             axios
                 .post(BASE_URL + '/pull', formData, {params})
                 .then(res => {
-                    localStorage.setItem("newFileName", res.data.fileName);
-                    localStorage.setItem("newFileString", res.data.rawString);
+                    // const fileId = res.data.fileId;
+                    // localStorage.setItem("newFileName", res.data.fileName);
+                    // localStorage.setItem("newFileString", res.data.rawString);
                     console.log(res.data);
+                    this.props.refreshCallback();
                     this.onClose();
-                    window.open("/EditPage", "_self");
+                    // window.open("/EditPage", "_self");
                 })
                 .catch(error => console.log(error))
         }
