@@ -10,9 +10,8 @@ import java.io.InputStream;
 
 /**
  * FileDao interface defines methods related to the file table
- * e.g. store file, get file, delete file, change quiz and file permission
- * @author Ziming Chen, Nanxi Ye, Chenghao Sun
- * @version 1.0
+ * @author QuizHero team @JHU OOSE spring20
+ * @version 1.3
  */
 public class FileDao {
     private Sql2o sql2o;
@@ -27,13 +26,17 @@ public class FileDao {
      */
     public void storeFile(File file) {
         try (Connection conn = sql2o.open()) {
-            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, :fileContent)";
+            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, :fileCss, :owner, :repo, :path)";
             conn.createQuery(sql)
                     .addParameter("fileId", file.getFileId())
                     .addParameter("fileName", file.getFileName())
                     .addParameter("filePermission", file.getFilePermission())
                     .addParameter("quizPermission", file.getQuizPermission())
-                    .addParameter("fileContent", file.getFileContent())
+                    .addParameter("fileCss", file.getCss())
+                    .addParameter("owner", file.getOwner())
+                    .addParameter("repo", file.getRepo())
+                    .addParameter("path", file.getPath())
+                    .addParameter("sha", file.getSha())
                     .executeUpdate();
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to store file content", ex);
@@ -59,25 +62,25 @@ public class FileDao {
         }
     }
 
-    /**
-     * This method is used to get the file stream from the database
-     * @param fileId unique id of a file
-     * @return InputStream of the file content
-     */
-    public InputStream getFileContent(String fileId) {
-        checkFileExist(fileId);
-        ByteArrayInputStream byteStream;
-        try (Connection conn = sql2o.open()) {
-            String sql = "SELECT fileContent FROM file WHERE fileId = :fileId";
-            byteStream = conn.createQuery(sql)
-                    .addParameter("fileId", fileId)
-                    .executeAndFetchFirst(ByteArrayInputStream.class);
-
-            return byteStream;
-        } catch (Sql2oException ex) {
-            throw new DaoException("Unable to fetch file.", ex);
-        }
-    }
+//    /**
+//     * This method is used to get the file stream from the database
+//     * @param fileId unique id of a file
+//     * @return InputStream of the file content
+//     */
+//    public InputStream getFileContent(String fileId) {
+//        checkFileExist(fileId);
+//        ByteArrayInputStream byteStream;
+//        try (Connection conn = sql2o.open()) {
+//            String sql = "SELECT fileContent FROM file WHERE fileId = :fileId";
+//            byteStream = conn.createQuery(sql)
+//                    .addParameter("fileId", fileId)
+//                    .executeAndFetchFirst(ByteArrayInputStream.class);
+//
+//            return byteStream;
+//        } catch (Sql2oException ex) {
+//            throw new DaoException("Unable to fetch file.", ex);
+//        }
+//    }
 
     /**
      * This method is used to update the file

@@ -127,9 +127,13 @@ public final class DaoFactory {
                 "fileName VARCHAR(30) NOT NULL, " +
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
-                "fileContent bytea," +
-                "fileCss bytea" +
+                "fileCss bytea," +
+                "owner VARCHAR(50) NOT NULL," +
+                "repo VARCHAR(50) NOT NULL," +
+                "path VARCHAR(50) NOT NULL," +
+                "sha VARCHAR(50) NOT NULL" +
                 ")";
+        // add size, date, type later
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
