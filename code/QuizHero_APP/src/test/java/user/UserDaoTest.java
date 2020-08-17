@@ -1,17 +1,25 @@
 package user;
 
+import file.File;
+import file.FileDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import util.DaoFactory;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserDaoTest {
 
     private UserDao userDao;
+    private FileDao fileDao;
     private User JohnSmith;
     private User octoCat;
 
@@ -99,4 +107,28 @@ public class UserDaoTest {
     //userDao.githubLogin()
 
     //userDao.getUserFileList()
+    @Test
+    public void emptyFileList() {
+        List<File> emptyFileList = new ArrayList<>();
+        List<File> resultList = userDao.getUserFileList(JohnSmith.getUserId());
+        assertEquals(emptyFileList, resultList);
+    }
+
+//    @Test
+//    public void nonEmptyFileList() throws FileNotFoundException {
+//        InputStream inputStream = new FileInputStream("src/test/test.md");
+//        File file1 = new File(1, "testFile", inputStream);
+//        File file2 = new File(1, "testFile", inputStream);
+//        fileDao.storeFile(file1);
+//        fileDao.storeFile(file2);
+//        List<File> fileList = new ArrayList<>();
+//        fileList.add(file1);
+//        fileList.add(file2);
+//        List<File> resultList = userDao.getUserFileList(JohnSmith.getUserId());
+//        // the returned fileList does not contain all file information, can only be compared as the following fields:
+//        assertEquals(fileList.get(0).getFileId(), resultList.get(0).getFileId());
+//        assertEquals(fileList.get(1).getFileId(), resultList.get(1).getFileId());
+//        assertEquals(fileList.get(0).getFileName(), resultList.get(0).getFileName());
+//        assertEquals(fileList.get(1).getFileName(), resultList.get(1).getFileName());
+//    }
 }
