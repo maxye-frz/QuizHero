@@ -46,6 +46,7 @@ public class UserDao {
      */
     public void registerUser(User user) {
         checkUserExist(user.getEmail());
+        user.setRepoId(UUID.randomUUID().toString());
         try (Connection conn = sql2o.open()) {
             String sql = "INSERT INTO account(name, email, pswd, repoId, githubId, salt) " +
                     "VALUES (:name, :email, :pswd, :repoId, :githubId, :salt);";
@@ -90,7 +91,7 @@ public class UserDao {
     public User userLogin(String email) {
         User user;
         try (Connection conn = sql2o.open()) {
-            String sql = "SELECT userId, name, email FROM account Where email = :email;";
+            String sql = "SELECT userId, name, email, repoId FROM account Where email = :email;";
             user =  conn.createQuery(sql)
                     .addParameter("email", email)
                     .executeAndFetchFirst(User.class);
@@ -125,8 +126,9 @@ public class UserDao {
         if (user == null) {
             //github login not exists, register new user
             user = new User(name, githubId);
+            user.setRepoId(UUID.randomUUID().toString());
             try (Connection conn = sql2o.open()) {
-                String sql = "INSERT INTO account(name, email, githubId) VALUES (:name, :email, :githubId);";
+                String sql = "INSERT INTO account(name, email, repoId, githubId) VALUES (:name, :email, :repoId, :githubId);";
                 int id = (int) conn.createQuery(sql, true)
                         .addParameter("name", user.getName())
                         .addParameter("email", user.getEmail())

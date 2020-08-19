@@ -7,25 +7,64 @@ import exception.DaoException;
 import javalinjwt.JWTProvider;
 import file.File;
 import org.apache.http.*;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import util.GithubUtil;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.net.URISyntaxException;
+import java.util.*;
 
 import static util.JavalinUtil.app;
 
 public class UserApi {
 
     private static JWTProvider provider = userJWTProvider.createHMAC512(); //initialize provider
+
+    private static void createRepo(User user) throws IOException {
+        String accessToken = GithubUtil.getPersonalAccessToken();
+        String org = GithubUtil.getOrganizationName();
+        String repoName = user.getRepoId();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try{
+            URI postUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/orgs/" + org + "/repos")
+                    .build();
+            HttpPost httppost = new HttpPost(postUri);
+            String inputJson = "{\n" +
+                    "\"name\": \"" + repoName + "\",\n" +
+                    "\"private\": \"" + true + "\"\n" +
+                    "}";
+            System.out.println(inputJson);
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httppost.setEntity(stringEntity);
+            httppost.setHeader("AUTHORIZATION", "token " + accessToken);
+            httppost.setHeader("Accept", "application/vnd.github.v3+json");
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+        } catch (URISyntaxException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     /**
      * This method is used to open the route for front-end to register a new instructor
@@ -38,36 +77,9 @@ public class UserApi {
         // instructor login action, return user including his/her id
         app.post("/register", ctx -> {
             User user = ctx.bodyAsClass(User.class);
-            String uniqueId = UUID.randomUUID().toString();
-            user.setGithubId(uniqueId);
             try {
                 userDao.registerUser(user);
-
-                String accessToken = GithubUtil.getPersonalAccessToken();
-                String org = GithubUtil.getOrganizationName();
-                String repoName = user.getGithubId();
-                System.out.println(repoName);
-                HttpClient httpclient = HttpClients.createDefault();
-                URI postUri = new URIBuilder()
-                        .setScheme("https")
-                        .setHost("api.github.com")
-                        .setPath("/orgs/" + org + "/repos")
-                        .build();
-                HttpPost httppost = new HttpPost(postUri);
-                String inputJson = "{\n" +
-                        "\"name\": \"" + repoName + "\",\n" +
-                        "\"private\": \"" + true + "\"\n" +
-                        "}";
-                System.out.println(inputJson);
-                StringEntity stringEntity = new StringEntity(inputJson);
-                httppost.setEntity(stringEntity);
-                httppost.setHeader("AUTHORIZATION", "token " + accessToken);
-                httppost.setHeader("Accept", "application/vnd.github.v3+json");
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity responseEntity = response.getEntity();
-                String responseString = EntityUtils.toString(responseEntity);
-                System.out.println(responseString);
-
+                createRepo(user);
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
@@ -75,6 +87,8 @@ public class UserApi {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (RegisterException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user already exists
+            } catch (IOException ex) {
+                throw new ApiError(ex.getMessage(), 500);
             }
         });
     }
@@ -134,12 +148,10 @@ public class UserApi {
         });
     }
 
-    public static void githubCallback(UserDao userDao) {
-        app.get("/callback", ctx-> {
-            // receive the code from github api after user login
-            String code = Objects.requireNonNull(ctx.queryParam("code"));
-            // start http request to receive access token from github api
-            HttpClient httpclientPost = HttpClients.createDefault();
+    private static Map<String, String> getToken(String code) throws IOException {
+        Map<String, String> tokenMap = new HashMap<>();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
             URI postUri = new URIBuilder()
                     .setScheme("https")
                     .setHost("github.com")
@@ -150,20 +162,29 @@ public class UserApi {
                     .build();
             HttpPost httppost = new HttpPost(postUri);
             httppost.setHeader("Accept", "application/json");
-            HttpResponse postResponse = httpclientPost.execute(httppost);
+            HttpResponse postResponse = httpclient.execute(httppost);
             HttpEntity postEntity = postResponse.getEntity();
             String postResponseString = EntityUtils.toString(postEntity);
             JsonObject jsonObject = new Gson().fromJson(postResponseString, JsonObject.class);
             System.out.println(jsonObject);
             String accessToken = jsonObject.get("access_token").toString().replaceAll("\"", "");
             String tokenType = jsonObject.get("token_type").toString().replaceAll("\"", "");
+            tokenMap.put("accessToken", accessToken);
+            tokenMap.put("tokenType", tokenType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } finally {
+            httpclient.close();
+        }
+        return tokenMap;
+    }
 
-            //write access token to cookie; require no encryption?
-            ctx.cookie("access_token", accessToken);
-            ctx.cookie("token_type", tokenType);
-
-            //get user info
-            HttpClient httpclientGet = HttpClients.createDefault();
+    private static Map<String, String> getUserInfo(String accessToken) throws IOException {
+        Map<String, String> userInfoMap = new HashMap<>();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
             URI getUri = new URIBuilder()
                     .setScheme("https")
                     .setHost("api.github.com")
@@ -171,7 +192,7 @@ public class UserApi {
                     .build();
             HttpGet httpget = new HttpGet(getUri);
             httpget.setHeader("AUTHORIZATION", "token " + accessToken);
-            HttpResponse getResponse = httpclientGet.execute(httpget);
+            HttpResponse getResponse = httpclient.execute(httpget);
             HttpEntity getResponseEntity = getResponse.getEntity();
             String getResponseString = EntityUtils.toString(getResponseEntity);
             JsonObject newJsonObject = new Gson().fromJson(getResponseString, JsonObject.class);
@@ -179,18 +200,42 @@ public class UserApi {
             String githubUserName = newJsonObject.get("login").toString().replace("\"", "");
             String githubEmail = newJsonObject.get("email").toString().replace("\"", "");
             String githubId = newJsonObject.get("id").toString().replace("\"", "");
+            userInfoMap.put("githubUserName", githubUserName);
+            userInfoMap.put("githubEmail", githubEmail);
+            userInfoMap.put("githubId", githubId);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } finally {
+            httpclient.close();
+        }
+        return userInfoMap;
+    }
+
+    public static void githubCallback(UserDao userDao) {
+        app.get("/callback", ctx-> {
+            // receive the code from github api after user login
+            String code = Objects.requireNonNull(ctx.queryParam("code"));
+            // start http request to receive access token from github api
+            Map<String, String> tokenMap = getToken(code);
+
+            //write access token to cookie; require no encryption?
+            ctx.cookie("access_token", tokenMap.get("accessToken"));
+            ctx.cookie("token_type", tokenMap.get("tokenType"));
+
+            //get user info
+            Map<String, String> userInfoMap = getUserInfo(tokenMap.get("accessToken"));
+            String githubUserName = userInfoMap.get("githubUserName");
+            String githubEmail = userInfoMap.get("githubEmail");
+            String githubId = userInfoMap.get("githubId");
 
             //create/get user model
             try {
                 User user = userDao.githubLogin(githubUserName, githubId);
-                ctx.json(user); //json text of user model is printed on web page
-                System.out.println(user);
-                ctx.contentType("application/json");
-                ctx.status(200);
                 String token = provider.generateToken(user);
                 ctx.json(new JWTResponse(token));
                 ctx.cookie("token", token);
                 ctx.json(user); //comment this line after cookie is done
+                System.out.println(user);
                 ctx.contentType("application/json");
                 ctx.status(200); // created successfully
                 System.out.println(ctx.queryParam("login"));

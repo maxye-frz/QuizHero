@@ -27,11 +27,11 @@ public class File {
     /**
      * This method is the constructor of the class
      *
-     * @param instructorId id for instructor
+     * @param userId id for instructor
      * @param fileName name of the file
      */
-    public File(int instructorId, String fileName) {
-        this.userId = instructorId;
+    public File(int userId, String fileName) {
+        this.userId = userId;
         this.fileId = generateUniqueFileId();
         this.fileName = fileName;
         this.filePermission = false; // default false;
@@ -41,12 +41,12 @@ public class File {
     /**
      * This method is the constructor of the class
      *
-     * @param instructorId id for instructor
+     * @param userId id for instructor
      * @param fileId string for fileId
      * @param fileName name of the file
      */
-    public File(int instructorId, String fileId, String fileName) {
-        this.userId = instructorId;
+    public File(int userId, String fileId, String fileName) {
+        this.userId = userId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePermission = false; // default false;
@@ -56,14 +56,14 @@ public class File {
     /**
      * This method is the constructor of the class
      *
-     * @param instructorId id for instructor
+     * @param userId id for instructor
      * @param fileId id of the file
      * @param fileName name of the file
      * @param fileAccess access permission of the file
      * @param quizAccess access permission of the quiz
      */
-    public File(int instructorId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream css) {
-        this.userId = instructorId;
+    public File(int userId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream css) {
+        this.userId = userId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePermission = fileAccess;

@@ -13,49 +13,120 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import util.GithubUtil;
+import util.JavalinUtil;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static util.JavalinUtil.app;
 
 public class FileApi {
+
     /**
      * This method is used to open the route for instructor to upload a file
      * receive file stream and corresponding user id from front-end
      * pass data to the File class
      * @param fileDao call fileDao to update file table
      */
+//    public static void uploadFile(FileDao fileDao) {
+//        app.post("/upload", context -> {
+//            UploadedFile uploadedFile = context.uploadedFile("file"); // get file part
+//            try (InputStream inputStream = Objects.requireNonNull(uploadedFile).getContent()) {
+//                // fetch user id from form-data, require argument not null
+//                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId")));
+//                System.out.println("user id: " + userId);
+//                String fileName = uploadedFile.getFilename();
+//                System.out.println("file content received. File name: " + fileName);
+//
+//                File file = new File (userId, fileName); // generate File object
+//                fileDao.storeFile(file); // store file and update user-file info in database
+//
+//                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+//                fileMap.put("fileId", file.getFileId());
+//                fileMap.put("fileName", file.getFileName());
+//                context.json(fileMap);
+//                context.contentType("application/json");
+//                context.status(201);
+//            } catch (DaoException ex) {
+//                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
+//            } catch (NullPointerException ex) {
+//                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+//            }
+//        });
+//    }
+
+    private static Map<String, String> push(String accessToken, String owner, String repo, String path,
+                                            String fileContent, String message, String sha) throws IOException {
+        Map<String, String> result = new HashMap<>();
+        String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            URI putUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpPut httpput = new HttpPut(putUri);
+            String inputJson = "{\n" +
+                    "\"message\": \"" + message + "\",\n" +
+                    "\"content\": \"" + content + "\",\n" +
+                    "\"sha\": \"" + sha + "\"\n" +
+                    "}";
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httpput.setEntity(stringEntity);
+            httpput.setHeader("Accept", "application/vnd.github.v3+json");
+            httpput.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse response = httpclient.execute(httpput);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
+            String newSha = JsonObject.get("sha").toString().replaceAll("\"", "");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } finally {
+            httpclient.close();
+        }
+        return result;
+    }
+
+    private static Map<String, String> pull(String owner, String repo, String path) {
+
+    }
+
     public static void uploadFile(FileDao fileDao) {
-        app.post("/upload", context -> {
-            UploadedFile uploadedFile = context.uploadedFile("file"); // get file part
-            try (InputStream inputStream = Objects.requireNonNull(uploadedFile).getContent()) {
-                // fetch user id from form-data, require argument not null
-                int userId = Integer.parseInt(Objects.requireNonNull(context.formParam("userId")));
-                System.out.println("user id: " + userId);
+        app.post("/upload", ctx -> {
+            try {
+                UploadedFile uploadedFile = ctx.uploadedFile("file");
                 String fileName = uploadedFile.getFilename();
-                System.out.println("file content received. File name: " + fileName);
-//                File localFile = new File("upload/" + uploadedFile.getFilename());
-//                FileUtils.copyInputStreamToFile(inputStream, localFile);
-//                String url = localFile.getAbsolutePath();
+                InputStream fileContentStream = Objects.requireNonNull(uploadedFile).getContent();
+                int userId = Integer.parseInt(Objects.requireNonNull(ctx.formParam("userId")));
+                String repoId = ctx.formParam("repoId");
+                String owner;
+                String repo;
+                String path;
+                if (repoId != null) {
+                    // user registered under our github organization, use repoId as path
+                    owner = GithubUtil.getOrganizationName();
+                    repo = repoId;
+                    path = fileName;
+                } else {
+                    owner = Objects.requireNonNull(ctx.queryParam("owner"));
+                    repo = Objects.requireNonNull(ctx.queryParam("repo"));
+                    path = Objects.requireNonNull(ctx.queryParam("path"));
+                }
 
-                File file = new File (userId, fileName, inputStream); // generate File object
-                fileDao.storeFile(file); // store file and update user-file info in database
-
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", file.getFileId());
-                fileMap.put("fileName", file.getFileName());
-                context.json(fileMap);
-                context.contentType("application/json");
-                context.status(201);
             } catch (DaoException ex) {
-                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
+                throw new ApiError("sever error upload file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {
                 throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
             }
