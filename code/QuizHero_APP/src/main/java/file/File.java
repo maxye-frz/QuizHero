@@ -1,8 +1,21 @@
 package file;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
-import java.util.UUID;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 
 /**

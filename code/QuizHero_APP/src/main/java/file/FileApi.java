@@ -65,44 +65,6 @@ public class FileApi {
 //        });
 //    }
 
-    private static Map<String, String> push(String accessToken, String owner, String repo, String path,
-                                            String fileContent, String message, String sha) throws IOException {
-        Map<String, String> result = new HashMap<>();
-        String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        try {
-            URI putUri = new URIBuilder()
-                    .setScheme("https")
-                    .setHost("api.github.com")
-                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
-                    .build();
-            HttpPut httpput = new HttpPut(putUri);
-            String inputJson = "{\n" +
-                    "\"message\": \"" + message + "\",\n" +
-                    "\"content\": \"" + content + "\",\n" +
-                    "\"sha\": \"" + sha + "\"\n" +
-                    "}";
-            StringEntity stringEntity = new StringEntity(inputJson);
-            httpput.setEntity(stringEntity);
-            httpput.setHeader("Accept", "application/vnd.github.v3+json");
-            httpput.setHeader("AUTHORIZATION", "token " + accessToken);
-            HttpResponse response = httpclient.execute(httpput);
-            HttpEntity responseEntity = response.getEntity();
-            String responseString = EntityUtils.toString(responseEntity);
-            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
-            String newSha = JsonObject.get("sha").toString().replaceAll("\"", ""); //???
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } finally {
-            httpclient.close();
-        }
-        return result;
-    }
-
-    private static Map<String, String> pull(String owner, String repo, String path) {
-
-    }
-
     public static void uploadFile(FileDao fileDao) {
         app.post("/upload", ctx -> {
             try {
