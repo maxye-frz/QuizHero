@@ -101,8 +101,7 @@ public class JavalinUtil {
         FileApi.changeQuizPermission(fileDao);
         FileApi.checkQuizPermission(fileDao);
         FileApi.deleteFile(fileDao);
-        FileApi.pull(fileDao);
-        FileApi.push(fileDao);
+        FileApi.clone(fileDao);
         FileApi.listRepo();
         FileApi.listContent();
         FileApi.readCSS(fileDao);

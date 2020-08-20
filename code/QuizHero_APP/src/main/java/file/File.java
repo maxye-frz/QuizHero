@@ -34,6 +34,7 @@ public class File {
     private String repo; // repo of the file on github
     private String path; // path of the file on github
     private String sha; // sha (commit id) of the file on github
+    private String commitSha;
 //    private String date; // date of the file created
 //    private Integer size; // size of the file
 
@@ -49,6 +50,17 @@ public class File {
         this.fileName = fileName;
         this.filePermission = false; // default false;
         this.quizPermission = false; // default false;
+    }
+
+    public File(int userId, String fileName, String owner, String repo, String path) {
+        this.userId = userId;
+        this.fileId = generateUniqueFileId();
+        this.fileName = fileName;
+        this.filePermission = false; // default false;
+        this.quizPermission = false; // default false;
+        this.owner = owner;
+        this.repo = repo;
+        this.path = path;
     }
 
     /**
@@ -170,6 +182,14 @@ public class File {
 
     public void setSha(String sha) {
         this.sha = sha;
+    }
+
+    public String getCommitSha() {
+        return commitSha;
+    }
+
+    public void setCommitSha(String commitSha) {
+        this.commitSha = commitSha;
     }
 
     @Override

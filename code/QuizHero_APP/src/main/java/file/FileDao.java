@@ -41,7 +41,7 @@ public class FileDao {
         this.sql2o = sql2o;
     }
 
-    private static void push(File file, String accessToken,
+    public static String push(File file, String accessToken,
                             String fileContent, String message) throws IOException {
 //        Map<String, String> result = new HashMap<>();
         String owner = file.getOwner();
@@ -77,10 +77,10 @@ public class FileDao {
         } finally {
             httpclient.close();
         }
-//        return result;
+        return sha;
     }
 
-    private static String pull(File file, String accessToken) throws IOException {
+    public static String pull(File file, String accessToken) throws IOException {
         String owner = file.getOwner();
         String repo = file.getRepo();
         String path = file.getPath();
@@ -137,7 +137,7 @@ public class FileDao {
         public HttpDeleteWithBody() { super(); }
     }
 
-    private static void delete(File file, String accessToken) throws IOException {
+    public static void delete(File file, String accessToken) throws IOException {
         String owner = file.getOwner();
         String repo = file.getRepo();
         String path = file.getPath();
@@ -180,7 +180,8 @@ public class FileDao {
      */
     public void storeFile(File file) {
         try (Connection conn = sql2o.open()) {
-            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, :fileCss, :owner, :repo, :path)";
+            String sql = "insert into file values (:fileId, :fileName, :filePermission, " +
+                    ":quizPermission, :fileCss, :owner, :repo, :path)";
             conn.createQuery(sql)
                     .addParameter("fileId", file.getFileId())
                     .addParameter("fileName", file.getFileName())
@@ -191,6 +192,7 @@ public class FileDao {
                     .addParameter("repo", file.getRepo())
                     .addParameter("path", file.getPath())
                     .addParameter("sha", file.getSha())
+                    .addParameter("githubSha", file.getSha())
                     .executeUpdate();
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to store file content", ex);
@@ -215,6 +217,7 @@ public class FileDao {
             throw new DaoException("Unable to store user-file information.", ex1);
         }
     }
+
 
 //    /**
 //     * This method is used to get the file stream from the database
