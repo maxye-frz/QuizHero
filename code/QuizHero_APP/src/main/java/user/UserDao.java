@@ -6,6 +6,7 @@ import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -59,10 +60,10 @@ public class UserDao {
                     .addParameter("salt", user.getSalt())
                     .executeUpdate()
                     .getKey(); // Returns the key this connection is associated with.
-
+            user.createRepo();
             user.setUserId(id);
             System.out.println("Register user successfully.");
-        } catch (Sql2oException ex) {
+        } catch (Sql2oException | IOException ex) {
             throw new DaoException("Unable to register the user.", ex);
         }
     }
@@ -132,13 +133,14 @@ public class UserDao {
                 int id = (int) conn.createQuery(sql, true)
                         .addParameter("name", user.getName())
                         .addParameter("email", user.getEmail())
+                        .addParameter("repoId", user.getRepoId())
                         .addParameter("githubId", user.getGithubId())
                         .executeUpdate()
                         .getKey(); // Returns the key this connection is associated with.
-
+                user.createRepo();
                 user.setUserId(id);
                 System.out.println("Register user successfully.");
-            } catch (Sql2oException ex) {
+            } catch (Sql2oException | IOException ex) {
                 throw new DaoException("Unable to register the user.", ex);
             }
         }

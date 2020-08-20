@@ -131,7 +131,8 @@ public final class DaoFactory {
                 "owner VARCHAR(50) NOT NULL," +
                 "repo VARCHAR(50) NOT NULL," +
                 "path VARCHAR(50) NOT NULL," +
-                "sha VARCHAR(50) NOT NULL" +
+                "sha VARCHAR(50) NOT NULL," +
+                "commitSha VARCHAR(50)" +
                 ")";
         // add size, date, type later
 

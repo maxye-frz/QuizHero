@@ -1,5 +1,20 @@
 package user;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import util.GithubUtil;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -131,5 +146,41 @@ public class User {
                 ", githubId='" + githubId + '\'' +
                 ", salt='" + salt + '\'' +
                 '}';
+    }
+
+    public void createRepo() throws IOException {
+        String accessToken = GithubUtil.getPersonalAccessToken();
+        String org = GithubUtil.getOrganizationName();
+        String repoName = this.getRepoId();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try{
+            URI postUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/orgs/" + org + "/repos")
+                    .build();
+            HttpPost httppost = new HttpPost(postUri);
+            String inputJson = "{\n" +
+                    "\"name\": \"" + repoName + "\",\n" +
+                    "\"private\": \"" + true + "\"\n" +
+                    "}";
+            System.out.println(inputJson);
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httppost.setEntity(stringEntity);
+            httppost.setHeader("AUTHORIZATION", "token " + accessToken);
+            httppost.setHeader("Accept", "application/vnd.github.v3+json");
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+        } catch (URISyntaxException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            httpclient.close();
+        }
     }
 }

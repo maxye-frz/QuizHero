@@ -30,42 +30,6 @@ public class UserApi {
 
     private static JWTProvider provider = userJWTProvider.createHMAC512(); //initialize provider
 
-    private static void createRepo(User user) throws IOException {
-        String accessToken = GithubUtil.getPersonalAccessToken();
-        String org = GithubUtil.getOrganizationName();
-        String repoName = user.getRepoId();
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        try{
-            URI postUri = new URIBuilder()
-                    .setScheme("https")
-                    .setHost("api.github.com")
-                    .setPath("/orgs/" + org + "/repos")
-                    .build();
-            HttpPost httppost = new HttpPost(postUri);
-            String inputJson = "{\n" +
-                    "\"name\": \"" + repoName + "\",\n" +
-                    "\"private\": \"" + true + "\"\n" +
-                    "}";
-            System.out.println(inputJson);
-            StringEntity stringEntity = new StringEntity(inputJson);
-            httppost.setEntity(stringEntity);
-            httppost.setHeader("AUTHORIZATION", "token " + accessToken);
-            httppost.setHeader("Accept", "application/vnd.github.v3+json");
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity responseEntity = response.getEntity();
-            String responseString = EntityUtils.toString(responseEntity);
-            System.out.println(responseString);
-        } catch (URISyntaxException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            httpclient.close();
-        }
-    }
-
     /**
      * This method is used to open the route for front-end to register a new instructor
      * pass data to the Instructor class
@@ -79,7 +43,6 @@ public class UserApi {
             User user = ctx.bodyAsClass(User.class);
             try {
                 userDao.registerUser(user);
-                createRepo(user);
                 ctx.json(user);
                 ctx.contentType("application/json");
                 ctx.status(201); // created successfully
@@ -87,8 +50,6 @@ public class UserApi {
                 throw new ApiError(ex.getMessage(), 500); // server internal error
             } catch (RegisterException ex) {
                 throw new ApiError(ex.getMessage(), 403); // request forbidden, user already exists
-            } catch (IOException ex) {
-                throw new ApiError(ex.getMessage(), 500);
             }
         });
     }

@@ -90,7 +90,7 @@ public class FileApi {
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
             JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
-            String newSha = JsonObject.get("sha").toString().replaceAll("\"", "");
+            String newSha = JsonObject.get("sha").toString().replaceAll("\"", ""); //???
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } finally {
