@@ -53,7 +53,7 @@ public class UserApi {
                 URI postUri = new URIBuilder()
                         .setScheme("https")
                         .setHost("api.github.com")
-                        .setPath("/orgs/" + org + "/repos")
+                        .setPath("/user/repos")
                         .build();
                 HttpPost httppost = new HttpPost(postUri);
                 String inputJson = "{\n" +
