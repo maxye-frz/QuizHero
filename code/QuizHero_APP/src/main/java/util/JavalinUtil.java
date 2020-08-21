@@ -6,7 +6,6 @@ import file.FileApi;
 import file.FileDao;
 import io.javalin.Javalin;
 import io.javalin.plugin.json.JavalinJson;
-//import pac4j.Pac4jApi;
 import quiz.QuizApi;
 import quiz.QuizDao;
 import user.UserApi;
@@ -35,10 +34,10 @@ public class JavalinUtil {
         UserDao userDao = DaoFactory.getUserDao();
         QuizDao quizDao = DaoFactory.getQuizDao();
 
-        // add some sample data
-        if (INITIALIZE_WITH_SAMPLE_DATA) {
-            DaoUtil.addSampleUsers(userDao);
-        }
+//        // add sample users
+//        if (INITIALIZE_WITH_SAMPLE_DATA) {
+//            DaoUtil.addSampleUsers(userDao);
+//        }
 
         // Routing
         getHomepage();
@@ -77,14 +76,10 @@ public class JavalinUtil {
     /**
      * This method is used to open various routes
      * @param fileDao       DAO for file table
-     * @param userDao       DAO for user table
+     * @param userDao       DAO for account (user) table
      * @param quizDao       DAO for quiz table
      */
     private static void routing(FileDao fileDao, UserDao userDao, QuizDao quizDao) {
-        //sign in service
-//        Pac4jApi.getCallBack();
-//        Pac4jApi.postCallBack();
-//        Pac4jApi.getLocalLogout();
 
         // login and register
         UserApi.register(userDao);
@@ -93,18 +88,13 @@ public class JavalinUtil {
         // login from github
         UserApi.githubLogin();
         UserApi.githubCallback(userDao);
-
         // get file list from user
         UserApi.getFileListFromInstructor(userDao);
-        // fetch quiz statistics
-        QuizApi.getQuizStatByFileId(quizDao);
-        // update quiz statistics
-        QuizApi.postQuiz(quizDao);
-        QuizApi.postRecords(quizDao);
 
         // upload, fetch file content and modify file status
         FileApi.uploadFile(fileDao);
         FileApi.saveFile(fileDao);
+        FileApi.push(fileDao);
         FileApi.fetchFile(fileDao);
         FileApi.studentFetchFile(fileDao);
         FileApi.changeFilePermission(fileDao);
@@ -112,13 +102,18 @@ public class JavalinUtil {
         FileApi.changeQuizPermission(fileDao);
         FileApi.checkQuizPermission(fileDao);
         FileApi.deleteFile(fileDao);
-        FileApi.pull(fileDao);
-        FileApi.push(fileDao);
+        FileApi.clone(fileDao);
         FileApi.listRepo();
         FileApi.listContent();
         FileApi.readCSS(fileDao);
         FileApi.saveCSS(fileDao);
         FileApi.uploadCSS(fileDao);
+
+        // fetch quiz statistics
+        QuizApi.getQuizStatByFileId(quizDao);
+        // update quiz statistics
+        QuizApi.postQuiz(quizDao);
+        QuizApi.postRecords(quizDao);
     }
 
     /**

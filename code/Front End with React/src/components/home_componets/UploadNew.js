@@ -142,6 +142,7 @@ export default function UploadNew (props){
             formData.append('fileName', fileName);
             formData.append('rawString', raw);
             formData.append('userId', loginInfo['userId']);
+            formData.append('repoId', loginInfo['repoId']);
 
             console.log("Send data to backend", formData);
             axios.post(BASE_URL + "/save", formData)

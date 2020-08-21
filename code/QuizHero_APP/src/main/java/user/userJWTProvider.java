@@ -14,6 +14,7 @@ public class userJWTProvider {
                     .withClaim("userId", user.getUserId())
                     .withClaim("name", user.getName())
                     .withClaim("email", user.getEmail())
+                    .withClaim("repoId", user.getRepoId())
                     .withClaim("githubId", user.getGithubId())
                     .withClaim("salt", user.getSalt());
             return token.sign(alg);

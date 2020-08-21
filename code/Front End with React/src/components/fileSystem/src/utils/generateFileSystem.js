@@ -3,10 +3,10 @@ import cookie from "react-cookies";
 import axios from "axios";
 import {BASE_URL} from "../../../../config/config";
 
-const loginInfo = jwt_decode(cookie.load('token'));
+// const loginInfo = jwt_decode(cookie.load('token'));
 
-const username = loginInfo["name"]
-
+// const username = loginInfo["name"]
+const username = "yaozixuan";
 let fileSystem = {
   '1382b6993e9f270cb1c29833be3f5750': {
     type: '__folder__',
@@ -35,7 +35,8 @@ let fileSystem = {
 const generateFileSystem = () => {
 
   let params = {
-    userId : loginInfo['userId']
+    // userId : loginInfo['userId']
+    userId : 1
   }
   // console.log(params)
   axios

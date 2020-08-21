@@ -15,13 +15,13 @@ import { ViewFiles } from './src/pages';
 
 import generateFileSystem from './src/utils/generateFileSystem';
 
-const fileSystem = generateFileSystem();
-setTimeout(function () {
-    if (fileSystem) {
-        console.log(fileSystem);
-
-    }
-}, 5000);
+// const fileSystem = generateFileSystem();
+// setTimeout(function () {
+//     if (fileSystem) {
+//         console.log(fileSystem);
+//
+//     }
+// }, 5000);
 const store = createStore(
   reducers,
   {

@@ -15,11 +15,11 @@ import java.net.URISyntaxException;
  * DaoFactory class is used for constructing and creating connections to the database
  * Create tables in the database and create DAOs and return DAOs to other classes who want to use
  * Factory Design Pattern
- * @author Ziming Chen, Nanxi Ye, Chenghao Sun
- * @version 1.0
+ * @author QuizHero team @JHU OOSE spring20
+ * @version 1.3
  */
 public final class DaoFactory {
-    public static boolean DROP_TABLES_IF_EXIST = true;
+    public static boolean DROP_TABLES_IF_EXIST = true; // this value set to true by default; this value can be altered in Main.java
     public static String PATH_TO_DATABASE_FILE = "./Store.db";
     private static Sql2o sql2o;
 
@@ -34,6 +34,7 @@ public final class DaoFactory {
         dropQuizTableIfExists(sql2o);
         dropAccountTableIfExists(sql2o);
         dropFileTableIfExists(sql2o);
+        System.out.println("database cleared");
     }
 
     /**
@@ -61,7 +62,7 @@ public final class DaoFactory {
             }
 
             sql2o = new Sql2o(URI, USERNAME, PASSWORD);
-            System.out.println("database instantiated successfully.");
+            System.out.println("database connected.");
         }
         if (DROP_TABLES_IF_EXIST) {
             clearDatabase();
@@ -76,14 +77,16 @@ public final class DaoFactory {
         String sql = "CREATE TABLE IF NOT EXISTS account(" +
                 "userId SERIAL," +
                 "name VARCHAR(30)," +
-                "email VARCHAR(30)," +
                 "pswd VARCHAR(100)," +
-                "githubId VARCHAR(36)," +
+                "email VARCHAR(30)," +
+                "repoId VARCHAR(36)," +
+                "githubId VARCHAR(30)," +
                 "salt VARCHAR(30)," +
                 "PRIMARY KEY (userId)" +
                 ");";
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("account table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create account table", ex);
         }
@@ -95,7 +98,6 @@ public final class DaoFactory {
      */
     private static void createQuizTable(Sql2o sql2o) {
         String sql = "CREATE TABLE IF NOT EXISTS quiz(" +
-//                "id SERIAL PRIMARY KEY," +
                 "fileId VARCHAR(50) NOT NULL," +
                 "questionId INTEGER NOT NULL," +
                 "answer VARCHAR(30)," +
@@ -107,9 +109,9 @@ public final class DaoFactory {
                 "FOREIGN KEY (fileId) REFERENCES file(fileId)" +
                 ");";
 
-//        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("quiz table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create quiz table", ex);
         }
@@ -125,11 +127,14 @@ public final class DaoFactory {
                 "fileName VARCHAR(30) NOT NULL, " +
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
-                "fileContent bytea," +
+                "owner VARCHAR(50) NOT NULL," +
+                "repo VARCHAR(50) NOT NULL," +
+                "path VARCHAR(50) NOT NULL," +
+                "sha VARCHAR(50)," +
                 "fileCss bytea" +
                 ")";
+        // add size, date, type later
 
-//        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {
@@ -153,6 +158,7 @@ public final class DaoFactory {
 //        System.out.println(sql);
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
+            System.out.println("account_file table created");
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to create account_file table", ex);
         }
@@ -167,7 +173,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop Quiz table successfully.");
+            System.out.println("quiz table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping Quiz table.", ex);
         }
@@ -182,7 +188,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop account table successfully.");
+            System.out.println("account table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping account table.", ex);
         }
@@ -197,7 +203,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop account_file table successfully.");
+            System.out.println("account_file table dropped");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping account_file table.", ex);
         }
@@ -212,7 +218,7 @@ public final class DaoFactory {
 
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
-            System.out.println("drop file table successfully.");
+            System.out.println("file table dropped.");
         } catch (Sql2oException ex) {
             throw new DaoException("Fail dropping file table.", ex);
         }
