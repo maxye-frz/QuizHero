@@ -10,7 +10,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import util.GithubUtil;
@@ -157,16 +159,19 @@ public class FileApi {
                 String repoId = ctx.formParam("repoId");
                 String owner = GithubUtil.getOrganizationName();
                 String repo = repoId;
+                System.out.println(repo);
                 String path = fileName;
-                if (fileId.equals(null)) {
+                System.out.println(path);
+                if (fileId.equals("")) {
+                    System.out.println(fileId);
                     File file = new File(userId, fileName, owner, repo, path);
                     fileId = file.getFileId();
+                    System.out.println(fileId);
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                     String message = "initial save file by QuizHero at " + timeStamp;
                     String sha = fileDao.push(file, accessToken, fileContent, message);
                     file.setSha(sha);
                     fileDao.storeFile(file);
-                    fileDao.storeInsFile(file);
                 } else {
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                     String message = "save file by QuizHero at " + timeStamp;
@@ -185,6 +190,51 @@ public class FileApi {
             } catch (NullPointerException ex) {
                 throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
             }
+        });
+    }
+
+    public static void push(FileDao fileDao) {
+//        saveFile(fileDao);
+        app.post("/push", context -> {
+            //read owner, repo and path as query parameter
+            String owner = "quizherotest";
+            String repo = context.formParam("repoId");
+            String path = context.formParam("fileName");
+            //read file content string as form parameter
+            String fileContent = context.formParam("rawString");
+            String message = "init new file";
+            String accessToken = context.cookie("access_token");
+            String tokenType = context.cookie("token_type");
+            String sha = context.cookie("sha");
+            String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
+
+            HttpClient httpclient = HttpClients.createDefault();
+            URI putUri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.github.com")
+                    .setPath("/orgs/" + owner + "/" + repo + "/contents/" + path)
+                    .build();
+            HttpPut httpput = new HttpPut(putUri);
+            String inputJson = "{\n" +
+                    "\"message\": \"" + message + "\",\n" +
+                    "\"content\": \"" + content + "\",\n" +
+                    "\"sha\": \"" + sha + "\"\n" +
+                    "}";
+            System.out.println(inputJson);
+            StringEntity stringEntity = new StringEntity(inputJson);
+            httpput.setEntity(stringEntity);
+
+            httpput.setHeader("Accept", "application/vnd.github.v3+json");
+            httpput.setHeader("AUTHORIZATION", "token " + accessToken);
+            HttpResponse response = httpclient.execute(httpput);
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println(responseString);
+            Map<String, Object> pushMap = new HashMap<>(); // return  to front-end
+            pushMap.put("sha", sha);
+            pushMap.put("message", message);
+            context.json(pushMap);
+            context.status(201);
         });
     }
 

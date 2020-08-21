@@ -45,7 +45,7 @@ export default function Home(props) {
     const refreshCallback = () => {
         let params = {
             userId : loginInfo['userId'],
-            repoId: loginInfo['repoId']
+            repoId : loginInfo['repoId']
         }
         // console.log(params)
         axios

@@ -7,7 +7,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.annotation.NotThreadSafe;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -19,14 +18,12 @@ import org.apache.http.util.EntityUtils;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
-import quiz.Quiz;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -48,6 +45,7 @@ public class FileDao {
         String repo = file.getRepo();
         String path = file.getPath();
         String sha = file.getSha();
+        System.out.println(fileContent);
         String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
