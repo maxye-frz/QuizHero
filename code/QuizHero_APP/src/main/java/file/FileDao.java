@@ -180,19 +180,16 @@ public class FileDao {
      */
     public void storeFile(File file) {
         try (Connection conn = sql2o.open()) {
-            String sql = "insert into file values (:fileId, :fileName, :filePermission, " +
-                    ":quizPermission, :fileCss, :owner, :repo, :path)";
+            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, :owner, :repo, :path, :sha)";
             conn.createQuery(sql)
                     .addParameter("fileId", file.getFileId())
                     .addParameter("fileName", file.getFileName())
                     .addParameter("filePermission", file.getFilePermission())
                     .addParameter("quizPermission", file.getQuizPermission())
-                    .addParameter("fileCss", file.getCss())
                     .addParameter("owner", file.getOwner())
                     .addParameter("repo", file.getRepo())
                     .addParameter("path", file.getPath())
                     .addParameter("sha", file.getSha())
-                    .addParameter("githubSha", file.getSha())
                     .executeUpdate();
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to store file content", ex);

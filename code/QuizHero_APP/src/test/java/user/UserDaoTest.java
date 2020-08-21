@@ -27,6 +27,7 @@ public class UserDaoTest {
     public void setup() throws URISyntaxException {
         DaoFactory.connectDatabase();
         userDao = DaoFactory.getUserDao();
+        fileDao = DaoFactory.getFileDao();
         //add instructor to empty instructor table; this instructor has instructorId of 1
         JohnSmith = new User("John Smith",
                 "jsmith@quizhero.com",
@@ -114,21 +115,20 @@ public class UserDaoTest {
         assertEquals(emptyFileList, resultList);
     }
 
-//    @Test
-//    public void nonEmptyFileList() throws FileNotFoundException {
-//        InputStream inputStream = new FileInputStream("src/test/test.md");
-//        File file1 = new File(1, "testFile", inputStream);
-//        File file2 = new File(1, "testFile", inputStream);
-//        fileDao.storeFile(file1);
-//        fileDao.storeFile(file2);
-//        List<File> fileList = new ArrayList<>();
-//        fileList.add(file1);
-//        fileList.add(file2);
-//        List<File> resultList = userDao.getUserFileList(JohnSmith.getUserId());
-//        // the returned fileList does not contain all file information, can only be compared as the following fields:
-//        assertEquals(fileList.get(0).getFileId(), resultList.get(0).getFileId());
-//        assertEquals(fileList.get(1).getFileId(), resultList.get(1).getFileId());
-//        assertEquals(fileList.get(0).getFileName(), resultList.get(0).getFileName());
-//        assertEquals(fileList.get(1).getFileName(), resultList.get(1).getFileName());
-//    }
+    @Test
+    public void nonEmptyFileList() {
+        File file1 = new File(1, "testFileName", "owner", "repo", "path");
+        File file2 = new File(1, "anotherTestFileName", "owner", "repo", "path");
+        fileDao.storeFile(file1);
+        fileDao.storeFile(file2);
+        List<File> fileList = new ArrayList<>();
+        fileList.add(file1);
+        fileList.add(file2);
+        List<File> resultList = userDao.getUserFileList(JohnSmith.getUserId());
+        // the returned fileList does not contain all file information, can only be compared as the following fields:
+        assertEquals(fileList.get(0).getFileId(), resultList.get(0).getFileId());
+        assertEquals(fileList.get(1).getFileId(), resultList.get(1).getFileId());
+        assertEquals(fileList.get(0).getFileName(), resultList.get(0).getFileName());
+        assertEquals(fileList.get(1).getFileName(), resultList.get(1).getFileName());
+    }
 }

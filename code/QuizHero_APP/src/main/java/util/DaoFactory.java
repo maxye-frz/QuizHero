@@ -127,12 +127,11 @@ public final class DaoFactory {
                 "fileName VARCHAR(30) NOT NULL, " +
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
-                "fileCss bytea," +
                 "owner VARCHAR(50) NOT NULL," +
                 "repo VARCHAR(50) NOT NULL," +
                 "path VARCHAR(50) NOT NULL," +
-                "sha VARCHAR(50) NOT NULL," +
-                "commitSha VARCHAR(50)" +
+                "sha VARCHAR(50)," +
+                "fileCss bytea" +
                 ")";
         // add size, date, type later
 
