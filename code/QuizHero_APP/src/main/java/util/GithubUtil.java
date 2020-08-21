@@ -1,6 +1,6 @@
 package util;
 
-public class OAuthUtil {
+public class GithubUtil {
     public static String getClientId() {
         return "2ee2dcaf4624183da206";
     }
