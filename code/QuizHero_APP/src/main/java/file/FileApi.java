@@ -169,6 +169,7 @@ public class FileApi {
                     System.out.println(file);
                     System.out.println(accessToken);
                     System.out.println(message);
+                    System.out.println(fileContent);
                     String sha = fileDao.push(file, accessToken, fileContent, message);
                     file.setSha(sha);
                     fileDao.storeFile(file);

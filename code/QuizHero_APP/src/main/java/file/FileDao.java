@@ -42,12 +42,12 @@ public class FileDao {
 
     public static String push(File file, String accessToken,
                             String fileContent, String message) throws IOException {
-//        Map<String, String> result = new HashMap<>();
         String owner = file.getOwner();
         String repo = file.getRepo();
         String path = file.getPath();
         String sha = file.getSha();
-        String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
+        String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes()).replaceAll("\\r\\n|\\r|\\n|", "");
+        System.out.println(content);
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             URI putUri = new URIBuilder()
