@@ -92,7 +92,7 @@ public class JavalinUtil {
         UserApi.getFileListFromInstructor(userDao);
 
         // upload, fetch file content and modify file status
-        FileApi.uploadFile(fileDao);
+//        FileApi.uploadFile(fileDao);
         FileApi.saveFile(fileDao);
 //        FileApi.testDelete(fileDao);
         FileApi.push(fileDao);

@@ -62,39 +62,39 @@ public class FileApi {
 //        });
 //    }
 
-    public static void uploadFile(FileDao fileDao) {
-        app.post("/upload", ctx -> {
-            try {
-                UploadedFile uploadedFile = ctx.uploadedFile("file");
-                String fileName = uploadedFile.getFilename();
-                String fileContent = Objects.requireNonNull(uploadedFile).getContent().toString();
-                int userId = Integer.parseInt(Objects.requireNonNull(ctx.formParam("userId")));
-                String repoId = ctx.formParam("repoId");
-                String owner = GithubUtil.getGitName();
-                String repo = repoId;
-                String path = fileName;
-                String accessToken = GithubUtil.getPersonalAccessToken();
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                String message = "upload new md by QuizHero at " + timeStamp;
-                File file = new File(userId, fileName, owner, repo, path);
-                String sha = fileDao.push(file, accessToken, fileContent, message);
-                System.out.println("sha is : " + sha);
-                file.setSha(sha);
-                fileDao.storeFile(file);
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("userId", userId);
-                fileMap.put("repoId", repoId);
-                fileMap.put("fileId", file.getFileId());
-                ctx.json(fileMap);
-                ctx.contentType("application/json");
-                ctx.status(201);
-            } catch (DaoException ex) {
-                throw new ApiError("sever error upload file: " + ex.getMessage(), 500);
-            } catch (NullPointerException ex) {
-                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
-            }
-        });
-    }
+//    public static void uploadFile(FileDao fileDao) {
+//        app.post("/upload", ctx -> {
+//            try {
+//                UploadedFile uploadedFile = ctx.uploadedFile("file");
+//                String fileName = uploadedFile.getFilename();
+//                String fileContent = Objects.requireNonNull(uploadedFile).getContent().toString();
+//                int userId = Integer.parseInt(Objects.requireNonNull(ctx.formParam("userId")));
+//                String repoId = ctx.formParam("repoId");
+//                String owner = GithubUtil.getGitName();
+//                String repo = repoId;
+//                String path = fileName;
+//                String accessToken = GithubUtil.getPersonalAccessToken();
+//                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+//                String message = "upload new md by QuizHero at " + timeStamp;
+//                File file = new File(userId, fileName, owner, repo, path);
+//                String sha = fileDao.push(file, accessToken, fileContent, message);
+//                System.out.println("sha is : " + sha);
+//                file.setSha(sha);
+//                fileDao.storeFile(file);
+//                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+//                fileMap.put("userId", userId);
+//                fileMap.put("repoId", repoId);
+//                fileMap.put("fileId", file.getFileId());
+//                ctx.json(fileMap);
+//                ctx.contentType("application/json");
+//                ctx.status(201);
+//            } catch (DaoException ex) {
+//                throw new ApiError("sever error upload file: " + ex.getMessage(), 500);
+//            } catch (NullPointerException ex) {
+//                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+//            }
+//        });
+//    }
 
     /**
      * This method is used to open the route for front-end to fetch a file
@@ -166,6 +166,9 @@ public class FileApi {
                     file = new File(userId, fileName, owner, repo, path);
                     file.setPath(file.getFileId());
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());String message = "initial save file by QuizHero at " + timeStamp;
+                    System.out.println(file);
+                    System.out.println(accessToken);
+                    System.out.println(message);
                     String sha = fileDao.push(file, accessToken, fileContent, message);
                     file.setSha(sha);
                     fileDao.storeFile(file);
@@ -414,28 +417,37 @@ public class FileApi {
                 String githubOwner = Objects.requireNonNull(ctx.queryParam("owner"));
                 String githubRepo = Objects.requireNonNull(ctx.queryParam("repo"));
                 String githubPath = Objects.requireNonNull(ctx.queryParam("path"));
-                String fileName = githubPath;
+                String fileName = githubPath; // temp fileName
                 String accessToken = ctx.cookie("access_token");
                 File githubFile = new File(userId, fileName, githubOwner, githubRepo, githubPath);
                 String content = fileDao.pull(githubFile, accessToken);
                 String repoId = ctx.formParam("repoId");
-                String quizheroOwner = GithubUtil.getOrganizationName();
-                String quizheroRepo = repoId;
-                String quizheroPath = fileName;
+                String owner = GithubUtil.getOrganizationName();
+                String repo = repoId;
+                String path = githubFile.getFileId();
                 String quizheroAccessToken = GithubUtil.getPersonalAccessToken();
+                File clonedFile = new File(userId, fileName, owner, repo, path);
+                clonedFile.setPath(githubFile.getFileId());
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                 String message = "cloned from github by QuizHero at " + timeStamp;
-                File quizheroFile = new File(userId, fileName, quizheroOwner, quizheroRepo, quizheroPath);
-                String quizheorSha = fileDao.push(quizheroFile, quizheroAccessToken, content, message);
-                quizheroFile.setSha(quizheorSha);
-                fileDao.storeFile(quizheroFile);
-                Map<String, Object> cloneMap = new HashMap<>();
-                cloneMap.put("userId", userId);
-                cloneMap.put("repoId", repoId);
-                cloneMap.put("fileId", quizheroFile.getFileId());
-                ctx.json(cloneMap);
+                System.out.println(clonedFile);
+                String sha = fileDao.push(clonedFile, quizheroAccessToken, content, message);
+                clonedFile.setSha(sha);
+                fileDao.storeFile(clonedFile);
+                ctx.json(clonedFile);
                 ctx.contentType("application/json");
                 ctx.status(201);
+//                System.out.println(quizheroFile);
+//                String quizheorSha = fileDao.push(quizheroFile, quizheroAccessToken, content, message);
+//                quizheroFile.setSha(quizheorSha);
+//                fileDao.storeFile(quizheroFile);
+//                Map<String, Object> cloneMap = new HashMap<>();
+//                cloneMap.put("userId", userId);
+//                cloneMap.put("repoId", repoId);
+//                cloneMap.put("fileId", quizheroFile.getFileId());
+//                ctx.json(cloneMap);
+//                ctx.contentType("application/json");
+//                ctx.status(201);
             }catch (DaoException ex) {
                 throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {
