@@ -18,10 +18,9 @@ import HomePage from "../pages/HomePage"
 import PrivateRoute from "./PrivateRoute"
 import PublicRoute from "./PublicRoute"
 import EditPage from "../pages/EditPage";
-import GithubLogin from "../pages/GithubLogin";
 import Select from "../components/home_componets/test";
 import MyControl from "../components/home_componets/popup";
-import App from "../components/fileSystem";
+import fileSystemRouter from "../components/fileSystem/index";
 
 const history = createBrowserHistory();
 
@@ -49,19 +48,18 @@ class AppRouter extends Component {
       <Switch>
           <PublicRoute restricted={false} component={IndexPage} path="/" exact />
           <PublicRoute restricted={false} component={LoginPage} path="/login" exact />
-          <PublicRoute restricted={false} component={GithubLogin} path="/githublogin" exact />
           <PublicRoute restricted={false} component={RegisterPage} path="/register" exact />
           <PublicRoute restricted={false} component={StudentRequestPage} path="/StudentRequestPage" exact />
           <PublicRoute restricted={false} component={StudentPage} path="/student" exact />
-          <PrivateRoute component={MyUpload} path="/UploadPage" exact />
-          <PrivateRoute component={GithubLogin} path="/githublogin" exact />
           <PrivateRoute component={PresentPage} path="/presenter" exact />
-          {/*<PrivateRoute component={HomePage} path="/HistoryPage" exact />*/}
           <PrivateRoute component={HomePage} path="/HomePage" exact />
           <PrivateRoute component={EditPage} path="/EditPage" exact />
-          <PrivateRoute component={Select} path="/Select" exact />
-          <PrivateRoute component={MyControl} path="/Popup" exact />
-          <PrivateRoute component={App} path="/fileSystem" exact />
+          {/*<PrivateRoute component={Select} path="/Select" exact />*/}
+          {/*<PrivateRoute component={MyControl} path="/Popup" exact />*/}
+          <PrivateRoute component={fileSystemRouter} path="/fileSystem" exact />
+          <fileSystemRouter path="/fileSystem" exact />
+          <PrivateRoute component={MyUpload} path="/UploadPage" exact />
+          <PrivateRoute component={HomePage} path="/HistoryPage" exact />
       </Switch>
       </Router>
      

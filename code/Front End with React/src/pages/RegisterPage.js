@@ -75,16 +75,26 @@ class RegisterPage extends Component {
                         console.log(res.status);
                         if (res.status === 201) {
                             message.loading(
-                                "Register success, directing you to HomePage",
-                                [2],
-                                (onclose = () => {
-                                    console.log(res);
-                                    // this.props.login(res.data.name, res.data.userId);
-                                    // localStorage.setItem("instructorId", res.data.userId);
-                                    // localStorage.setItem("username", res.data.name);
-                                    // localStorage.setItem("isLogin", 1);
-                                    window.location = "/HomePage";
-                                })
+                                "Register success, auto login",
+                                [0.1],
+                                onclose = () => {
+                                    const formData = new FormData();
+                                    formData.append("email", email);
+                                    axios.post(BASE_URL + "/login", formData)
+                                        .then((res) => {
+                                            console.log(res.status);
+                                            if (res.status === 201) {
+                                                console.log("Login success");
+                                                message.loading(
+                                                    "Login success, directing you to HomePage",
+                                                    [0.1],
+                                                    () => {window.location = "/HomePage";});
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            console.log(err);
+                                        });
+                                }
                             );
                         }
                     })

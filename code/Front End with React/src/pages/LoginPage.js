@@ -48,33 +48,7 @@ class LoginPage extends Component {
     formRef = React.createRef();
 
     componentDidMount() {
-        if (isLogin()) {
-            window.location = '/HomePage';
-        }
-
-        // if (localStorage.getItem("isLogin") === '1') window.location = "/HomePage";
-
-        // if (localStorage.getItem("isGithubLogin") === '1') {
-        //     let params = {
-        //         login : "1",
-        //     }
-        //     axios
-        //         .get(BASE_URL + "/github", {params})
-        //         .then((res) => {
-        //             console.log("HTTP get request!");
-        //             localStorage.setItem("instructorId", res.data.userId);
-        //             localStorage.setItem("username", res.data.name);
-        //             localStorage.setItem("githubId", res.data.githubId);
-        //             localStorage.setItem("isLogin", "1");
-        //             console.log("after setItem");
-        //             message.loading(
-        //                 "Login success, directing you to HomePage",
-        //                 [0.1],
-        //                 () => {
-        //                     window.location = '/HomePage';
-        //                 });
-        //         })
-        // }
+        if (isLogin()) window.location = '/HomePage';
     }
 
     /**
@@ -119,14 +93,7 @@ class LoginPage extends Component {
                                     message.loading(
                                         "Login success, directing you to HomePage",
                                         [0.1],
-                                        () => {
-                                            // this.props.login(res.data.name, res.data.userId);
-                                            window.location = "/HomePage";
-                                            // history.push("/HomePage");
-                                        });
-                                    // localStorage.setItem("instructorId", res.data.userId);
-                                    // localStorage.setItem("username", res.data.name);
-                                    // localStorage.setItem("isLogin", 1);
+                                        () => {window.location = "/HomePage";}); // history.push("/HomePage");
                                 }
                             })
                             .catch((err) => {
@@ -160,19 +127,7 @@ class LoginPage extends Component {
     loginWithGitHub = () => {
         // const { history } = this.props;
         window.location = BASE_URL + "/github";
-        // localStorage.setItem("isGithubLogin", '1');
-        // localStorage.setItem("isLogin", '1');
     }
-
-    loginTest = () => {
-        axios
-            .get("https://github.com/login/oauth/authorize")
-            .then((HTML) => {
-                console.log(HTML);
-                // this.setState("HTML", HTML);
-            });
-    }
-
 
     render() {
         const {getFieldProps} = this.props.form;
@@ -243,12 +198,8 @@ class LoginPage extends Component {
                         <Button onClick={this.loginWithGitHub}>
                             Login with GitHub
                         </Button>
-                        <Button onClick={this.loginTest}>
-                            LoginTest
-                        </Button>
                     </Form.Item>
                 </Form>
-                {/*{this.state.HTML}*/}
             </div>
         );
     }

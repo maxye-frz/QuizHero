@@ -15,6 +15,7 @@ export default class ViewFiles extends Component {
           <SearchBar />
         </TopBar>
         <Route path="*" component={Grid} />
+        {/*<Grid />*/}
       </Container>
     );
   }

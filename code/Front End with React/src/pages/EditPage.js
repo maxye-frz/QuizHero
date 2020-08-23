@@ -18,7 +18,6 @@ class EditPage extends React.Component {
     render() {
         const loginInfo = jwt_decode(cookie.load('token'));
         const username = loginInfo['name'];
-        // const username = localStorage.getItem("username")?localStorage.getItem("username"):"";
 
         const logOutBtnStyle = {
             background: "none",

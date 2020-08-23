@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import {BrowserRouter as Router, Redirect} from 'react-router-dom';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -14,6 +14,7 @@ import reducers from './src/reducers';
 import { ViewFiles } from './src/pages';
 
 import generateFileSystem from './src/utils/generateFileSystem';
+import {isLogin} from "../../utils/isLogin";
 
 // const fileSystem = generateFileSystem();
 // setTimeout(function () {
@@ -36,17 +37,19 @@ const store = createStore(
   composeWithDevTools()
 );
 
-const App = () => (
-  <Provider store={store}>
-    <Router>
-      <BrowserRouter>
-        <Fragment>
-          <Sidebar />
-          <ViewFiles />
-        </Fragment>
-      </BrowserRouter>
-    </Router>
-  </Provider>
+const fileSystemRouter = () => (
+    // isLogin() ?
+        <Provider store={store}>
+            <Router>
+            {/*    <BrowserRouter>*/}
+                    <Fragment>
+                        <Sidebar />
+                        <ViewFiles />
+                    </Fragment>
+            {/*    </BrowserRouter>*/}
+            </Router>
+        </Provider>
+        // : <Redirect to="/login" />
 );
 
-export default App;
+export default fileSystemRouter;
