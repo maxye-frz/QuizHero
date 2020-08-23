@@ -1,6 +1,7 @@
 package file;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import exception.DaoException;
 import org.apache.http.HttpEntity;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -45,7 +47,6 @@ public class FileDao {
         String repo = file.getRepo();
         String path = file.getPath();
         String sha = file.getSha();
-        System.out.println(fileContent);
         String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes());
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
@@ -68,8 +69,8 @@ public class FileDao {
             HttpEntity responseEntity = response.getEntity();
             String responseString = EntityUtils.toString(responseEntity);
             System.out.println(responseString);
-//            result.put("sha: ", sha);
-//            result.put("commit message: ", message);
+            JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
+            sha = JsonObject.get("content").getAsJsonObject().get("sha").toString().replaceAll("\"", "");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } finally {
@@ -98,10 +99,12 @@ public class FileDao {
             String responseString = EntityUtils.toString(responseEntity);
             System.out.println(responseString);
             JsonObject JsonObject = new Gson().fromJson(responseString, JsonObject.class);
-            content = JsonObject.get("content")
+            String encodedContent = JsonObject.get("content")
                     .toString()
                     .replace("\"", "")
                     .replace("\\n", "");
+            byte[] decodedContent = Base64.getMimeDecoder().decode(encodedContent);
+            content = new String(decodedContent, StandardCharsets.UTF_8);
             System.out.println(content);
             String sha = JsonObject.get("sha").toString().replaceAll("\"", "");
             System.out.println(sha);
@@ -118,59 +121,59 @@ public class FileDao {
         return content;
     }
 
-    @NotThreadSafe
-    static
-    class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
-        public static final String METHOD_NAME = "DELETE";
-        public String getMethod() { return METHOD_NAME; }
+//    @NotThreadSafe
+//    static
+//    class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+//        public static final String METHOD_NAME = "DELETE";
+//        public String getMethod() { return METHOD_NAME; }
+//
+//        public HttpDeleteWithBody(final String uri) {
+//            super();
+//            setURI(URI.create(uri));
+//        }
+//        public HttpDeleteWithBody(final URI uri) {
+//            super();
+//            setURI(uri);
+//        }
+//        public HttpDeleteWithBody() { super(); }
+//    }
 
-        public HttpDeleteWithBody(final String uri) {
-            super();
-            setURI(URI.create(uri));
-        }
-        public HttpDeleteWithBody(final URI uri) {
-            super();
-            setURI(uri);
-        }
-        public HttpDeleteWithBody() { super(); }
-    }
-
-    public static void delete(File file, String accessToken) throws IOException {
-        String owner = file.getOwner();
-        String repo = file.getRepo();
-        String path = file.getPath();
-        String sha = file.getSha();
-        String message = "delete from database by QuizHero";
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        try {
-            URI deleteUri = new URIBuilder()
-                    .setScheme("https")
-                    .setHost("api.github.com")
-                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
-                    .build();
-            HttpDeleteWithBody httpdelete = new HttpDeleteWithBody(deleteUri);
-            String inputJson = "{\n" +
-                    "\"message\": \"" + message + "\",\n" +
-                    "\"sha\": \"" + sha + "\"\n" +
-                    "}";
-            StringEntity stringEntity = new StringEntity(inputJson);
-            httpdelete.setEntity(stringEntity);
-            httpdelete.setHeader("Accept", "application/vnd.github.v3+json");
-            httpdelete.setHeader("AUTHORIZATION", "token " + accessToken);
-            HttpResponse response = httpclient.execute(httpdelete);
-            HttpEntity responseEntity = response.getEntity();
-            String responseString = EntityUtils.toString(responseEntity);
-            System.out.println(responseString);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            httpclient.close();
-        }
-    }
+//    public static void delete(File file, String accessToken) throws IOException {
+//        String owner = file.getOwner();
+//        String repo = file.getRepo();
+//        String path = file.getPath();
+//        String sha = file.getSha();
+//        String message = "delete from database by QuizHero";
+//        CloseableHttpClient httpclient = HttpClients.createDefault();
+//        try {
+//            URI deleteUri = new URIBuilder()
+//                    .setScheme("https")
+//                    .setHost("api.github.com")
+//                    .setPath("/repos/" + owner + "/" + repo + "/contents/" + path)
+//                    .build();
+//            HttpDeleteWithBody httpdelete = new HttpDeleteWithBody(deleteUri);
+//            String inputJson = "{\n" +
+//                    "\"message\": \"" + message + "\",\n" +
+//                    "\"sha\": \"" + sha + "\"\n" +
+//                    "}";
+//            StringEntity stringEntity = new StringEntity(inputJson);
+//            httpdelete.setEntity(stringEntity);
+//            httpdelete.setHeader("Accept", "application/vnd.github.v3+json");
+//            httpdelete.setHeader("AUTHORIZATION", "token " + accessToken);
+//            HttpResponse response = httpclient.execute(httpdelete);
+//            HttpEntity responseEntity = response.getEntity();
+//            String responseString = EntityUtils.toString(responseEntity);
+//            System.out.println(responseString);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        } catch (ClientProtocolException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            httpclient.close();
+//        }
+//    }
 
     /**
      * This method is used to store the file stream in the database
@@ -178,7 +181,8 @@ public class FileDao {
      */
     public void storeFile(File file) {
         try (Connection conn = sql2o.open()) {
-            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, :owner, :repo, :path, :sha)";
+            String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, " +
+                    ":owner, :repo, :path, :sha)";
             conn.createQuery(sql)
                     .addParameter("fileId", file.getFileId())
                     .addParameter("fileName", file.getFileName())
@@ -206,7 +210,6 @@ public class FileDao {
                     .addParameter("userId", file.getUserId())
                     .addParameter("fileId", file.getFileId())
                     .executeUpdate();
-
             System.out.println("user-file information stored.");
         } catch (Sql2oException ex1) {
             throw new DaoException("Unable to store user-file information.", ex1);
@@ -234,6 +237,20 @@ public class FileDao {
 //        }
 //    }
 
+    public File getFile(String fileId) {
+        checkFileExist(fileId);
+        File file;
+        try (Connection conn = sql2o.open()) {
+            String sql = "SELECT * FROM file Where fileId = :fileId;";
+            file = conn.createQuery(sql)
+                    .addParameter("fileId", fileId)
+                    .executeAndFetchFirst(File.class);
+        } catch (Sql2oException ex) {
+            throw new DaoException("database error" + ex.getMessage(), ex);
+        }
+        return file;
+    }
+
     public String getFileContent(String accessToken, String fileId) {
         checkFileExist(fileId);
         File file;
@@ -251,12 +268,12 @@ public class FileDao {
         return content;
     }
 
-    /**
-     * This method is used to update the file
-     * @param fileId a string of fileId
-     * @param fileName a string of fileName
-     * @param fileContent an inputStream of fileContent
-     */
+//    /**
+//     * This method is used to update the file
+//     * @param fileId a string of fileId
+//     * @param fileName a string of fileName
+//     * @param fileContent an inputStream of fileContent
+//     */
 //    public void updateFile(String fileId, String fileName, InputStream fileContent) {
 //        checkFileExist(fileId);
 //        try (Connection conn = sql2o.open()) {
@@ -274,28 +291,61 @@ public class FileDao {
 //            throw new DaoException("Unable to update file", ex);
 //        }
 //    }
-    public void updateFile(String accessToken, String fileId, String fileName, String fileContent, String message) {
+    public Integer getFileUserId(String fileId) {
         checkFileExist(fileId);
-        File file;
+        Integer userId;
         try (Connection conn = sql2o.open()) {
-            String sql = "SELECT * FROM file Where fileId = :fileId;";
-            file = conn.createQuery(sql)
-                    .addParameter("fileId", fileId)
-                    .executeAndFetchFirst(File.class);
-            if (file.getFileName().equals(fileName)) {
-                push(file, accessToken, fileContent, message);
-            } else {
-                delete(file, accessToken);
-                deleteFile(file.getFileId());
-                file.setFileName(fileName);
-                file.setPath(fileName);
-                push(file, accessToken, fileContent, message);
-                storeFile(file);
-                storeInsFile(file);
-            }
-
-        } catch (Sql2oException | IOException ex) {
+            String sql = "SELECT userId from account_file WHERE fileId = :fileId";
+            System.out.println(sql);
+            userId = conn.createQuery(sql).addParameter("fileId", fileId)
+                    .executeAndFetchFirst(Integer.class);
+        } catch (Sql2oException ex) {
             throw new DaoException("database error" + ex.getMessage(), ex);
+        }
+        return userId;
+    }
+
+    public File updateFile(String accessToken, String fileId, String fileName, String fileContent, String message) {
+        checkFileExist(fileId);
+        File file = getFile(fileId);
+        try {
+            file.setUserId(getFileUserId(fileId));
+            String sha = push(file, accessToken, fileContent, message);
+            file.setSha(sha);
+            if (!file.getFileName().equals(fileName)) {
+                changeFileName(fileId, fileName);
+            }
+            file.setFileName(fileName);
+            changeFileSha(fileId, sha);
+        } catch (IOException ex) {
+            throw new DaoException("database error" + ex.getMessage(), ex);
+        }
+        return file;
+    }
+
+    public void changeFileName(String fileId, String fileName) {
+        checkFileExist(fileId);
+        try (Connection conn = sql2o.open()) {
+            String sql = "UPDATE file SET fileName = '" + fileName + "'" +
+                    " WHERE fileId = :fileId";
+            System.out.println(sql);
+            conn.createQuery(sql).addParameter("fileId", fileId)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to change file name", ex);
+        }
+    }
+
+    public void changeFileSha(String fileId, String sha) {
+        checkFileExist(fileId);
+        try (Connection conn = sql2o.open()) {
+            String sql = "UPDATE file SET sha = '" + sha + "'" +
+                    " WHERE fileId = :fileId";
+            System.out.println(sql);
+            conn.createQuery(sql).addParameter("fileId", fileId)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            throw new DaoException("Unable to change sha", ex);
         }
     }
 

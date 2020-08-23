@@ -29,7 +29,7 @@ public class File {
     private String fileName; // name of the file
     private Boolean filePermission; // permission control of access to viewing the file
     private Boolean quizPermission; // permission control of access to all quizzes in the file
-    private InputStream css; // css string of the file
+    private InputStream fileCss; // css string of the file
     private String owner; // owner of the file on github
     private String repo; // repo of the file on github
     private String path; // path of the file on github
@@ -92,7 +92,7 @@ public class File {
         this.fileName = fileName;
         this.filePermission = fileAccess;
         this.quizPermission = quizAccess;
-        this.css = css;
+        this.fileCss = css;
     }
 
     /**
@@ -143,12 +143,12 @@ public class File {
         this.quizPermission = quizPermission;
     }
 
-    public InputStream getCss() {
-        return css;
+    public InputStream getFileCss() {
+        return fileCss;
     }
 
-    public void setCss(InputStream css) {
-        this.css = css;
+    public void setFileCss(InputStream css) {
+        this.fileCss = css;
     }
 
     public String getOwner() {
@@ -193,7 +193,7 @@ public class File {
                 Objects.equals(fileName, file.fileName) &&
                 Objects.equals(filePermission, file.filePermission) &&
                 Objects.equals(quizPermission, file.quizPermission) &&
-                Objects.equals(css, file.css) &&
+                Objects.equals(fileCss, file.fileCss) &&
                 Objects.equals(owner, file.owner) &&
                 Objects.equals(repo, file.repo) &&
                 Objects.equals(path, file.path) &&
@@ -202,7 +202,7 @@ public class File {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, fileId, fileName, filePermission, quizPermission, css, owner, repo, path, sha);
+        return Objects.hash(userId, fileId, fileName, filePermission, quizPermission, fileCss, owner, repo, path, sha);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class File {
                 ", fileName='" + fileName + '\'' +
                 ", filePermission=" + filePermission +
                 ", quizPermission=" + quizPermission +
-                ", css=" + css +
+                ", css=" + fileCss +
                 ", owner='" + owner + '\'' +
                 ", repo='" + repo + '\'' +
                 ", path='" + path + '\'' +

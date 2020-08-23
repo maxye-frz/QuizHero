@@ -176,7 +176,7 @@ public class UserDao {
         if (user == null) {
             //github login not exists, register new user
             user = new User(name, githubId);
-            user.setRepoId(UUID.randomUUID().toString());
+//            user.setRepoId(UUID.randomUUID().toString());
             try (Connection conn = sql2o.open()) {
                 String sql = "INSERT INTO account(name, email, repoId, githubId) VALUES (:name, :email, :repoId, :githubId);";
                 int id = (int) conn.createQuery(sql, true)

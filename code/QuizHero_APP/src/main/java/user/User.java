@@ -59,6 +59,7 @@ public class User {
     public User(String name, String githubId) {
         this.name = name;
         this.githubId = githubId;
+        this.repoId = UUID.randomUUID().toString();
     }
 
     public Integer getUserId() {

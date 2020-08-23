@@ -124,7 +124,7 @@ public final class DaoFactory {
     private static void createFileTable(Sql2o sql2o) {
         String sql = "create table if not exists file(" +
                 "fileId VARCHAR(50) PRIMARY KEY, " +
-                "fileName VARCHAR(30) NOT NULL, " +
+                "fileName VARCHAR(50) NOT NULL, " +
                 "filePermission BOOLEAN DEFAULT false," +
                 "quizPermission BOOLEAN DEFAULT false," +
                 "owner VARCHAR(50) NOT NULL," +

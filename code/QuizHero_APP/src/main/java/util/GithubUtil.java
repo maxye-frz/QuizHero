@@ -11,6 +11,6 @@ public class GithubUtil {
         return "repo";
     }
     public static String getGitName() {return "QzHoTest";}
-    public static String getPersonalAccessToken() {return "836387b95ccd43e705a89fee64f5de26add8dd13";}
+    public static String getPersonalAccessToken() {return "0cb910358e32ff6407c79911d8c06012c3ee9760";}
     public static String getOrganizationName() {return "quizherotest";}
 }

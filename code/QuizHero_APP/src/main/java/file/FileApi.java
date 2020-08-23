@@ -70,7 +70,7 @@ public class FileApi {
                 String fileContent = Objects.requireNonNull(uploadedFile).getContent().toString();
                 int userId = Integer.parseInt(Objects.requireNonNull(ctx.formParam("userId")));
                 String repoId = ctx.formParam("repoId");
-                String owner = GithubUtil.getOrganizationName();
+                String owner = GithubUtil.getGitName();
                 String repo = repoId;
                 String path = fileName;
                 String accessToken = GithubUtil.getPersonalAccessToken();
@@ -78,6 +78,7 @@ public class FileApi {
                 String message = "upload new md by QuizHero at " + timeStamp;
                 File file = new File(userId, fileName, owner, repo, path);
                 String sha = fileDao.push(file, accessToken, fileContent, message);
+                System.out.println("sha is : " + sha);
                 file.setSha(sha);
                 fileDao.storeFile(file);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
@@ -105,7 +106,7 @@ public class FileApi {
             try {
                 String fileId = Objects.requireNonNull(ctx.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
-                String accessToken = ctx.cookie("access_token");
+                String accessToken = GithubUtil.getPersonalAccessToken();
                 String content = fileDao.getFileContent(accessToken, fileId);
                 ctx.result(content);
                 System.out.println("fetch file successfully.");
@@ -151,6 +152,7 @@ public class FileApi {
     public static void saveFile(FileDao fileDao) {
         app.post("/save", ctx -> {
             try {
+                File file;
                 String accessToken = GithubUtil.getPersonalAccessToken();
                 String fileId = ctx.formParam("fileId"); //get fileId
                 String fileName = ctx.formParam("fileName"); //get file name
@@ -159,30 +161,20 @@ public class FileApi {
                 String repoId = ctx.formParam("repoId");
                 String owner = GithubUtil.getOrganizationName();
                 String repo = repoId;
-                System.out.println(repo);
-                String path = fileName;
-                System.out.println(path);
+                String path = fileId;
                 if (fileId.equals("")) {
-                    System.out.println(fileId);
-                    File file = new File(userId, fileName, owner, repo, path);
-                    fileId = file.getFileId();
-                    System.out.println(fileId);
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                    String message = "initial save file by QuizHero at " + timeStamp;
+                    file = new File(userId, fileName, owner, repo, path);
+                    file.setPath(file.getFileId());
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());String message = "initial save file by QuizHero at " + timeStamp;
                     String sha = fileDao.push(file, accessToken, fileContent, message);
                     file.setSha(sha);
                     fileDao.storeFile(file);
                 } else {
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                     String message = "save file by QuizHero at " + timeStamp;
-                    fileDao.updateFile(accessToken, fileId, fileName, fileContent, message);
+                    file = fileDao.updateFile(accessToken, fileId, fileName, fileContent, message);
                 }
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("userId", userId);
-                fileMap.put("repoId", repoId);
-                fileMap.put("fileId", fileId);
-                fileMap.put("fileName", fileName);
-                ctx.json(fileMap);
+                ctx.json(file);
                 ctx.contentType("application/json");
                 ctx.status(201);
             } catch (DaoException ex) {
@@ -192,6 +184,15 @@ public class FileApi {
             }
         });
     }
+
+//    public static void testDelete(FileDao fileDao) {
+//        app.post("/test", ctx-> {
+//            String fileId = ctx.formParam("fileId");
+//            String accessToken = ctx.formParam("accessToken");
+//            File file = fileDao.getFile(fileId);
+//            fileDao.delete(file, accessToken);
+//        });
+//    }
 
     public static void push(FileDao fileDao) {
 //        saveFile(fileDao);
