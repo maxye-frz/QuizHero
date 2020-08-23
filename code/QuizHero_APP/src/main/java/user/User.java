@@ -1,20 +1,5 @@
 package user;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import util.GithubUtil;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -144,6 +129,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", pswd='" + pswd + '\'' +
+                ", repoId='" + repoId + '\'' +
                 ", githubId='" + githubId + '\'' +
                 ", salt='" + salt + '\'' +
                 '}';

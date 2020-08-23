@@ -118,6 +118,7 @@ export function Input(props) {
             formData.append('fileName', localStorage.getItem("newFileName"));
             formData.append('rawString', localStorage.getItem("newFileString"));
             formData.append('userId', loginInfo['userId']);
+            formData.append('repoId', loginInfo['repoId']);
 
             console.log("Save file to backend", formData);
             axios.post(BASE_URL + "/save", formData)
@@ -139,6 +140,7 @@ export function Input(props) {
             formData.append('fileName', localStorage.getItem("newFileName"));
             formData.append('rawString', localStorage.getItem("newFileString"));
             formData.append('userId', loginInfo['userId']);
+            formData.append('repoId', loginInfo['repoId']);
 
             console.log("Save file to backend", formData);
             axios.post(BASE_URL + "/save", formData)

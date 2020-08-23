@@ -165,7 +165,7 @@ public class UserDao {
     public User githubLogin(String name, String githubId) {
         User user;
         try (Connection conn = sql2o.open()) {
-            String sql = "SELECT userId, name, email, githubId FROM account Where githubId = :githubId;";
+            String sql = "SELECT userId, name, email, repoId, githubId FROM account Where githubId = :githubId;";
             user =  conn.createQuery(sql)
                     .addParameter("githubId", githubId)
                     .executeAndFetchFirst(User.class);

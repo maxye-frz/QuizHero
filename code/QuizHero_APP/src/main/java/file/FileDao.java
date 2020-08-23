@@ -1,14 +1,11 @@
 package file;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import exception.DaoException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.annotation.NotThreadSafe;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
@@ -47,7 +44,6 @@ public class FileDao {
         String path = file.getPath();
         String sha = file.getSha();
         String content = Base64.getMimeEncoder().encodeToString(fileContent.getBytes()).replaceAll("\\r\\n|\\r|\\n|", "");
-        System.out.println(content);
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             URI putUri = new URIBuilder()

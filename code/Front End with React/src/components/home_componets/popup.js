@@ -173,11 +173,13 @@ class MyControl extends React.Component<any, any> {
             }
 
             const loginInfo = jwt_decode(cookie.load('token'));
+            console.log(loginInfo);
             const formData = new FormData();
             formData.append('userId', loginInfo['userId']);
+            formData.append('repoId', loginInfo['repoId']);
 
             axios
-                .post(BASE_URL + '/pull', formData, {params})
+                .post(BASE_URL + '/clone', formData, {params})
                 .then(res => {
                     // const fileId = res.data.fileId;
                     // localStorage.setItem("newFileName", res.data.fileName);
