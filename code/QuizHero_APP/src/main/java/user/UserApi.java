@@ -202,7 +202,7 @@ public class UserApi {
                 System.out.println(ctx.queryParam("login"));
                 if (Objects.isNull(ctx.queryParam("login"))) {
                     System.out.println("Redirect");
-                    ctx.redirect("http://localhost:3000/login");
+                    ctx.redirect("https://quiz-hero.herokuapp.com/login");
                     ctx.status(302);
                 }
             } catch (DaoException ex) {

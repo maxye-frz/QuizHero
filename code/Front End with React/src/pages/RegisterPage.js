@@ -116,7 +116,8 @@ class RegisterPage extends Component {
      * @param {object} event
      */
     backButtonHandler = () => {
-        window.location.replace(BASE_URL + "/login");
+        // window.location.replace(BASE_URL + "/login");
+        window.location = "/login";
     };
 
     render() {
@@ -200,6 +201,7 @@ class RegisterPage extends Component {
                             type="primary"
                             htmlType="submit"
                             className="register-button-real"
+                            size={"large"}
                             onClick={this.handleSubmit}
                         >
                             Register
@@ -207,6 +209,7 @@ class RegisterPage extends Component {
                         <Button
                             type="primary"
                             className="register-button"
+                            size={"large"}
                             onClick={this.backButtonHandler}
                         >
                             Back
