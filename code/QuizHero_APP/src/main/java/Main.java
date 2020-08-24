@@ -15,7 +15,7 @@ public class Main {
         DaoFactory.PATH_TO_DATABASE_FILE = Paths.get("src", "main", "resources").toFile().
                 getAbsolutePath()
                 + "/db/Store.db";
-        DaoFactory.DROP_TABLES_IF_EXIST = false;
+        DaoFactory.DROP_TABLES_IF_EXIST = true;
         JavalinUtil.INITIALIZE_WITH_SAMPLE_DATA = false;
         JavalinUtil.start();
     }
