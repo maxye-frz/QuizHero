@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import util.GithubUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +30,7 @@ public class File {
     private String fileName; // name of the file
     private Boolean filePermission; // permission control of access to viewing the file
     private Boolean quizPermission; // permission control of access to all quizzes in the file
-    private InputStream fileCss; // css string of the file
+    private String fileCss = GithubUtil.getCss(); // css string of the file
     private String owner; // owner of the file on github
     private String repo; // repo of the file on github
     private String path; // path of the file on github
@@ -86,7 +87,7 @@ public class File {
      * @param fileAccess access permission of the file
      * @param quizAccess access permission of the quiz
      */
-    public File(int userId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, InputStream css) {
+    public File(int userId, String fileId, String fileName, Boolean fileAccess, Boolean quizAccess, String css) {
         this.userId = userId;
         this.fileId = fileId;
         this.fileName = fileName;
@@ -143,11 +144,11 @@ public class File {
         this.quizPermission = quizPermission;
     }
 
-    public InputStream getFileCss() {
+    public String getFileCss() {
         return fileCss;
     }
 
-    public void setFileCss(InputStream css) {
+    public void setFileCss(String css) {
         this.fileCss = css;
     }
 

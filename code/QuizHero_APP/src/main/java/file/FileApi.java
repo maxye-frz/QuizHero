@@ -349,36 +349,35 @@ public class FileApi {
         });
     }
 
-    public static void uploadCSS(FileDao fileDao) {
-        app.post("/uploadCSS", context -> {
-            UploadedFile uploadedCss = context.uploadedFile("fileCSS"); // get file part
-            try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
-                // fetch file id from form-data, require argument not null
-                String fileId = Objects.requireNonNull(context.formParam("fileId"));
-                System.out.println("file id: " + fileId);
-                fileDao.updateCSS(fileId, inputStream);
-                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
-                fileMap.put("fileId", fileId);
-                fileMap.put("fileCSS", inputStream);
-                context.json(fileMap);
-                context.contentType("application/json");
-                context.status(201);
-            } catch (DaoException ex) {
-                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
-            } catch (NullPointerException ex) {
-                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
-            }
-        });
-    }
+//    public static void uploadCSS(FileDao fileDao) {
+//        app.post("/uploadCSS", context -> {
+//            UploadedFile uploadedCss = context.uploadedFile("fileCSS"); // get file part
+//            try (InputStream inputStream = Objects.requireNonNull(uploadedCss).getContent()) {
+//                // fetch file id from form-data, require argument not null
+//                String fileId = Objects.requireNonNull(context.formParam("fileId"));
+//                System.out.println("file id: " + fileId);
+//                fileDao.updateCSS(fileId, inputStream);
+//                Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
+//                fileMap.put("fileId", fileId);
+//                fileMap.put("fileCSS", inputStream);
+//                context.json(fileMap);
+//                context.contentType("application/json");
+//                context.status(201);
+//            } catch (DaoException ex) {
+//                throw new ApiError("server error when uploading file: " + ex.getMessage(), 500);
+//            } catch (NullPointerException ex) {
+//                throw new ApiError("bad request with missing argument: " + ex.getMessage(), 400); // client bad request
+//            }
+//        });
+//    }
 
     public static void saveCSS(FileDao fileDao) {
         app.post("/saveCSS", context -> {
             try {
                 String fileId = context.formParam("fileId");
                 String cssContent = context.formParam("fileCSS");
-                InputStream cssStream = new ByteArrayInputStream(cssContent.getBytes(StandardCharsets.UTF_8));
                 assert fileId != null;
-                fileDao.updateCSS(fileId, cssStream);
+                fileDao.updateCSS(fileId, cssContent);
                 Map<String, Object> fileMap = new HashMap<>(); // return fileId and fileName to front-end
                 fileMap.put("fileId", fileId);
                 fileMap.put("fileCSS", cssContent);
@@ -398,9 +397,8 @@ public class FileApi {
             try {
                 String fileId = Objects.requireNonNull(context.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
-                InputStream in = fileDao.getCSS(fileId);
-                InputStream inputStream = new BufferedInputStream(in); /* BufferedInputStream is used to improve the performance of the inside InputStream */
-                context.result(inputStream);
+                String css = fileDao.getCSS(fileId);
+                context.result(css);
                 System.out.println("Send file successfully.");
                 context.status(200);
             } catch (DaoException ex) {

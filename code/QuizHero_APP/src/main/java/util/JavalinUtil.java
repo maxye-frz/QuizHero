@@ -108,7 +108,7 @@ public class JavalinUtil {
         FileApi.listContent();
         FileApi.readCSS(fileDao);
         FileApi.saveCSS(fileDao);
-        FileApi.uploadCSS(fileDao);
+//        FileApi.uploadCSS(fileDao);
 
         // fetch quiz statistics
         QuizApi.getQuizStatByFileId(quizDao);

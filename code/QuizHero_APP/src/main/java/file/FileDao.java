@@ -178,7 +178,7 @@ public class FileDao {
     public void storeFile(File file) {
         try (Connection conn = sql2o.open()) {
             String sql = "insert into file values (:fileId, :fileName, :filePermission, :quizPermission, " +
-                    ":owner, :repo, :path, :sha)";
+                    ":owner, :repo, :path, :sha, :fileCss)";
             conn.createQuery(sql)
                     .addParameter("fileId", file.getFileId())
                     .addParameter("fileName", file.getFileName())
@@ -188,6 +188,7 @@ public class FileDao {
                     .addParameter("repo", file.getRepo())
                     .addParameter("path", file.getPath())
                     .addParameter("sha", file.getSha())
+                    .addParameter("fileCss", file.getFileCss())
                     .executeUpdate();
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to store file content", ex);
@@ -463,22 +464,22 @@ public class FileDao {
         }
     }
 
-    public InputStream getCSS(String fileId) {
+    public String getCSS(String fileId) {
         checkFileExist(fileId);
-        ByteArrayInputStream byteStream;
+        String css;
         try (Connection conn = sql2o.open()) {
             String sql = "SELECT fileCss FROM file WHERE fileId = :fileId";
-            byteStream = conn.createQuery(sql)
+            css = conn.createQuery(sql)
                     .addParameter("fileId", fileId)
-                    .executeAndFetchFirst(ByteArrayInputStream.class);
+                    .executeAndFetchFirst(String.class);
 
-            return byteStream;
+            return css;
         } catch (Sql2oException ex) {
             throw new DaoException("Unable to fetch file.", ex);
         }
     }
 
-    public void updateCSS(String fileId, InputStream css) {
+    public void updateCSS(String fileId, String css) {
         checkFileExist(fileId);
         try (Connection conn = sql2o.open()) {
             String sql = "UPDATE file SET fileCss = :css" +

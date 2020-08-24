@@ -131,7 +131,7 @@ public final class DaoFactory {
                 "repo VARCHAR(50) NOT NULL," +
                 "path VARCHAR(50) NOT NULL," +
                 "sha VARCHAR(50)," +
-                "fileCss bytea" +
+                "fileCss text" +
                 ")";
         // add size, date, type later
 
