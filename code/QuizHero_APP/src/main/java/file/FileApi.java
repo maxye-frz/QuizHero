@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import exception.ApiError;
 import exception.DaoException;
-import io.javalin.http.UploadedFile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,13 +14,10 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import user.LoginException;
 import util.GithubUtil;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -104,6 +100,11 @@ public class FileApi {
     public static void fetchFile(FileDao fileDao) {
         app.get("/fetch", ctx -> {
             try {
+                String token = ctx.cookie("token");
+                if (token == null) {
+                    System.out.println("no token");
+                    throw new LoginException("need user authentication");
+                }
                 String fileId = Objects.requireNonNull(ctx.queryParam("fileId")); // get file id from form-data
                 System.out.println("file id: " + fileId);
                 String accessToken = GithubUtil.getPersonalAccessToken();
@@ -111,6 +112,8 @@ public class FileApi {
                 ctx.result(content);
                 System.out.println("fetch file successfully.");
                 ctx.status(200);
+            } catch (LoginException ex) {
+                throw new ApiError("server error when fetching file: " + ex.getMessage(), 401);
             } catch (DaoException ex) {
                 throw new ApiError("server error when fetching file: " + ex.getMessage(), 500);
             } catch (NullPointerException ex) {

@@ -10,9 +10,9 @@ public class GithubUtil {
     public static String getScope() {
         return "repo";
     }
-    public static String getGitName() {return "QzHoTest";}
+//    public static String getGitName() {return "QzHoTest";}
     public static String getPersonalAccessToken() {return "0cb910358e32ff6407c79911d8c06012c3ee9760";}
-    public static String getOrganizationName() {return "quizherotest";}
+    public static String getOrganizationName() {return "QuizHeroRepo";}
     public static String getCss() {return "   /* @theme example */\n" +
             "\n" +
             "    section {\n" +
