@@ -30,10 +30,10 @@ public final class DaoFactory {
      * Drop all the tables in the database.
      */
     public static void clearDatabase(){
-        dropUserFileTableIfExists(sql2o);
         dropQuizTableIfExists(sql2o);
-        dropAccountTableIfExists(sql2o);
         dropFileTableIfExists(sql2o);
+        dropUserFileTableIfExists(sql2o);
+        dropAccountTableIfExists(sql2o);
         System.out.println("database cleared");
     }
 
@@ -215,7 +215,6 @@ public final class DaoFactory {
      */
     private static void dropFileTableIfExists(Sql2o sql2o) {
         String sql = "DROP TABLE IF EXISTS file;";
-
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql).executeUpdate();
             System.out.println("file table dropped.");
