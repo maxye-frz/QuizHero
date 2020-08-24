@@ -15,25 +15,32 @@
     margin: 0 auto !important;
   }
 
-  .login-form-button {
-    width: 400px;
+  .github-login-button {
+    width: 201px;
     margin-top: 80px;
+    background-color: #333 !important;
+    border-color: #333 !important;
+  }
+
+  .login-form-button {
+    width: 201px;
+    margin-top: 10px;
     background-color: #00A9F4 !important;
     border-color: #00A9F4 !important;
     }
 
   .register-button-real{
-    width: 400px;
-  background-color: #00A9F4 !important;
-  border-color: #00A9F4 !important;
+    width: 201px;
+    background-color: #00A9F4 !important;
+    border-color: #00A9F4 !important;
   }
 
   .register-button{
-    width: 400px;
+    width: 201px;
+    margin-top: 10px;
     color: #00A9F4 !important;
-  background-color: #ffffff !important;
-  border-color: #00A9F4 !important;
-
+    background-color: #ffffff !important;
+    border-color: #00A9F4 !important;
   }
 
   .remember-me-box{

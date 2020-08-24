@@ -29,6 +29,7 @@ const ContainerRight = styled.div`
 export default function Home(props) {
 
     const [fileList, setFileList] = useState([]);
+    const [fileSystem, setFileSystem] = useState({});
 
     // const [cookies, setCookie, removeCookie] = useCookies('token');
     // var jwtDecode = require('jwt-decode');
@@ -37,7 +38,9 @@ export default function Home(props) {
 
     const contextValue = {
         fileList,
-        setFileList
+        setFileList,
+        fileSystem,
+        setFileSystem
     }
 
     const loginInfo = jwt_decode(cookie.load('token'));
@@ -61,6 +64,30 @@ export default function Home(props) {
             .catch((error) => {
                 console.log(error)
             });
+    }
+
+    const convertFileIdList2FileSystem = (fileList) => {
+        let fileIdList = ['9b6739960c1ac83251046da2c718019b'];
+        fileList.forEach((file, index, array) => {
+            fileIdList.push(file.fileId)
+        });
+
+        // console.log(fileList);
+        fileSystem['1382b6993e9f270cb1c29833be3f5750'].children = fileIdList;
+        fileList.forEach((file, index, array) => {
+            fileSystem[file.fileId] = {
+                type: '__file__',
+                name: file.fileName,
+                creatorName: loginInfo["name"],
+                parentID: '1382b6993e9f270cb1c29833be3f5750',
+                parentPath: '/',
+                path: '/' + file.fileName
+            }
+        });
+
+        console.log(fileSystem);
+        localStorage.setItem('fileSystem', JSON.stringify(fileSystem));
+        return fileSystem;
     }
 
     return(

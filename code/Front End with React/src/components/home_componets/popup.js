@@ -7,6 +7,7 @@ import axios from "axios"
 import {BASE_URL} from "../../config/config";
 import jwt_decode from "jwt-decode";
 import cookie from "react-cookies";
+import {GithubOutlined, PullRequestOutlined, RollbackOutlined} from "@ant-design/icons";
 
 const clearPath = 'M793 242H366v-74c0-6.7-7.7-10.4-12.9' +
     '-6.3l-142 112c-4.1 3.2-4.1 9.4 0 12.6l142 112c' +
@@ -254,7 +255,7 @@ class MyControl extends React.Component<any, any> {
                     {/*        <option value="master">master</option>*/}
                     {/*    </select>*/}
                     {/*</div>*/}
-                    <div style={{ height: 50 }} />
+                    <div style={{ height: 30 }} />
                     <div>
                         <label>Select file：</label>
                         <div style={{ height: 10 }} />
@@ -268,29 +269,39 @@ class MyControl extends React.Component<any, any> {
                     </div>
 
                     <div style={{ height: 50 }} />
-                    <div className="row">
-                        <div className="col-16 col-offset-6">
-                            <input type="submit" className="ant-btn ant-btn-primary" value="Pull" />
-                        </div>
-                    </div>
+                    {/*<div className="row">*/}
+                    {/*    <div className="col-16 col-offset-6">*/}
+                    {/*        <input type="submit" className="ant-btn ant-btn-primary" value="Pull" />*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </form>
 
-                <button onClick={this.back}>back</button>
+                <Button
+                    className="back-button"
+                    onClick={this.back}>
+                    <RollbackOutlined /> Back
+                </Button>
 
-                <button onClick={this.handleSubmit}>pull</button>
+                <Button
+                    className="pull-button"
+                    onClick={this.handleSubmit}>
+                    <PullRequestOutlined />Clone
+                </Button>
 
-                <button onClick={this.onClose}>close</button>
-                <button onClick={this.changeWidth}>change width</button>
-                <button onClick={this.toggleCloseIcon}>
-                    use custom icon, is using icon: {this.state.useIcon && 'true' || 'false'}.
-                </button>
+                {/*<button onClick={this.onClose}>close</button>*/}
+                {/*<button onClick={this.changeWidth}>change width</button>*/}
+                {/*<button onClick={this.toggleCloseIcon}>*/}
+                {/*    use custom icon, is using icon: {this.state.useIcon && 'true' || 'false'}.*/}
+                {/*</button>*/}
             </Dialog>
         );
 
         return (
             <div>
-                <Button onClick={this.onClick}>
-                    Clone from GitHub
+                <Button
+                    className='clone-button'
+                    onClick={this.onClick}>
+                    <GithubOutlined /> Clone from GitHub
                 </Button>
                 {dialog}
             </div>

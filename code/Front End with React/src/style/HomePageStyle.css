@@ -1,0 +1,33 @@
+.upload-button {
+    width: 165px;
+    /*background-color: #00A9F4 !important;*/
+    /*border-color: #00A9F4 !important;*/
+}
+
+.new-button {
+    width: 165px;
+    margin-top: 15px;
+    /*background-color: #00A9F4 !important;*/
+    /*border-color: #00A9F4 !important;*/
+}
+
+.clone-button {
+    width: 165px;
+    margin-top: 15px;
+    /*background-color: #00A9F4 !important;*/
+    /*border-color: #00A9F4 !important;*/
+}
+
+.back-button {
+    width: 100px;
+    /*background-color: #00A9F4 !important;*/
+    /*border-color: #00A9F4 !important;*/
+}
+
+.pull-button {
+    width: 100px;
+    margin-left: 360px;
+    color: #ffffff;
+    background-color: #00A9F4 !important;
+    border-color: #00A9F4 !important;
+}

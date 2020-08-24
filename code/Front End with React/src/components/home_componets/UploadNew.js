@@ -12,6 +12,7 @@ import styled from "styled-components";
 import separateQuestion from "../Parse";
 import jwt_decode from "jwt-decode";
 import cookie from "react-cookies";
+import "../../style/HomePageStyle.css"
 
 const Header = styled.div`
   background-color: #ffffff !important;
@@ -194,8 +195,8 @@ export default function UploadNew (props){
                     onRemove={onRemove}
                     {...uploadprops}>
 
-                    <Button>
-                        <Icon type = 'upload' /> Upload form local
+                    <Button className="upload-button">
+                        <Icon type = 'upload' /> Upload from local
                     </Button>
 
                 </Upload>
@@ -203,15 +204,16 @@ export default function UploadNew (props){
 
             <Link to={{pathname: '/EditPage'}}>
                 <Button
-                        onClick={() => {
-                            if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
-                                localStorage.setItem("saved", "true");
-                                localStorage.setItem("fileId", "null");
-                                localStorage.setItem("newFileName", "");
-                                localStorage.setItem("newFileString", "");
-                            } else {
-                                alert("There are unsaved changes, please save or discard them first!");
-                            }}}>
+                    className="new-button"
+                    onClick={() => {
+                        if (localStorage.getItem("saved") === "true" || !localStorage.hasOwnProperty('saved')) {
+                            localStorage.setItem("saved", "true");
+                            localStorage.setItem("fileId", "");
+                            localStorage.setItem("newFileName", "");
+                            localStorage.setItem("newFileString", "");
+                        } else {
+                            alert("There are unsaved changes, please save or discard them first!");
+                        }}}>
                     <PlusCircleOutlined /> New File
                 </Button>
             </Link>

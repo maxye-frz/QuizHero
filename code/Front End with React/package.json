@@ -16,7 +16,6 @@
     "echarts": "^4.8.0",
     "echarts-for-react": "^2.0.16",
     "formik": "^2.1.5",
-    "jwt-decode": "^2.2.0",
     "konva": "^6.0.0",
     "marked": "^0.8.2",
     "md5": "^2.3.0",

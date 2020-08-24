@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Form, Input, Button, Checkbox, message, Alert} from "antd";
 import {useHistory} from "react-router-dom";
-import {UserOutlined, LockOutlined, WindowsOutlined} from "@ant-design/icons";
+import {UserOutlined, LockOutlined, WindowsOutlined, GithubOutlined} from "@ant-design/icons";
 import {connect} from "react-redux";
 import {userLoginAction} from "../store/actions/loginActions";
 import "../style/loginPageStyle.css";
@@ -183,7 +183,15 @@ class LoginPage extends Component {
                     <Form.Item>
                         <Button
                             type="primary"
+                            className="github-login-button"
+                            size={"large"}
+                            onClick={this.loginWithGitHub}>
+                            <GithubOutlined />Login with GitHub
+                        </Button>
+                        <Button
+                            type="primary"
                             className="login-form-button"
+                            size={"large"}
                             onClick={this.handleSubmit}
                         >
                             Log in
@@ -191,12 +199,10 @@ class LoginPage extends Component {
                         <Button
                             type="primary"
                             className="register-button"
+                            size={"large"}
                             onClick={this.registerButtonHandler}
                         >
                             Register
-                        </Button>
-                        <Button onClick={this.loginWithGitHub}>
-                            Login with GitHub
                         </Button>
                     </Form.Item>
                 </Form>

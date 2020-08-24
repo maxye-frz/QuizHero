@@ -167,17 +167,17 @@ export function Input(props) {
                             onClick={saveFile}>
                         <SaveOutlined /> Save File
                     </Button>
-                    <Button size={"small"} style={{marginLeft: 10}}
-                            onClick={discard}>
-                        <DeleteOutlined /> Discard
-                    </Button>
-                    <Button size={"small"} style={{marginLeft: 10}}
-                            onClick={push}>
-                        <SaveOutlined /> Push
-                    </Button>
+                    {/*<Button size={"small"} style={{marginLeft: 10}}*/}
+                    {/*        onClick={push}>*/}
+                    {/*    <SaveOutlined /> Push*/}
+                    {/*</Button>*/}
                     <Button size={"small"} style={{marginLeft: 10}}
                             onClick={() => props.setDisplay("CSS")}>
                         <EditOutlined /> Edit CSS
+                    </Button>
+                    <Button size={"small"} style={{marginLeft: 10, color: "white", backgroundColor: "#f5222d"}}
+                            onClick={discard}>
+                        <DeleteOutlined /> Discard
                     </Button>
                 </div>
             </Title>

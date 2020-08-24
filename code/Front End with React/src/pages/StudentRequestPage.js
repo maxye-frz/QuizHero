@@ -138,9 +138,10 @@ class StudentRequestPage extends Component{
         var data = separateQuestion(rawString);
         data.fileId = fileId;
         data.CSS = marpit2spectacle(CSS);
+        console.log(data);
         data = JSON.stringify(data);
         localStorage.setItem("data", data);
-        window.open('/student', "_self");
+        // window.open('/student', "_self");
         // this.setState({display_name: 'block'});
     }
 
@@ -156,7 +157,7 @@ class StudentRequestPage extends Component{
                         <Search
                             style={{width: 400}}
                             placeholder="input shared code"
-                            defaultValue="979149bf-7f9c-4c29-be75-bb3080e19f2c"
+                            // defaultValue="979149bf-7f9c-4c29-be75-bb3080e19f2c"
                             enterButton="Search"
                             size="large"
                             onSearch={this.onSearch}

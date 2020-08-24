@@ -11,7 +11,7 @@ let fileSystem = {
   '1382b6993e9f270cb1c29833be3f5750': {
     type: '__folder__',
     name: 'root',
-    path: '/',
+    path: '/fileSystem',
     size: 0,
     // date: '2019-04-07',
     creatorName: username,
@@ -26,8 +26,8 @@ let fileSystem = {
     // size: 223,
     // date: '2019-04-29',
     parentID: '1382b6993e9f270cb1c29833be3f5750',
-    parentPath: '/',
-    path: '/apps',
+    parentPath: '/fileSystem',
+    path: '/fileSystem/new folder',
     children: []
   }
 };
@@ -70,8 +70,8 @@ const convertFileIdList2FileSystem = (fileList) => {
       name: file.fileName,
       creatorName: username,
       parentID: '1382b6993e9f270cb1c29833be3f5750',
-      parentPath: '/',
-      path: '/' + file.fileName
+      parentPath: '/fileSystem',
+      path: '/fileSystem/' + file.fileName
     }
   });
 
